@@ -15,6 +15,13 @@
  * along with Editor-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import Artigo from './dispositivos/Artigo';
+import Paragrafo from './dispositivos/Paragrafo';
+import Inciso from './dispositivos/Inciso';
+import Alinea from './dispositivos/Alinea';
+import Item from './dispositivos/Item';
+import {Titulo, Capitulo, Secao, Subsecao} from './dispositivos/agrupadores'
+
 /**
  * Interpreta conteúdo de articulação.
  * 
@@ -303,278 +310,7 @@ function parseTexto(textoOriginal) {
     };
 }
 
-/**
- * Transforma as quebras de linha em elementos P.
- * 
- * @param {String} texto 
- * @returns {String}
- */
-function transformarQuebrasDeLinhaEmP(texto) {
-    var fragmento = document.createDocumentFragment();
-
-    if (texto.indexOf('\n') === -1) {
-        let p = document.createElement('p');
-        p.textContent = texto;
-        fragmento.appendChild(p);
-    } else {
-        let partes = texto.split(/\n+/g);
-
-        partes.forEach(parte => {
-            let p = document.createElement('p');
-            p.textContent = parte;
-            fragmento.appendChild(p);
-        });
-    }
-    
-    return fragmento;
-}
-
-/**
- * Transforma as quebras de linha em espaço.
- * 
- * @param {String} texto 
- * @returns {String}
- */
-function transformarQuebrasDeLinhaEmEspaco(texto) {
-    var fragmento = document.createDocumentFragment();
-
-    let p = document.createElement('p');
-    p.textContent = texto.replace(/\n+/g, ' ');
-
-    fragmento.appendChild(p);
-    
-    return fragmento;
-}
-
-// Definição de classes
-
-class Dispositivo {
-    constructor(tipo, numero, descricao, derivacoes) {
-        this.numero = numero;
-        this.descricao = descricao;
-
-        Object.defineProperty(this, 'tipo', {
-            value: tipo
-        });
-
-        if (derivacoes) {
-            Object.defineProperty(this, 'subitens', {
-                get: function() {
-                    return derivacoes.reduce((prev, item) => prev.concat(this[item]), []);
-                }
-            });
-        }
-    }
-
-    /**
-     * Adiciona um dispositivo a este.
-     * 
-     * @param {*} dispositivo 
-     */
-    adicionar(dispositivo) {
-        throw 'Não implementado';
-    }
-
-    /**
-     * Transforma o conteúdo na descrição em fragmento do DOM.
-     */
-    transformarConteudoEmFragmento() {
-        return transformarQuebrasDeLinhaEmEspaco(this.descricao);
-    }
-
-    /**
-     * Transforma o dispositivo no formato do editor.
-     */
-    paraEditor() {
-        let fragmento = this.transformarConteudoEmFragmento();
-
-        fragmento.firstElementChild.setAttribute('data-tipo', this.tipo);
-
-        for (let item = fragmento.children[1]; item; item = item.nextElementSibling) {
-            item.setAttribute('data-tipo', 'continuacao');
-        }
-
-        this.subitens.forEach(subItem => fragmento.appendChild(subItem.paraEditor()));
-
-        return fragmento;
-    }
-}
-
-class Artigo extends Dispositivo {
-    constructor(numero, caput) {
-        super('artigo', numero, caput, ['incisos', 'paragrafos']);
-        this.incisos = [];
-        this.paragrafos = [];
-    }
-
-    adicionar(incisoOuParagrafo) {
-        var self = this;
-
-        Object.defineProperty(incisoOuParagrafo, '$parent', {
-            get: function () {
-                return self;
-            }
-        });
-
-        if (incisoOuParagrafo instanceof Inciso) {
-            this.incisos.push(incisoOuParagrafo);
-        } else if (incisoOuParagrafo instanceof Paragrafo) {
-            this.paragrafos.push(incisoOuParagrafo);
-        } else {
-            throw 'Tipo não suportado.';
-        }
-    }
-
-    transformarConteudoEmFragmento() {
-        return transformarQuebrasDeLinhaEmP(this.descricao);
-    }
-
-    paraEditor() {
-        var fragmento = super.paraEditor();
-
-        if (this.paragrafos.length === 1) {
-            fragmento.querySelector('p[data-tipo="paragrafo"]').classList.add('unico');
-        }
-
-        return fragmento;
-    }
-}
-
-class Paragrafo extends Dispositivo {
-    constructor(numero, descricao) {
-        super('paragrafo', numero, descricao, ['incisos']);
-        this.incisos = [];
-    }
-
-    adicionar(inciso) {
-        var self = this;
-
-        if (!(inciso instanceof Inciso)) {
-            throw 'Tipo não suportado.';
-        }
-
-        Object.defineProperty(inciso, '$parent', {
-            get: function () {
-                return self;
-            }
-        });
-
-        this.incisos.push(inciso);
-    }
-}
-
-class Inciso extends Dispositivo {
-    constructor(numero, descricao) {
-        super('inciso', numero, descricao, ['alineas']);
-        this.alineas = [];
-    }
-
-    adicionar(alinea) {
-        var self = this;
-
-        if (!(alinea instanceof Alinea)) {
-            throw 'Tipo não suportado.';
-        }
-
-        Object.defineProperty(alinea, '$parent', {
-            get: function () {
-                return self;
-            }
-        });
-
-        this.alineas.push(alinea);
-    }
-}
-
-class Alinea extends Dispositivo {
-    constructor(numero, descricao) {
-        super('alinea', numero, descricao, ['itens']);
-        this.itens = [];
-    }
-
-    adicionar(item) {
-        var self = this;
-
-        if (!(item instanceof Item)) {
-            throw 'Tipo não suportado.';
-        }
-
-        Object.defineProperty(item, '$parent', {
-            get: function () {
-                return self;
-            }
-        });
-
-        this.itens.push(item);
-    }
-}
-
-class Item extends Dispositivo {
-    constructor(numero, descricao) {
-        super('item', numero, descricao, []);
-    }
-}
-
-class Divisao extends Dispositivo {
-    constructor(tipo, numero, descricao) {
-        super(tipo, numero, descricao);
-        this.subitens = [];
-    }
-    
-    adicionar(item) {
-        this.subitens.push(item);
-    }
-}
-
-class Titulo extends Divisao {
-    constructor(numero, descricao) {
-        super('titulo', numero, descricao);
-    }
-}
-
-class Capitulo extends Divisao {
-    constructor(numero, descricao) {
-        super('capitulo', numero, descricao);
-    }
-}
-
-class Secao extends Divisao {
-    constructor(numero, descricao) {
-        super('secao', numero, descricao);
-    }
-}
-
-class Subsecao extends Divisao {
-    constructor(numero, descricao) {
-        super('subsecao', numero, descricao);
-    }
-}
-
-/**
- * Extrai o agrupador no formato "Nome Número - Descrição".
- * 
- * @param txt
- * 		Texto cujo agrupador será extraído.
- * 
- * @returns {object}
- * 		Objeto contendo atributos: numero e descricao.
- */
-function extrairAgrupador(txt) {
-    var regExpTitulo = /(\w+) (\w+)\s*[-–]\s*\n*(.*)/i, item;
-
-    if (!txt) {
-        return null;
-    }
-
-    item = regExpTitulo.exec(txt.replace(/[\r\n]/g, ' ').trim());
-
-    return {
-        numero: item[2],
-        descricao: removerUnicaTagParagrafo(item[3])
-    };
-}
-
-function transformarEmLexML(json) {
+function transformarEmLexML(objetoArticulacao) {
     function reducaoInciso(prev, inciso, idx, array) {
 
         var idInciso = array.prefixo + "_inc" + (idx + 1);
@@ -586,7 +322,7 @@ function transformarEmLexML(json) {
     }
 
     var lexml = '<Articulacao xmlns="http://www.lexml.gov.br/1.0">' +
-        json.articulacao.reduce(function (prev, artigo, idx) {
+        objetoArticulacao.articulacao.reduce(function (prev, artigo, idx) {
             var idArt = 'art' + (idx + 1);
             var texto = prev + '<Artigo id="' + idArt + '"><Rotulo>Art. ' + (idx + 1) + (idx < 9 ? 'º' : '') + ' –</Rotulo><Caput id="' + idArt + '_cpt"><p>' + artigo.descricao + '</p>';
 
@@ -622,23 +358,23 @@ function transformarEmLexML(json) {
  * Interpreta conteúdo de articulação.
  * 
  * @param {String} texto Texto a ser interpretado
- * @param {String} formatoDestino Formato a ser retornado: 'json', 'lexml' (padrão) ou "lexmlString".
+ * @param {String} formatoDestino Formato a ser retornado: 'objeto', 'lexml' (padrão) ou "lexmlString".
  * @param {String} formatoOrigem Formatao a ser processado: 'texto' (padrão), 'html'.
  * @returns {Object|DocumentFragment}
  */
 function interpretarArticulacao(texto, formatoDestino, formatoOrigem) {
-    var json;
+    var objetoArticulacao;
 
     try {
         switch ((formatoOrigem || 'texto').toLowerCase()) {
             case 'texto':
-                json = parseTexto(texto);
+                objetoArticulacao = parseTexto(texto);
                 break;
 
             case 'html':
                 let div = document.createElement('div');
                 div.innerHTML = texto;
-                json = parseTexto(removerEntidadeHtml(div.innerHTML.replace(/<P>(.+?)<\/P>/gi, '$1\n').trim()));
+                objetoArticulacao = parseTexto(removerEntidadeHtml(div.innerHTML.replace(/<P>(.+?)<\/P>/gi, '$1\n').trim()));
                 break;
         
             default:
@@ -646,15 +382,16 @@ function interpretarArticulacao(texto, formatoDestino, formatoOrigem) {
         }
 
         switch ((formatoDestino || 'lexml').toLowerCase()) {
-            case 'json':
-                return json;
+            case 'objeto':
+            case 'json':    // Apenas por compatibilidade. A terminologia JSON é inadequada.
+                return objetoArticulacao;
 
             case 'lexml':
-                return transformarEmLexMLFragmento(json);
+                return transformarEmLexMLFragmento(objetoArticulacao);
 
             case 'lexmlstring':
             case 'lexml-string':
-                return transformarEmLexML(json);
+                return transformarEmLexML(objetoArticulacao);
 
             default:
                 throw 'Formato não suportado: ' + formatoDestino;
@@ -711,7 +448,6 @@ export default {
     Secao: Secao,
     Subsecao: Subsecao,
     interpretar: interpretarArticulacao,
-    transformarQuebrasDeLinhaEmP: transformarQuebrasDeLinhaEmP
 };
 
-export { Artigo, Paragrafo, Inciso, Alinea, Item, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao, transformarQuebrasDeLinhaEmP };
+export { Artigo, Paragrafo, Inciso, Alinea, Item, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao };

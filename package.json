@@ -1,0 +1,38 @@
+{
+  "name": "silegismg-interpretador-articulacao",
+  "version": "1.0.0",
+  "description": "Interpretador de Articulação",
+  "main": "src/interpretadorArticulacao.js",
+  "scripts": {
+    "jshint": "node_modules/jshint/bin/jshint src",
+    "test": "jest"
+  },
+  "keywords": [
+    "silegismg",
+    "lexml",
+    "articulacao",
+    "parser",
+    "interpretador",
+    "almg",
+    "assembleia",
+    "camara",
+    "senado",
+    "legislativa",
+    "legislativo"
+  ],
+  "author": "Assembleia Legislativa de Minas Gerais (ALMG)",
+  "license": "LGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/silegis-mg/interpretador-articulacao.git"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "babel-jest": "^24.7.1",
+    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "jest": "^24.7.1",
+    "jest-haste-map": "^24.7.1",
+    "jshint": "^2.10.2",
+    "pretty-format": "^24.7.0"
+  }
+}

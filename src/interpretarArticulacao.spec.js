@@ -15,11 +15,9 @@
  * along with Editor-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-'use strict';
+import parser from './interpretadorArticulacao';
 
 describe('Parser de articulação', function () {
-    var parser = window.interpretadorArticulacao;
-
     function novo(tipo, obj) {
         if (obj instanceof Array) {
             return obj.map(o => novo(tipo, o));
@@ -383,42 +381,5 @@ describe('Parser de articulação', function () {
         var lexml = parser.interpretar(texto, 'lexml-string', 'html');
 
         expect(lexml).toEqual('<Articulacao xmlns="http://www.lexml.gov.br/1.0"><Artigo id="art1"><Rotulo>Art. 1º –</Rotulo><Caput id="art1_cpt"><p>Fica declarado de utilidade pública o treste  asdf asd f    asd, com sede no Município de Abadia dos Dourados.</p></Caput></Artigo><Artigo id="art2"><Rotulo>Art. 2º –</Rotulo><Caput id="art2_cpt"><p>Esta lei entra em vigor na data de sua publicação.</p></Caput></Artigo></Articulacao>');
-    });
-
-    describe('transfomarQuebrasDeLinhaEmP', function () {
-        var transformarQuebrasDeLinhaEmP = window.interpretadorArticulacao.transformarQuebrasDeLinhaEmP;
-
-        it('Deve envolver única linha', function () {
-            var fragmento = transformarQuebrasDeLinhaEmP('linha única');
-
-            expect(fragmento.childNodes.length).toBe(1);
-            expect(fragmento.firstChild.outerHTML).toBe('<p>linha única</p>');
-        });
-
-        it('Deve separar duas linhas', function () {
-            var fragmento = transformarQuebrasDeLinhaEmP('linha 1\nlinha 2');
-
-            expect(fragmento.childNodes.length).toBe(2);
-            expect(fragmento.firstChild.outerHTML).toBe('<p>linha 1</p>');
-            expect(fragmento.lastChild.outerHTML).toBe('<p>linha 2</p>');
-        });
-
-        it('Deve separar três linhas', function () {
-            var fragmento = transformarQuebrasDeLinhaEmP('linha 1\nlinha 2\nlinha 3');
-
-            expect(fragmento.childNodes.length).toBe(3);
-            expect(fragmento.firstChild.outerHTML).toBe('<p>linha 1</p>');
-            expect(fragmento.childNodes[1].outerHTML).toBe('<p>linha 2</p>');
-            expect(fragmento.lastChild.outerHTML).toBe('<p>linha 3</p>');
-        });
-
-        it('Deve ignorar linhas vazias', function () {
-            var fragmento = transformarQuebrasDeLinhaEmP('linha 1\n\nlinha 2\n\n\nlinha 3');
-
-            expect(fragmento.childNodes.length).toBe(3);
-            expect(fragmento.firstChild.outerHTML).toBe('<p>linha 1</p>');
-            expect(fragmento.childNodes[1].outerHTML).toBe('<p>linha 2</p>');
-            expect(fragmento.lastChild.outerHTML).toBe('<p>linha 3</p>');
-        });
     });
 });
