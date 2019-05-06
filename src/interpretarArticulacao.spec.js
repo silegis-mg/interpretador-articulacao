@@ -382,4 +382,24 @@ describe('Parser de articulação', function () {
 
         expect(lexml).toEqual('<Articulacao xmlns="http://www.lexml.gov.br/1.0"><Artigo id="art1"><Rotulo>Art. 1º –</Rotulo><Caput id="art1_cpt"><p>Fica declarado de utilidade pública o treste  asdf asd f    asd, com sede no Município de Abadia dos Dourados.</p></Caput></Artigo><Artigo id="art2"><Rotulo>Art. 2º –</Rotulo><Caput id="art2_cpt"><p>Esta lei entra em vigor na data de sua publicação.</p></Caput></Artigo></Articulacao>');
     });
+
+    it('Deve entender artigos emendados', function () {
+        var texto = 'Art. 111-A. O Tribunal Superior do Trabalho compor-se-á de vinte e sete Ministros, escolhidos dentre brasileiros com mais de trinta e cinco anos e menos de sessenta e cinco anos, de notável saber jurídico e reputação ilibada, nomeados pelo Presidente da República após aprovação pela maioria absoluta do Senado Federal, sendo:  (Redação dada pela Emenda Constitucional nº 92, de 2016)' +
+            '\nI um quinto dentre advogados com mais de dez anos de efetiva atividade profissional e membros do Ministério Público do Trabalho com mais de dez anos de efetivo exercício, observado o disposto no art. 94;  (Incluído pela Emenda Constitucional nº 45, de 2004)';
+        var objeto = parser.interpretar(texto, 'objeto', 'texto');
+
+        expect(objeto).toEqual({
+            textoAnterior: '',
+            articulacao: novo(parser.Artigo, [
+                {
+                    numero: '111-A',
+                    descricao: 'O Tribunal Superior do Trabalho compor-se-á de vinte e sete Ministros, escolhidos dentre brasileiros com mais de trinta e cinco anos e menos de sessenta e cinco anos, de notável saber jurídico e reputação ilibada, nomeados pelo Presidente da República após aprovação pela maioria absoluta do Senado Federal, sendo:  (Redação dada pela Emenda Constitucional nº 92, de 2016)',
+                    incisos: [{
+                        numero: 'I',
+                        descricao: 'um quinto dentre advogados com mais de dez anos de efetiva atividade profissional e membros do Ministério Público do Trabalho com mais de dez anos de efetivo exercício, observado o disposto no art. 94;  (Incluído pela Emenda Constitucional nº 45, de 2004)'
+                    }]
+                }
+            ])
+        })
+    });
 });
