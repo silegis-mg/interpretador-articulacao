@@ -1,3 +1,5 @@
+[![npm version](https://badge.fury.io/js/silegismg-interpretador-articulacao.svg)](https://badge.fury.io/js/silegismg-interpretador-articulacao)
+
 # Interpretador de Articulação
 
 O interpretador de Articulação é uma biblioteca de parser de texto articulado extraído do editor de articulação, ambas elaboradas pela Assembleia Legislativa de Minas Gerais,
@@ -6,26 +8,11 @@ como parte do Sistema de Informação Legislativa de Minas Gerais (Silegis-MG).
 Ele permite a interpretação de texto articulado (texto puro ou HTML), transformando em um objeto estruturado contendo dispositivos, tais como artigos, parágrafos,
 incisos, alíneas e itens, bem como as divisões em títulos, capítulos, seções e subseções. O resultado do parser pode ser uma árvore de objetos ou texto articulado em formato XML, conforme elemento `Articulacao` definido pelo schema do [LexML](https://github.com/lexml/lexml-xml-schemas/tree/master/src/main/resources/xsd).
 
-## Como usar a partir do código fonte
-
-### Pré-requisitos para testes
-
-* [NodeJS com npm](https://nodejs.org/en/download/)
-
-### Instalação das dependências
-
-Após baixar o código, mude para o diretório onde encontram os fontes e instale as dependências: 
+## Como usar em seu código
 
 ```
-npm install
+npm install --save-prod silegismg-interpretador-articulacao
 ```
-
-### Executando os testes de unidade
-
-```
-npm run-script test
-```
-
 
 <a name="api-interpretador"></a>
 
