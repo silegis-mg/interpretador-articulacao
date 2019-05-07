@@ -28,6 +28,12 @@ class Divisao extends Dispositivo {
     }
 }
 
+export class Preambulo extends Divisao {
+    constructor(descricao) {
+        super('preambulo', null, descricao);
+    }
+}
+
 export class Titulo extends Divisao {
     constructor(numero, descricao) {
         super('titulo', numero, descricao);

@@ -400,6 +400,24 @@ describe('Parser de articulação', function () {
                     }]
                 }
             ])
-        })
+        });
+    });
+
+    it('Deve suportar preâmbulo', function() {
+        var html = '<p align="CENTER"><strong><font face="Arial" color="#800000" size="2">PREÂMBULO</font></strong></p>' +
+            '<p align="JUSTIFY" style="text-align: justify"><small><font face="Arial" color="#000000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font></small><font face="Arial" size="2">Nós, representantes do povo brasileiro, reunidos em Assembléia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias, promulgamos, sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL.</font></p>' +
+            '<p align="center" style="margin-top: 0; margin-bottom: 0"><font face="Arial" size="2"><a name="tituloi"></a><span style="text-transform: uppercase"><b>TÍTULO I</b></span></font></p>' +
+            '<p align="center" style="margin-top: 0; margin-bottom: 0"><font face="Arial" size="2"><span style="text-transform: uppercase"><b>Dos Princípios Fundamentais </b></span> </font></p>' +
+            '<div id="art"><p><a name="art1"></a><a name="1"></a>Art. 1º A República Federativa do Brasil, formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos:</p></div>';
+        var objeto = parser.interpretar(html, 'objeto', 'html');
+
+        expect(objeto).toEqual({
+            textoAnterior: '',
+            articulacao: [
+                new parser.Preambulo('Nós, representantes do povo brasileiro, reunidos em Assembléia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias, promulgamos, sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL.'),
+                new parser.Titulo('I', 'Dos Princípios Fundamentais'),
+                new parser.Artigo('1', 'A República Federativa do Brasil, formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos:')
+            ]
+        });
     });
 });

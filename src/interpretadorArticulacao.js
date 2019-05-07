@@ -20,7 +20,7 @@ import Paragrafo from './dispositivos/Paragrafo';
 import Inciso from './dispositivos/Inciso';
 import Alinea from './dispositivos/Alinea';
 import Item from './dispositivos/Item';
-import {Titulo, Capitulo, Secao, Subsecao} from './dispositivos/agrupadores'
+import {Preambulo, Titulo, Capitulo, Secao, Subsecao} from './dispositivos/agrupadores'
 
 /**
  * Interpreta conteúdo de articulação.
@@ -81,7 +81,7 @@ function parseTexto(textoOriginal) {
         }, {
             item: 'continuacao-divisao',
             regexp: /^\s*(.*)?\s*$/,
-            requisito: [Titulo, Capitulo, Secao, Subsecao],
+            requisito: [Preambulo, Titulo, Capitulo, Secao, Subsecao],
             onMatch: function (contexto, m) {
                 if (!contexto.ultimoItem.descricao) {
                     contexto.ultimoItem.descricao = m[1];
@@ -192,6 +192,14 @@ function parseTexto(textoOriginal) {
 
                 container.adicionar(item);
 
+                return item;
+            }
+        }, {
+            item: 'preambulo',
+            regexp: /^\s*PR[EÉ]-?[AÂ]MBULO\s*$/i,
+            onMatch: function (contexto, m) {
+                var item = new Preambulo('');
+                contexto.artigos.push(item);
                 return item;
             }
         }, {
@@ -374,7 +382,7 @@ function interpretarArticulacao(texto, formatoDestino, formatoOrigem) {
             case 'html':
                 let div = document.createElement('div');
                 div.innerHTML = texto;
-                objetoArticulacao = parseTexto(removerEntidadeHtml(div.innerHTML.replace(/<P>(.+?)<\/P>/gi, '$1\n').trim()));
+                objetoArticulacao = parseTexto(removerEntidadeHtml(div.innerHTML.replace(/<P(?:\s+.*?)?>(.+?)<\/P>/gi, '$1\n').replace(/<.+?>/g, '').trim()));
                 break;
         
             default:
@@ -443,6 +451,7 @@ export default {
     Inciso: Inciso,
     Alinea: Alinea,
     Item: Item,
+    Preambulo, Preambulo,
     Titulo: Titulo,
     Capitulo: Capitulo,
     Secao: Secao,
@@ -450,4 +459,4 @@ export default {
     interpretar: interpretarArticulacao,
 };
 
-export { Artigo, Paragrafo, Inciso, Alinea, Item, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao };
+export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao };
