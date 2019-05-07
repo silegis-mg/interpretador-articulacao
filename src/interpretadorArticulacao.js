@@ -20,7 +20,7 @@ import Paragrafo from './dispositivos/Paragrafo';
 import Inciso from './dispositivos/Inciso';
 import Alinea from './dispositivos/Alinea';
 import Item from './dispositivos/Item';
-import {Preambulo, Titulo, Capitulo, Secao, Subsecao} from './dispositivos/agrupadores'
+import {Preambulo, Titulo, Capitulo, Secao, Subsecao} from './dispositivos/agrupadores';
 
 /**
  * Interpreta conteúdo de articulação.
@@ -444,19 +444,5 @@ function transformarEmLexMLFragmento(json) {
 
     return fragmento;
 }
-
-export default {
-    Artigo: Artigo,
-    Paragrafo: Paragrafo,
-    Inciso: Inciso,
-    Alinea: Alinea,
-    Item: Item,
-    Preambulo, Preambulo,
-    Titulo: Titulo,
-    Capitulo: Capitulo,
-    Secao: Secao,
-    Subsecao: Subsecao,
-    interpretar: interpretarArticulacao,
-};
 
 export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao };

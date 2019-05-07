@@ -48,19 +48,5 @@ export default class Artigo extends Dispositivo {
         return transformarQuebrasDeLinhaEmP(this.descricao);
     }
 
-    /**
-     * Transforma o dispositivo no formato do editor.
-     * 
-     * @deprecated Isto é usado no editor-articualcao, mas não cabe na biblioteca de interpretação.
-     */    
-    paraEditor() {
-        var fragmento = super.paraEditor();
-
-        if (this.paragrafos.length === 1) {
-            fragmento.querySelector('p[data-tipo="paragrafo"]').classList.add('unico');
-        }
-
-        return fragmento;
-    }
 }
 

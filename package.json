@@ -1,10 +1,10 @@
 {
   "name": "silegismg-interpretador-articulacao",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Interpretador de Articulação",
   "main": "src/interpretadorArticulacao.js",
   "scripts": {
-    "jshint": "node_modules/jshint/bin/jshint src",
+    "jshint": "jshint src",
     "test": "jest"
   },
   "keywords": [

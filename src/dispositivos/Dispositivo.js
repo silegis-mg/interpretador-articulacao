@@ -36,7 +36,7 @@ export default class Dispositivo {
     /**
      * Adiciona um dispositivo a este.
      * 
-     * @param {*} dispositivo 
+     * @param {Dispositivo} dispositivo 
      */
     adicionar(dispositivo) {
         throw 'Não implementado';
@@ -53,25 +53,6 @@ export default class Dispositivo {
 
         fragmento.appendChild(p);
         
-        return fragmento;
-    }
-
-    /**
-     * Transforma o dispositivo no formato do editor.
-     * 
-     * @deprecated Isto é usado no editor-articualcao, mas não cabe na biblioteca de interpretação.
-     */
-    paraEditor() {
-        let fragmento = this.transformarConteudoEmFragmento();
-
-        fragmento.firstElementChild.setAttribute('data-tipo', this.tipo);
-
-        for (let item = fragmento.children[1]; item; item = item.nextElementSibling) {
-            item.setAttribute('data-tipo', 'continuacao');
-        }
-
-        this.subitens.forEach(subItem => fragmento.appendChild(subItem.paraEditor()));
-
         return fragmento;
     }
 }
