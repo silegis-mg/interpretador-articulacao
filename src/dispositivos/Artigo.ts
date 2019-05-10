@@ -15,25 +15,21 @@
  * along with Editor-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Dispositivo from './Dispositivo';
+import Dispositivo, { TipoDispositivo } from './Dispositivo';
 import { transformarQuebrasDeLinhaEmP } from '../util';
-import { Inciso, Paragrafo } from '../interpretadorArticulacao';
+import Inciso from './Inciso';
+import Paragrafo from './Paragrafo';
 
-export default class Artigo extends Dispositivo {
-    constructor(numero, caput) {
-        super('artigo', numero, caput, ['incisos', 'paragrafos']);
-        this.incisos = [];
-        this.paragrafos = [];
+export default class Artigo extends Dispositivo<Inciso | Paragrafo> {
+    public incisos: Inciso[] = [];
+    public paragrafos: Paragrafo[] = [];
+
+    constructor(numero: string, caput: string) {
+        super(TipoDispositivo.ARTIGO, numero, caput, ['incisos', 'paragrafos']);
     }
 
-    adicionar(incisoOuParagrafo) {
-        var self = this;
-
-        Object.defineProperty(incisoOuParagrafo, '$parent', {
-            get: function () {
-                return self;
-            }
-        });
+    adicionar(incisoOuParagrafo: Inciso | Paragrafo) {
+        Object.defineProperty(incisoOuParagrafo, '$parent', { value: this });
 
         if (incisoOuParagrafo instanceof Inciso) {
             this.incisos.push(incisoOuParagrafo);

@@ -15,28 +15,23 @@
  * along with Editor-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Dispositivo from './Dispositivo';
-import { Alinea } from '../interpretadorArticulacao';
+import Dispositivo, { TipoDispositivo } from './Dispositivo';
+import Item from './Item';
 
-export default class Inciso extends Dispositivo {
-    constructor(numero, descricao) {
-        super('inciso', numero, descricao, ['alineas']);
-        this.alineas = [];
+export default class Alinea extends Dispositivo<Item> {
+    public itens: Item[] = [];
+
+    constructor(numero: string, descricao: string) {
+        super(TipoDispositivo.ALINEA, numero, descricao, ['itens']);
     }
 
-    adicionar(alinea) {
-        var self = this;
-
-        if (!(alinea instanceof Alinea)) {
+    adicionar(item: Item) {
+        if (!(item instanceof Item)) {
             throw 'Tipo não suportado.';
         }
 
-        Object.defineProperty(alinea, '$parent', {
-            get: function () {
-                return self;
-            }
-        });
+        Object.defineProperty(item, '$parent', { value: this });
 
-        this.alineas.push(alinea);
+        this.itens.push(item);
     }
 }

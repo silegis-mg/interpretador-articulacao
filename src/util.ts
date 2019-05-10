@@ -4,7 +4,7 @@
  * @param {String} texto 
  * @returns {String}
  */
-export function transformarQuebrasDeLinhaEmP(texto) {
+export function transformarQuebrasDeLinhaEmP(texto: string): DocumentFragment {
     var fragmento = document.createDocumentFragment();
 
     if (texto.indexOf('\n') === -1) {
@@ -20,6 +20,6 @@ export function transformarQuebrasDeLinhaEmP(texto) {
             fragmento.appendChild(p);
         });
     }
-    
+
     return fragmento;
 }

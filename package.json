@@ -2,7 +2,8 @@
   "name": "silegismg-interpretador-articulacao",
   "version": "2.0.0",
   "description": "Interpretador de Articulação",
-  "main": "src/interpretadorArticulacao.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
     "jshint": "jshint src",
     "test": "jest"
@@ -28,11 +29,12 @@
   },
   "dependencies": {},
   "devDependencies": {
-    "babel-jest": "^24.7.1",
-    "babel-plugin-transform-es2015-modules-commonjs": "^6.26.2",
+    "@types/jest": "^24.0.12",
     "jest": "^24.7.1",
     "jest-haste-map": "^24.7.1",
     "jshint": "^2.10.2",
-    "pretty-format": "^24.7.0"
+    "pretty-format": "^24.7.0",
+    "ts-jest": "^24.0.2",
+    "typescript": "^3.4.5"
   }
 }

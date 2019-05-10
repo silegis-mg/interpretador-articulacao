@@ -14,12 +14,27 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Editor-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
+export enum TipoDispositivo {
+    ARTIGO = 'artigo',
+    PARAGRAFO = 'paragrafo',
+    INCISO = 'inciso',
+    ALINEA = 'alinea',
+    ITEM = 'item'
+}
 
-export default class Dispositivo {
-    constructor(tipo, numero, descricao, derivacoes) {
-        this.numero = numero;
-        this.descricao = descricao;
+export enum TipoAgrupador {
+    PREAMBULO = 'preambulo',
+    TITULO = 'titulo',
+    CAPITULO = 'capitulo',
+    SUBCAPITULO = 'subcapitulo',
+    SECAO = 'secao',
+    SUBSECAO = 'subsecao'
+}
 
+export type TipoDispositivoOuAgrupador = TipoDispositivo | TipoAgrupador;
+
+export default abstract class Dispositivo<TiposDerivaveis> {
+    constructor(tipo: TipoDispositivoOuAgrupador, public numero: string | null, public descricao: string, derivacoes?: string[]) {
         Object.defineProperty(this, 'tipo', {
             value: tipo
         });
@@ -33,19 +48,19 @@ export default class Dispositivo {
         }
     }
 
+    public $parent? : Dispositivo<any>;
+
     /**
      * Adiciona um dispositivo a este.
      * 
-     * @param {Dispositivo} dispositivo 
+     * @param {TiposDerivaveis} dispositivo 
      */
-    adicionar(dispositivo) {
-        throw 'Não implementado';
-    }
+    abstract adicionar(dispositivo: TiposDerivaveis): void;
 
     /**
      * Transforma o conteúdo na descrição em fragmento do DOM.
      */
-    transformarConteudoEmFragmento() {
+    transformarConteudoEmFragmento(): DocumentFragment {
         var fragmento = document.createDocumentFragment();
 
         let p = document.createElement('p');

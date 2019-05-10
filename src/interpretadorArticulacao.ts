@@ -20,54 +20,89 @@ import Paragrafo from './dispositivos/Paragrafo';
 import Inciso from './dispositivos/Inciso';
 import Alinea from './dispositivos/Alinea';
 import Item from './dispositivos/Item';
-import {Preambulo, Titulo, Capitulo, Secao, Subsecao} from './dispositivos/agrupadores';
+import { Preambulo, Titulo, Capitulo, Secao, Subsecao, Divisao } from './dispositivos/agrupadores';
+import Dispositivo from './dispositivos/Dispositivo';
+
+export enum FormatoDestino {
+    OBJETO = 'objeto',
+    LEXML = 'lexml',
+    LEXML_STRING = 'lexml-string'
+}
+
+export enum FormatoOrigem {
+    TEXTO = 'texto',
+    HTML = 'html'
+}
+
+/**
+ * Resultado da interpretação de articulação.
+ */
+export interface ArticulacaoInterpretada {
+    /**
+     * Texto que antecede primeiro dispositivo interpretado.
+     * Se a interpretação compreendeu todo o texto,
+     * este atributo deve vir vazio.
+     */
+    textoAnterior: string;
+
+    /**
+     * Articulação interpretada.
+     */
+    articulacao: QualquerDispositivo[];
+}
+
+export type QualquerDispositivo = Artigo | Paragrafo | Inciso | Alinea | Item | Preambulo | Titulo | Capitulo | Secao | Subsecao;
+
+class Contexto {
+    public ultimoItem: Dispositivo<any> | null = null;
+    public textoAnterior: string = '';
+    public articulacao: Dispositivo<any>[] = [];
+
+    getUltimoItemTipo(tipo: any): Dispositivo<any> | null {
+        var item = this.ultimoItem;
+
+
+        if (item === null) {
+            return null;
+        }
+
+        if (typeof tipo === 'function') {
+            while (item && !(item instanceof tipo)) {
+                item = (item as Dispositivo<any>).$parent as Dispositivo<any>;
+            }
+        } else if (tipo instanceof Array) {
+            do {
+                var j;
+
+                for (j = 0; j < tipo.length; j++) {
+                    if (item instanceof tipo[j]) {
+                        return item;
+                    }
+                }
+
+                item = (item as Dispositivo<any>).$parent as Dispositivo<any>;
+            } while (item);
+        } else {
+            throw 'Argumento inválido';
+        }
+
+        return item;
+    }
+}
 
 /**
  * Interpreta conteúdo de articulação.
  * 
  * @param {String} textoOriginal Texto a ser interpretado
  */
-function parseTexto(textoOriginal) {
-    var contexto = {
-        ultimoItem: null,
-        textoAnterior: '',
-        artigos: [],
-        getUltimoItemTipo: function (tipo) {
-            var item = this.ultimoItem;
-
-            if (item === null) {
-                return null;
-            }
-
-            if (typeof tipo === 'function') {
-                while (item && !(item instanceof tipo)) {
-                    item = item.$parent;
-                }
-            } else if (tipo instanceof Array) {
-                do {
-                    var j;
-
-                    for (j = 0; j < tipo.length; j++) {
-                        if (item instanceof tipo[j]) {
-                            return item;
-                        }
-                    }
-
-                    item = item.$parent;
-                } while (item);
-            } else {
-                throw 'Argumento inválido';
-            }
-
-            return item;
-        }
-    };
+function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
+    var contexto = new Contexto();
     var regexpAspas = /(“[\s\S]*?”|"[\s\S]*?")/g;
     var regexpLinhas = [
         {
             item: 'parentesis',
             regexp: /^\(.+\)$/,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 if (contexto.ultimoItem) {
                     if (!contexto.ultimoItem.descricao) {
                         contexto.ultimoItem.descricao = m[0];
@@ -75,18 +110,18 @@ function parseTexto(textoOriginal) {
                         contexto.ultimoItem.descricao += m[0];
                     }
                 }
-                
+
                 return contexto.ultimoItem;
             }
         }, {
             item: 'continuacao-divisao',
             regexp: /^\s*(.*)?\s*$/,
             requisito: [Preambulo, Titulo, Capitulo, Secao, Subsecao],
-            onMatch: function (contexto, m) {
-                if (!contexto.ultimoItem.descricao) {
-                    contexto.ultimoItem.descricao = m[1];
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
+                if (!contexto.ultimoItem!.descricao) {
+                    contexto.ultimoItem!.descricao = m[1];
                 } else {
-                    contexto.ultimoItem.descricao += m[1];
+                    contexto.ultimoItem!.descricao += m[1];
                 }
 
                 return contexto.ultimoItem;
@@ -95,23 +130,23 @@ function parseTexto(textoOriginal) {
         }, {
             item: 'artigo',
             regexp: /^\s*(?:Art\.?|Artigo)\s*(\d+(?:-[a-z])?)\s*.\s*[-–]?\s*(.+)/i,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Artigo(m[1], m[2]);
 
-                contexto.artigos.push(item);
+                contexto.articulacao.push(item);
 
                 return item;
             }
         }, {
             item: 'paragrafo',
             regexp: /^\s*(?:Parágrafo único|§\s*(\d+))\s*.?\s*[-–]?\s*(.+)/i,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Paragrafo(m[1] || 'Parágrafo único', m[2]);
                 var container = contexto.getUltimoItemTipo(Artigo);
 
                 if (!container) {
                     container = new Artigo('', contexto.textoAnterior);
-                    contexto.artigos.push(container);
+                    contexto.articulacao.push(container);
                     contexto.textoAnterior = '';
                 }
 
@@ -122,13 +157,13 @@ function parseTexto(textoOriginal) {
         }, {
             item: 'inciso',
             regexp: /^\s*([IXVDLM]+)\s*[-–). ]\s*(.+)/i,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Inciso(m[1], m[2]);
                 var container = contexto.getUltimoItemTipo([Artigo, Paragrafo]);
 
                 if (!container) {
                     container = new Artigo('', contexto.textoAnterior);
-                    contexto.artigos.push(container);
+                    contexto.articulacao.push(container);
                     contexto.textoAnterior = '';
                 }
 
@@ -140,16 +175,16 @@ function parseTexto(textoOriginal) {
             item: 'alinea',
             //requisito: [Inciso, Alinea, Item],
             regexp: /^\s*([a-z])\s*[-–).]\s*(.*)/i,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Alinea(m[1], m[2]);
                 var container = contexto.getUltimoItemTipo(Inciso);
 
                 if (!container) {
                     let artigo = contexto.getUltimoItemTipo([Artigo, Paragrafo]);
-                    
+
                     if (!artigo) {
                         artigo = new Artigo('', '');
-                        contexto.artigos.push(artigo);
+                        contexto.articulacao.push(artigo);
                     }
 
                     container = new Inciso('', contexto.textoAnterior);
@@ -165,7 +200,7 @@ function parseTexto(textoOriginal) {
             item: 'item',
             //requisito: [Alinea, Item],
             regexp: /^\s*(\d)\s*[-–).]\s*(.*)/,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Item(m[1], m[2]);
                 var container = contexto.getUltimoItemTipo(Alinea);
 
@@ -179,7 +214,7 @@ function parseTexto(textoOriginal) {
 
                         if (!artigo) {
                             artigo = new Artigo('', '');
-                            contexto.artigos.push(artigo);
+                            contexto.articulacao.push(artigo);
                         }
 
                         inciso = new Inciso('', '');
@@ -197,60 +232,60 @@ function parseTexto(textoOriginal) {
         }, {
             item: 'preambulo',
             regexp: /^\s*PR[EÉ]-?[AÂ]MBULO\s*$/i,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Preambulo('');
-                contexto.artigos.push(item);
+                contexto.articulacao.push(item);
                 return item;
             }
         }, {
             item: 'titulo',
             regexp: /^\s*T[ÍI]TULO\s*([IXVDLM]+)(?:\s*[-–]\s*(.+))?/i,
-            onMatch: function (contexto, m) {
-                var item = new Titulo(m[1], m[2] ||'');
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
+                var item = new Titulo(m[1], m[2] || '');
 
-                contexto.artigos.push(item);
-                
+                contexto.articulacao.push(item);
+
                 return item;
             }
         }, {
             item: 'capitulo',
             regexp: /^\s*CAP[ÍI]TULO\s*([IXVDLM]+)(?:\s*[-–]\s*(.+))?/i,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Capitulo(m[1], m[2] || '');
 
-                contexto.artigos.push(item);
-                
+                contexto.articulacao.push(item);
+
                 return item;
             }
         }, {
             item: 'secao',
             regexp: /^\s*SE[ÇC][ÃA]O\s*([IXVDLM]+)(?:\s*[-–]\s*(.+))?/i,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Secao(m[1], m[2] || '');
 
-                contexto.artigos.push(item);
-                
+                contexto.articulacao.push(item);
+
                 return item;
             }
         }, {
             item: 'subsecao',
             regexp: /^\s*SUBSE[ÇC][ÃA]O\s*([IXVDLM]+)(?:\s*[-–]\s*(.+))?/i,
-            onMatch: function (contexto, m) {
+            onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Subsecao(m[1], m[2] || '');
 
-                contexto.artigos.push(item);
-                
+                contexto.articulacao.push(item);
+
                 return item;
             }
         },
-        
+
     ];
 
     /* Para cada citação, isto é, texto entre aspas, substitui-se o seu conteúdo
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar
      * que o conteúdo seja também interpretado.
      */
-    var aspas = [];
+    var aspas: string[] = [];
     var texto = textoOriginal.replace(regexpAspas, function (aspa) {
         aspas.push(aspa.replace(/[“”]/g, '"'));
         return '\0';
@@ -285,7 +320,7 @@ function parseTexto(textoOriginal) {
                     contexto.ultimoItem = regexp.onMatch(contexto, m);
 
                     if (contexto.ultimoItem) {
-                        contexto.ultimoItem.descricao = contexto.ultimoItem.descricao.replace(/\0/g, aspas.shift.bind(aspas));
+                        contexto.ultimoItem.descricao = contexto.ultimoItem.descricao.replace(/\0/g, () => aspas.shift()!);
 
                         if (regexp.reiniciar) {
                             contexto.ultimoItem = null;
@@ -297,14 +332,12 @@ function parseTexto(textoOriginal) {
             }
         }
 
-        linha = linha.replace(/\0/g, function () {
-            return aspas.shift();
-        });
+        linha = linha.replace(/\0/g, () => aspas.shift()!);
 
         if (contexto.ultimoItem) {
             contexto.ultimoItem.descricao += '\n' + linha;
-        } else if (contexto.artigos.length > 0 && contexto.artigos[contexto.artigos.length - 1] instanceof Divisao) {
-            contexto.artigos[contexto.artigos.length - 1].descricao += '\n' + linha;
+        } else if (contexto.articulacao.length > 0 && contexto.articulacao[contexto.articulacao.length - 1] instanceof Divisao) {
+            contexto.articulacao[contexto.articulacao.length - 1].descricao += '\n' + linha;
         } else if (contexto.textoAnterior.length === 0) {
             contexto.textoAnterior = linha;
         } else {
@@ -314,52 +347,8 @@ function parseTexto(textoOriginal) {
 
     return {
         textoAnterior: contexto.textoAnterior,
-        articulacao: contexto.artigos
+        articulacao: contexto.articulacao
     };
-}
-
-function transformarEmLexML(objetoArticulacao) {
-    function reducaoInciso(prev, inciso, idx, array) {
-
-        var idInciso = array.prefixo + "_inc" + (idx + 1);
-
-        return prev + '<Inciso id="' + idInciso + '"><Rotulo>' + inciso.numero + '</Rotulo><p>' + inciso.descricao + '</p>' +
-            (inciso.alineas || []).reduce(function (prev, alinea, idx) {
-                return prev + '<Alinea id="' + idInciso + '_ali' + (idx + 1) + '"><Rotulo>' + alinea.numero + '</Rotulo><p>' + alinea.descricao + '</p></Alinea>';
-            }, '') + '</Inciso>';
-    }
-
-    var lexml = '<Articulacao xmlns="http://www.lexml.gov.br/1.0">' +
-        objetoArticulacao.articulacao.reduce(function (prev, artigo, idx) {
-            var idArt = 'art' + (idx + 1);
-            var texto = prev + '<Artigo id="' + idArt + '"><Rotulo>Art. ' + (idx + 1) + (idx < 9 ? 'º' : '') + ' –</Rotulo><Caput id="' + idArt + '_cpt"><p>' + artigo.descricao + '</p>';
-
-            if (artigo.incisos && artigo.incisos.length > 0) {
-                artigo.incisos.prefixo = idArt + '_cpt';
-                texto += artigo.incisos.reduce(reducaoInciso, '');
-            }
-
-            texto += '</Caput>';
-
-            if (artigo.paragrafos && artigo.paragrafos.length > 0) {
-                texto += artigo.paragrafos.reduce(function (prev, paragrafo, idx, paragrafos) {
-                    var idPar = idArt + '_par' + (idx + 1);
-                    if (paragrafo.incisos) {
-                        paragrafo.incisos.prefixo = idPar;
-                    }
-
-                    return prev + '<Paragrafo id="' + idPar + '"><Rotulo>' +
-                        (paragrafos.length === 1 ? 'Parágrafo único' : '§' + ((idx + 1) + (idx < 9 ? 'º' : ''))) +
-                        ' –</Rotulo><p>' + paragrafo.descricao + '</p>' +
-                        (paragrafo.incisos || []).reduce(reducaoInciso, '') +
-                        '</Paragrafo>';
-                }, '');
-            }
-
-            return texto + '</Artigo>';
-        }, '') + '</Articulacao>';
-
-    return lexml;
 }
 
 /**
@@ -370,55 +359,26 @@ function transformarEmLexML(objetoArticulacao) {
  * @param {String} formatoOrigem Formatao a ser processado: 'texto' (padrão), 'html'.
  * @returns {Object|DocumentFragment}
  */
-function interpretarArticulacao(texto, formatoDestino, formatoOrigem) {
-    var objetoArticulacao;
+function interpretarArticulacao(texto: string, formatoOrigem: FormatoOrigem = FormatoOrigem.TEXTO): ArticulacaoInterpretada {
+    switch ((formatoOrigem || 'texto').toLowerCase()) {
+        case 'texto':
+            return parseTexto(texto);
 
-    try {
-        switch ((formatoOrigem || 'texto').toLowerCase()) {
-            case 'texto':
-                objetoArticulacao = parseTexto(texto);
-                break;
+        case 'html':
+            let div = document.createElement('div');
+            div.innerHTML = texto;
+            return parseTexto(removerEntidadeHtml(div.innerHTML.replace(/<P(?:\s+.*?)?>(.+?)<\/P>/gi, '$1\n').replace(/<.+?>/g, '').trim()));
 
-            case 'html':
-                let div = document.createElement('div');
-                div.innerHTML = texto;
-                objetoArticulacao = parseTexto(removerEntidadeHtml(div.innerHTML.replace(/<P(?:\s+.*?)?>(.+?)<\/P>/gi, '$1\n').replace(/<.+?>/g, '').trim()));
-                break;
-        
-            default:
-                throw 'Formato não suportado.';
-        }
-
-        switch ((formatoDestino || 'lexml').toLowerCase()) {
-            case 'objeto':
-            case 'json':    // Apenas por compatibilidade. A terminologia JSON é inadequada.
-                return objetoArticulacao;
-
-            case 'lexml':
-                return transformarEmLexMLFragmento(objetoArticulacao);
-
-            case 'lexmlstring':
-            case 'lexml-string':
-                return transformarEmLexML(objetoArticulacao);
-
-            default:
-                throw 'Formato não suportado: ' + formatoDestino;
-        }
-    } catch (e) {
-        throw {
-            mensagem: 'Erro interpretando articulação.',
-            item: texto,
-            formato: formatoDestino,
-            erroOriginal: e
-        };
+        default:
+            throw 'Formato não suportado.';
     }
 }
 
-function removerEntidadeHtml(html) {
+function removerEntidadeHtml(html: string) {
     var safeXmlEntities = ["&lt;", "&gt;", "&quot;", "&amp;", "&apos;"];
 
-    return html.replace(/&.+?;/g, function(entidade) {
-        if(safeXmlEntities.indexOf(entidade)>=0) {
+    return html.replace(/&.+?;/g, (entidade: string) => {
+        if (safeXmlEntities.indexOf(entidade) >= 0) {
             return entidade;
         } else {
             /* A entidade não é uma das predefinidas no xml e é suportada só no HTML. Por exemplo: &nbsp; ou &copy;.
@@ -426,23 +386,9 @@ function removerEntidadeHtml(html) {
              */
             var span = document.createElement('span');
             span.innerHTML = entidade;
-            return span.textContent;
+            return span.textContent!;
         }
     });
 }
 
-function transformarEmLexMLFragmento(json) {
-    let lexml = transformarEmLexML(json);
-    let container = document.createElement('div');
-    container.innerHTML = lexml;
-
-    let fragmento = document.createDocumentFragment();
-
-    while (container.firstChild) {
-        fragmento.appendChild(container.firstChild);
-    }
-
-    return fragmento;
-}
-
-export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao };
+export default interpretarArticulacao;
