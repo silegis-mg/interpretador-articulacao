@@ -34,11 +34,7 @@ export enum TipoAgrupador {
 export type TipoDispositivoOuAgrupador = TipoDispositivo | TipoAgrupador;
 
 export default abstract class Dispositivo<TiposDerivaveis> {
-    constructor(tipo: TipoDispositivoOuAgrupador, public numero: string | null, public descricao: string, derivacoes?: string[]) {
-        Object.defineProperty(this, 'tipo', {
-            value: tipo
-        });
-
+    constructor(public readonly tipo: TipoDispositivoOuAgrupador, public numero: string | null, public descricao: string, derivacoes?: string[]) {
         if (derivacoes) {
             Object.defineProperty(this, 'subitens', {
                 get: function() {
