@@ -5,5 +5,6 @@ import Alinea from './dispositivos/Alinea';
 import Item from './dispositivos/Item';
 import { Preambulo, Titulo, Capitulo, Secao, Subsecao } from './dispositivos/agrupadores';
 import interpretarArticulacao from './interpretadorArticulacao';
+import { FormatoOrigem } from './interpretadorArticulacao';
 
-export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao };
+export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao, FormatoOrigem };
