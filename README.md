@@ -25,16 +25,17 @@ Para interpretar um texto puro, transformando em um objeto estruturado, utilize 
 
 ```javascript
 // nodejs
-const interpretarArticulacao = require('silegismg-interpretador-articulacao');
+const interpretador = require('silegismg-interpretador-articulacao');
+const formatoOrigem = 'html';
 
-let resultado = interpretarArticulacao(texto, formatoOrigem);
+let resultado = interpretador.interpretarArticulacao(texto, formatoOrigem);
 ```
 
 ```typescript
 // typescript
-import interpretarArticulacao from 'silegismg-interpretador-articulacao';
+import { interpretarArticulacao, FormatoOrigem } from 'silegismg-interpretador-articulacao';
 
-let resultado = interpretarArticulacao(texto, formatoOrigem);
+let resultado = interpretarArticulacao(texto, FormatoOrigem.HTML);
 ```
 
 onde ``texto`` é uma `string` e ``formatoOrigem`` é "texto" (padrão) ou "html".
