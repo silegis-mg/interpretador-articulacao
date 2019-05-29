@@ -1,4 +1,6 @@
-[![npm version](https://badge.fury.io/js/silegismg-interpretador-articulacao.svg)](https://badge.fury.io/js/silegismg-interpretador-articulacao) [![Build Status](https://travis-ci.org/silegis-mg/interpretador-articulacao.svg?branch=master)](https://travis-ci.org/silegis-mg/interpretador-articulacao)
+[![npm version](https://badge.fury.io/js/silegismg-interpretador-articulacao.svg)](https://badge.fury.io/js/silegismg-interpretador-articulacao)
+[![Build Status](https://travis-ci.org/silegis-mg/interpretador-articulacao.svg?branch=master)](https://travis-ci.org/silegis-mg/interpretador-articulacao)
+[![Maintainability](https://api.codeclimate.com/v1/badges/57b06a9447c32924de3f/maintainability)](https://codeclimate.com/github/silegis-mg/interpretador-articulacao/maintainability)
 
 # Interpretador de Articulação
 
