@@ -16,7 +16,7 @@
  */
 
 import * as parser from './index';
-import { FormatoOrigem } from './interpretadorArticulacao';
+import { FormatoOrigem } from './interpretarArticulacao';
 
 describe('Parser de articulação', function () {
     function novo(tipo: any, obj: any): any {
@@ -432,4 +432,37 @@ describe('Parser de articulação', function () {
             ]
         });
     });
+    
+    it('Não deve confundir alínea com inciso', function() { 
+        const texto = 'Art. 1º - Teste:\nI - teste:\na) teste;\nb) teste;\nc) teste;\n d) teste.';
+
+        var objeto = parser.interpretarArticulacao(texto);
+
+        expect(objeto).toEqual({
+            textoAnterior: '',
+            articulacao: novo(parser.Artigo, [
+                {
+                    numero: '1',
+                    descricao: 'Teste:',
+                    incisos: [{
+                        numero: 'I',
+                        descricao: 'teste:',
+                        alineas: [{
+                            numero: 'a',
+                            descricao: 'teste;'
+                        }, {
+                            numero: 'b',
+                            descricao: 'teste;'
+                        }, {
+                            numero: 'c',
+                            descricao: 'teste;'
+                        }, {
+                            numero: 'd',
+                            descricao: 'teste.'
+                        }]
+                    }]
+                }
+            ])
+        });
+    })
 });

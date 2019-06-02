@@ -21,7 +21,7 @@ npm install --save-prod silegismg-interpretador-articulacao
 
 ## API do interpretador
 
-Para interpretar um texto puro, transformando em um objeto estruturado, utilize a função interpretar (veja [código-fonte](src/interpretadorArticulacao.ts)), com a seguinte sintaxe:
+Para interpretar um texto puro, transformando em um objeto estruturado, utilize a função interpretar (veja [código-fonte](src/interpretarArticulacao.ts)), com a seguinte sintaxe:
 
 ```javascript
 // nodejs

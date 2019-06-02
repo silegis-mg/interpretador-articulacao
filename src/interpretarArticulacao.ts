@@ -22,6 +22,7 @@ import Alinea from './dispositivos/Alinea';
 import Item from './dispositivos/Item';
 import { Preambulo, Titulo, Capitulo, Secao, Subsecao, Divisao } from './dispositivos/agrupadores';
 import Dispositivo from './dispositivos/Dispositivo';
+import { transformarNumeroRomanoEmArabico } from './util/transformarNumeros';
 
 export enum FormatoDestino {
     OBJETO = 'objeto',
@@ -88,6 +89,18 @@ class Contexto {
 
         return item;
     }
+
+    adicionar(tipoUltimoItem: any, dispositivo: Dispositivo<any>) {
+        const ultimoItem = this.getUltimoItemTipo(tipoUltimoItem);
+
+        if (ultimoItem) {
+            ultimoItem.adicionar(dispositivo);
+        } else {
+            this.articulacao.push(dispositivo);
+        }
+
+        this.ultimoItem = dispositivo;        
+    }
 }
 
 /**
@@ -132,9 +145,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             regexp: /^\s*(?:Art\.?|Artigo)\s*(\d+(?:-[a-z])?)\s*.\s*[-–]?\s*(.+)/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Artigo(m[1], m[2]);
-
-                contexto.articulacao.push(item);
-
+                contexto.adicionar([Preambulo, Titulo, Capitulo, Secao, Subsecao], item);
                 return item;
             }
         }, {
@@ -158,7 +169,25 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             item: 'inciso',
             regexp: /^\s*([IXVDLM]+)\s*[-–). ]\s*(.+)/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
-                var item = new Inciso(m[1], m[2]);
+                const numero = m[1];
+
+                if (numero.length === 1 && contexto.ultimoItem && contexto.ultimoItem instanceof Alinea) {
+                    // Pode ser que, na verdade, trata-se de uma alínea sendo confundida com um inciso.
+                    const ultimoInciso = contexto.getUltimoItemTipo(Inciso);
+
+                    if (!ultimoInciso || (contexto.ultimoItem.numero && numero.charCodeAt(0) === contexto.ultimoItem.numero.charCodeAt(0) + 1
+                        && transformarNumeroRomanoEmArabico(ultimoInciso.numero!) !== transformarNumeroRomanoEmArabico(numero) + 1)) {
+                        // Trata-se da sequência da alínea!
+                        return null;
+                    }
+
+                    if (/[A-Z]+/.test(ultimoInciso.numero!) && /[a-z]+/.test(numero)) {
+                        // Não está na sequência, mas a caixa indica que se trata de alínea.
+                        return null;
+                    }
+                }
+                    
+                const item = new Inciso(m[1], m[2]);
                 var container = contexto.getUltimoItemTipo([Artigo, Paragrafo]);
 
                 if (!container) {
@@ -243,7 +272,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Titulo(m[1], m[2] || '');
 
-                contexto.articulacao.push(item);
+                contexto.adicionar([Preambulo], item);
 
                 return item;
             }
@@ -253,7 +282,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Capitulo(m[1], m[2] || '');
 
-                contexto.articulacao.push(item);
+                contexto.adicionar([Titulo, Preambulo], item);
 
                 return item;
             }
@@ -263,7 +292,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Secao(m[1], m[2] || '');
 
-                contexto.articulacao.push(item);
+                contexto.adicionar([Capitulo, Titulo, Preambulo], item);
 
                 return item;
             }
@@ -273,7 +302,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Subsecao(m[1], m[2] || '');
 
-                contexto.articulacao.push(item);
+                contexto.adicionar([Secao, Capitulo, Titulo, Preambulo], item);
 
                 return item;
             }
@@ -317,17 +346,15 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
                 m = regexp.regexp.exec(linha);
 
                 if (m) {
-                    contexto.ultimoItem = regexp.onMatch(contexto, m);
+                    const resultado = regexp.onMatch(contexto, m);
 
-                    if (contexto.ultimoItem) {
-                        contexto.ultimoItem.descricao = contexto.ultimoItem.descricao.replace(/\0/g, () => aspas.shift()!);
+                    if (resultado) {
+                        resultado.descricao = resultado.descricao.replace(/\0/g, () => aspas.shift()!);
 
-                        if (regexp.reiniciar) {
-                            contexto.ultimoItem = null;
-                        }
+                        contexto.ultimoItem = regexp.reiniciar ? null : resultado;
+
+                        return;
                     }
-
-                    return;
                 }
             }
         }
@@ -375,7 +402,7 @@ function interpretarArticulacao(texto: string, formatoOrigem: FormatoOrigem = Fo
 }
 
 function removerEntidadeHtml(html: string) {
-    var safeXmlEntities = ["&lt;", "&gt;", "&quot;", "&amp;", "&apos;"];
+    const safeXmlEntities = ["&lt;", "&gt;", "&quot;", "&amp;", "&apos;"];
 
     return html.replace(/&.+?;/g, (entidade: string) => {
         if (safeXmlEntities.indexOf(entidade) >= 0) {
@@ -384,7 +411,7 @@ function removerEntidadeHtml(html: string) {
             /* A entidade não é uma das predefinidas no xml e é suportada só no HTML. Por exemplo: &nbsp; ou &copy;.
              * Nesse caso, converte para texto e no replace abaixo substitui pela notação unicode.
              */
-            var span = document.createElement('span');
+            const span = document.createElement('span');
             span.innerHTML = entidade;
             return span.textContent!;
         }
