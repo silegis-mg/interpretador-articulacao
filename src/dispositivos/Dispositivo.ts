@@ -33,25 +33,32 @@ export enum TipoAgrupador {
 
 export type TipoDispositivoOuAgrupador = TipoDispositivo | TipoAgrupador;
 
-export default abstract class Dispositivo<TiposDerivaveis> {
-    constructor(public readonly tipo: TipoDispositivoOuAgrupador, public numero: string | null, public descricao: string, derivacoes?: string[]) {
-        if (derivacoes) {
-            Object.defineProperty(this, 'subitens', {
-                get: function() {
-                    return derivacoes.reduce((prev, item) => prev.concat(this[item]), []);
-                }
-            });
-        }
+export default abstract class Dispositivo<TiposDerivaveis extends Dispositivo<any>> {
+    constructor(public readonly tipo: TipoDispositivoOuAgrupador, public numero: string | null, public descricao: string, private derivacoes?: string[]) {
     }
 
     public $parent? : Dispositivo<any>;
+
+    public get subitens(): Dispositivo<TiposDerivaveis>[] {
+        return this.derivacoes ? this.derivacoes.reduce((prev, item) => item in this ? prev.concat((this as any)[item]) : prev, []) : [];
+    }
 
     /**
      * Adiciona um dispositivo a este.
      * 
      * @param {TiposDerivaveis} dispositivo 
      */
-    abstract adicionar(dispositivo: TiposDerivaveis): void;
+    adicionar(dispositivo: TiposDerivaveis): void {
+        const tipo = dispositivo.tipo;
+        const atributo = tipo + 's';
+
+        if (!(atributo in this)) {
+            throw new Error(`Derivação "${tipo}" não suportada em "${this.tipo}".`);
+        }
+
+        (this as any)[atributo].push(dispositivo);
+        Object.defineProperty(dispositivo, '$parent', { value: this });
+    }
 
     /**
      * Transforma o conteúdo na descrição em fragmento do DOM.

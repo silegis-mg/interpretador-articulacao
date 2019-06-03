@@ -17,6 +17,7 @@
 
 import * as parser from './index';
 import { FormatoOrigem } from './interpretarArticulacao';
+import { tsImportEqualsDeclaration } from '@babel/types';
 
 describe('Parser de articulação', function () {
     function novo(tipo: any, obj: any): any {
@@ -25,6 +26,11 @@ describe('Parser de articulação', function () {
         } else {
             var novoObj = new tipo(obj.numero, obj.descricao);
 
+            (obj.titulos || []).forEach((i: any) => novoObj.adicionar(novo(parser.Titulo, i)));
+            (obj.capitulos || []).forEach((i: any) => novoObj.adicionar(novo(parser.Capitulo, i)));
+            (obj.secoes || []).forEach((i: any) => novoObj.adicionar(novo(parser.Secao, i)));
+            (obj.subsecoes || []).forEach((i: any) => novoObj.adicionar(novo(parser.Subsecao, i)));
+            (obj.artigos || []).forEach((i: any) => novoObj.adicionar(novo(parser.Artigo, i)));
             (obj.incisos || []).forEach((i: any) => novoObj.adicionar(novo(parser.Inciso, i)));
             (obj.paragrafos || []).forEach((i: any) => novoObj.adicionar(novo(parser.Paragrafo, i)));
             (obj.alineas || []).forEach((i: any) => novoObj.adicionar(novo(parser.Alinea, i)));
@@ -180,31 +186,41 @@ describe('Parser de articulação', function () {
             articulacao: [
                 novo(parser.Titulo, {
                     numero: 'I',
-                    descricao: 'DISPOSIÇÕES PRELIMINARES'
-                }),
-                novo(parser.Artigo, {
-                    numero: '1',
-                    descricao: 'O Estado de Minas Gerais integra, com autonomia político-administrativa, a República Federativa do Brasil.'
+                    descricao: 'DISPOSIÇÕES PRELIMINARES',
+                    artigos: [
+                        novo(parser.Artigo, {
+                            numero: '1',
+                            descricao: 'O Estado de Minas Gerais integra, com autonomia político-administrativa, a República Federativa do Brasil.'
+                        })
+                    ]
                 }),
                 novo(parser.Titulo, {
                     numero: 'II',
-                    descricao: 'DO ESTADO'
-                }),
-                novo(parser.Capitulo, {
-                    numero: 'I',
-                    descricao: 'DA ORGANIZAÇÃO DO ESTADO'
-                }),
-                novo(parser.Secao, {
-                    numero: 'I',
-                    descricao: 'Disposições Gerais'
-                }),
-                novo(parser.Subsecao, {
-                    numero: 'I',
-                    descricao: 'Teste'
-                }),
-                novo(parser.Artigo, {
-                    numero: '2',
-                    descricao: 'São Poderes do Estado, independentes e harmônicos entre si, o Legislativo, o Executivo e o Judiciário.'
+                    descricao: 'DO ESTADO',
+                    capitulos: [
+                        novo(parser.Capitulo, {
+                            numero: 'I',
+                            descricao: 'DA ORGANIZAÇÃO DO ESTADO',
+                            secoes: [
+                                novo(parser.Secao, {
+                                    numero: 'I',
+                                    descricao: 'Disposições Gerais',
+                                    subsecoes: [
+                                        novo(parser.Subsecao, {
+                                            numero: 'I',
+                                            descricao: 'Teste',
+                                            artigos: [
+                                                novo(parser.Artigo, {
+                                                    numero: '2',
+                                                    descricao: 'São Poderes do Estado, independentes e harmônicos entre si, o Legislativo, o Executivo e o Judiciário.'
+                                                })
+                                            ]
+                                        }),
+                                    ]
+                                })
+                            ]
+                        })
+                    ]
                 })
             ]
         });
@@ -423,17 +439,20 @@ describe('Parser de articulação', function () {
             '<div id="art"><p><a name="art1"></a><a name="1"></a>Art. 1º A República Federativa do Brasil, formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos:</p></div>';
         var objeto = parser.interpretarArticulacao(html, FormatoOrigem.HTML);
 
+        const preAmbulo = new parser.Preambulo('Nós, representantes do povo brasileiro, reunidos em Assembléia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias, promulgamos, sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL.');
+        const titulo = new parser.Titulo('I', 'Dos Princípios Fundamentais');
+        const artigo = new parser.Artigo('1', 'A República Federativa do Brasil, formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos:');
+
+        preAmbulo.adicionar(titulo);
+        titulo.adicionar(artigo);
+
         expect(objeto).toEqual({
             textoAnterior: '',
-            articulacao: [
-                new parser.Preambulo('Nós, representantes do povo brasileiro, reunidos em Assembléia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias, promulgamos, sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL.'),
-                new parser.Titulo('I', 'Dos Princípios Fundamentais'),
-                new parser.Artigo('1', 'A República Federativa do Brasil, formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos:')
-            ]
+            articulacao: [ preAmbulo ]
         });
     });
-    
-    it('Não deve confundir alínea com inciso', function() { 
+
+    it('Não deve confundir alínea com inciso', function () {
         const texto = 'Art. 1º - Teste:\nI - teste:\na) teste;\nb) teste;\nc) teste;\n d) teste.';
 
         var objeto = parser.interpretarArticulacao(texto);
