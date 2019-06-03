@@ -6,5 +6,6 @@ import Item from './dispositivos/Item';
 import { Preambulo, Titulo, Capitulo, Secao, Subsecao } from './dispositivos/agrupadores';
 import interpretarArticulacao from './interpretarArticulacao';
 import { FormatoOrigem } from './interpretarArticulacao';
+import { validarArticulacao } from './validadorArticulacao';
 
-export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao, FormatoOrigem };
+export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao, FormatoOrigem, validarArticulacao };
