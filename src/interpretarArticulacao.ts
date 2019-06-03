@@ -133,13 +133,11 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 if (!contexto.ultimoItem!.descricao) {
                     contexto.ultimoItem!.descricao = m[1];
+                    return contexto.ultimoItem;
                 } else {
-                    contexto.ultimoItem!.descricao += m[1];
+                    return null;
                 }
-
-                return contexto.ultimoItem;
-            },
-            reiniciar: true
+            }
         }, {
             item: 'artigo',
             regexp: /^\s*(?:Art\.?|Artigo)\s*(\d+(?:-[a-z])?)\s*.\s*[-–]?\s*(.+)/i,
@@ -350,9 +348,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
 
                     if (resultado) {
                         resultado.descricao = resultado.descricao.replace(/\0/g, () => aspas.shift()!);
-
-                        contexto.ultimoItem = regexp.reiniciar ? null : resultado;
-
+                        contexto.ultimoItem = resultado;
                         return;
                     }
                 }
