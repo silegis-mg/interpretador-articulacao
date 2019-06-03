@@ -150,7 +150,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             }
         }, {
             item: 'paragrafo',
-            regexp: /^\s*(?:Parágrafo único|§\s*(\d+))\s*.?\s*[-–]?\s*(.+)/i,
+            regexp: /^\s*(?:Parágrafo único|§\s*(\d+(?:-[a-z])?))\s*.?\s*[-–]?\s*(.+)/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Paragrafo(m[1] || 'Parágrafo único', m[2]);
                 var container = contexto.getUltimoItemTipo(Artigo);
@@ -167,7 +167,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             }
         }, {
             item: 'inciso',
-            regexp: /^\s*([IXVDLM]+)\s*[-–). ]\s*(.+)/i,
+            regexp: /^\s*([IXVDLM]+(?:-[a-z])?)\s*[-–). ]\s*(.+)/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 const numero = m[1];
 
@@ -203,7 +203,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
         }, {
             item: 'alinea',
             //requisito: [Inciso, Alinea, Item],
-            regexp: /^\s*([a-z])\s*[-–).]\s*(.*)/i,
+            regexp: /^\s*([a-z](?:-[a-z])?)\s*[-–).]\s*(.*)/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Alinea(m[1], m[2]);
                 var container = contexto.getUltimoItemTipo(Inciso);
@@ -228,7 +228,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
         }, {
             item: 'item',
             //requisito: [Alinea, Item],
-            regexp: /^\s*(\d)\s*[-–).]\s*(.*)/,
+            regexp: /^\s*(\d(?:-[a-z])?)\s*[-–).]\s*(.*)/,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Item(m[1], m[2]);
                 var container = contexto.getUltimoItemTipo(Alinea);
@@ -268,7 +268,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             }
         }, {
             item: 'titulo',
-            regexp: /^\s*T[ÍI]TULO\s*([IXVDLM]+)(?:\s*[-–]\s*(.+))?/i,
+            regexp: /^\s*T[ÍI]TULO\s*([IXVDLM]+(?:-[a-z])?)(?:\s*[-–]\s*(.+))?/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Titulo(m[1], m[2] || '');
 
@@ -278,7 +278,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             }
         }, {
             item: 'capitulo',
-            regexp: /^\s*CAP[ÍI]TULO\s*([IXVDLM]+)(?:\s*[-–]\s*(.+))?/i,
+            regexp: /^\s*CAP[ÍI]TULO\s*([IXVDLM]+(?:-[a-z])?)(?:\s*[-–]\s*(.+))?/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Capitulo(m[1], m[2] || '');
 
@@ -288,7 +288,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             }
         }, {
             item: 'secao',
-            regexp: /^\s*SE[ÇC][ÃA]O\s*([IXVDLM]+)(?:\s*[-–]\s*(.+))?/i,
+            regexp: /^\s*SE[ÇC][ÃA]O\s*([IXVDLM]+(?:-[a-z])?)(?:\s*[-–]\s*(.+))?/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Secao(m[1], m[2] || '');
 
@@ -298,7 +298,7 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
             }
         }, {
             item: 'subsecao',
-            regexp: /^\s*SUBSE[ÇC][ÃA]O\s*([IXVDLM]+)(?:\s*[-–]\s*(.+))?/i,
+            regexp: /^\s*SUBSE[ÇC][ÃA]O\s*([IXVDLM]+(?:-[a-z])?)(?:\s*[-–]\s*(.+))?/i,
             onMatch: function (contexto: Contexto, m: RegExpExecArray) {
                 var item = new Subsecao(m[1], m[2] || '');
 
