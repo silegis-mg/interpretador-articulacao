@@ -15,7 +15,7 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Dispositivo, { TipoDispositivoOuAgrupador } from './Dispositivo';
+import Dispositivo from './Dispositivo';
 import Artigo from './Artigo';
 import { TipoAgrupador } from './Dispositivo';
 

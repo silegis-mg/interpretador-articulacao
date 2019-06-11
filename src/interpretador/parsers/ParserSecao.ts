@@ -14,14 +14,19 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Artigo from './dispositivos/Artigo';
-import Paragrafo from './dispositivos/Paragrafo';
-import Inciso from './dispositivos/Inciso';
-import Alinea from './dispositivos/Alinea';
-import Item from './dispositivos/Item';
-import { Preambulo, Titulo, Capitulo, Secao, Subsecao } from './dispositivos/agrupadores';
-import interpretarArticulacao from './interpretador/interpretarArticulacao';
-import { FormatoOrigem } from './interpretador/interpretarArticulacao';
-import { validarArticulacao } from './validadorArticulacao';
+import ParserLinha from "./ParserLinha";
+import Contexto from "./Contexto";
+import Dispositivo from "../../dispositivos/Dispositivo";
+import { Capitulo, Titulo, Preambulo, Secao } from "../../dispositivos/agrupadores";
 
-export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao, FormatoOrigem, validarArticulacao };
+export default class ParserSecao extends ParserLinha {
+    constructor() {
+        super(/^\s*SE[ÇC][ÃA]O\s*([IXVDLM]+(?:-[a-z])?)(?:\s*[-–]\s*(.+))?/i);
+    }
+
+    onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
+        const item = new Secao(m[1], m[2] || '');
+        contexto.adicionar([Capitulo, Titulo, Preambulo], item);
+        return item;
+    }
+}

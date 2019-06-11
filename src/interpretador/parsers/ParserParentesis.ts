@@ -14,14 +14,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Artigo from './dispositivos/Artigo';
-import Paragrafo from './dispositivos/Paragrafo';
-import Inciso from './dispositivos/Inciso';
-import Alinea from './dispositivos/Alinea';
-import Item from './dispositivos/Item';
-import { Preambulo, Titulo, Capitulo, Secao, Subsecao } from './dispositivos/agrupadores';
-import interpretarArticulacao from './interpretador/interpretarArticulacao';
-import { FormatoOrigem } from './interpretador/interpretarArticulacao';
-import { validarArticulacao } from './validadorArticulacao';
+import ParserLinha from "./ParserLinha";
+import Contexto from "./Contexto";
+import Dispositivo from "../../dispositivos/Dispositivo";
 
-export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao, FormatoOrigem, validarArticulacao };
+export default class ParserParentesis extends ParserLinha {
+    constructor() {
+        super(/^\(.+\)$/);
+    }
+
+    onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
+        if (contexto.ultimoItem) {
+            if (!contexto.ultimoItem.descricao) {
+                contexto.ultimoItem.descricao = m[0];
+            } else {
+                contexto.ultimoItem.descricao += m[0];
+            }
+        }
+
+        return contexto.ultimoItem;
+    }
+}
