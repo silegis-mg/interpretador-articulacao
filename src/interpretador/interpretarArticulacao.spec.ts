@@ -483,5 +483,42 @@ describe('Parser de articulação', function () {
                 }
             ])
         });
+    });
+
+    it('Deve suportar dispositivos revogados', () => {
+        const texto = `Art. 139 – (Revogado pelo art. 111 da Resolução da ALMG nº 5.511, de 1º/12/2015.)
+Dispositivo revogado:
+“Art. 139 – Para efeito de contagem, os votos relativos ao parecer são:
+I – favoráveis, os “pela conclusão”, os “com restrição” e os “em separado” não divergentes da conclusão;
+II – contrários, os divergentes da conclusão.
+Parágrafo único – Considerar-se-á voto vencido o parecer rejeitado.”`;
+        const objeto = parser.interpretarArticulacao(texto);
+
+        expect(objeto).toEqual({
+            textoAnterior: '',
+            articulacao: novo(parser.Artigo, [
+                {
+                    numero: '139',
+                    descricao: `(Revogado pelo art. 111 da Resolução da ALMG nº 5.511, de 1º/12/2015.)
+Dispositivo revogado:
+“Art. 139 – Para efeito de contagem, os votos relativos ao parecer são:
+I – favoráveis, os “pela conclusão”, os “com restrição” e os “em separado” não divergentes da conclusão;
+II – contrários, os divergentes da conclusão.
+Parágrafo único – Considerar-se-á voto vencido o parecer rejeitado.”`
+                }
+            ])
+        });
+    });
+
+    it('Deve interpretar corretamente as quebras de linha', () => {
+        const texto = `Art. 3º – No início da legislatura, são realizadas, no Palácio da Inconfidência, a partir do dia 1º de fevereiro, reuniões preparatórias destinadas à posse dos Deputados diplomados, à instalação da legislatura e da 1ª sessão legislativa ordinária e à
+eleição e à posse dos membros da Mesa da Assembleia para o 1º biênio.
+(Artigo com redação dada pelo art. 1º da Resolução da ALMG nº 5.511, de 1º/12/2015.)
+(Vide Emenda à Constituição nº 74, de 11/5/2006.)`;
+        const objeto = parser.interpretarArticulacao(texto);
+
+        expect(objeto.articulacao[0].descricao).toBe(`No início da legislatura, são realizadas, no Palácio da Inconfidência, a partir do dia 1º de fevereiro, reuniões preparatórias destinadas à posse dos Deputados diplomados, à instalação da legislatura e da 1ª sessão legislativa ordinária e à eleição e à posse dos membros da Mesa da Assembleia para o 1º biênio.
+(Artigo com redação dada pelo art. 1º da Resolução da ALMG nº 5.511, de 1º/12/2015.)
+(Vide Emenda à Constituição nº 74, de 11/5/2006.)`);
     })
 });

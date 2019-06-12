@@ -28,7 +28,7 @@ export default class ParserParentesis extends ParserLinha {
             if (!contexto.ultimoItem.descricao) {
                 contexto.ultimoItem.descricao = m[0];
             } else {
-                contexto.ultimoItem.descricao += m[0];
+                contexto.ultimoItem.descricao += '\n' + m[0];
             }
         }
 

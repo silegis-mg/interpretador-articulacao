@@ -48,4 +48,8 @@ describe('Regimento Interno da ALMG', () => {
     it('O último artigo deve possuir o número 319', () => {
         expect((interpretacao.articulacao[13] as Titulo).artigos[6].numero).toBe('319');
     });
+
+    it('Deve interpretar todo  regimento interno', () => {
+        expect(interpretacao.articulacao).toMatchSnapshot();
+    });
 });

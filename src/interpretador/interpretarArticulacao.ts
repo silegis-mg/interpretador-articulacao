@@ -43,8 +43,6 @@ export enum FormatoOrigem {
     HTML = 'html'
 }
 
-
-
 /**
  * Interpreta conteúdo de articulação.
  * 
@@ -52,8 +50,7 @@ export enum FormatoOrigem {
  */
 function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
     var contexto = new Contexto();
-    var regexpAspas = /(“[\s\S]*?”|"[\s\S]*?")/g;
-    var regexpLinhas : ParserLinha[] = [
+    var regexpLinhas: ParserLinha[] = [
         new ParserParentesis(),
         new ParserContinuacaoDivisao(),
         new ParserArtigo(),
@@ -72,17 +69,18 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar
      * que o conteúdo seja também interpretado.
      */
-    var texto = textoOriginal.replace(regexpAspas, function (aspa) {
-        contexto.aspas.push(aspa.replace(/[“”]/g, '"'));
-        return '\0';
-    }).replace(/\s*\n+\s*/g, '\n');
+    var texto = escaparAspas(textoOriginal, contexto).replace(/\s*\n+\s*/g, '\n');
 
     texto.split('\n').forEach(function (linha) {
         if (!regexpLinhas.find(regexp => regexp.processar(contexto, linha))) {
             linha = linha.replace(/\0/g, () => contexto.aspas.shift()!);
 
             if (contexto.ultimoItem) {
-                contexto.ultimoItem.descricao += '\n' + linha;
+                if (/[.:;!?$][)\0]?$/.test(contexto.ultimoItem.descricao)) {
+                    contexto.ultimoItem.descricao += '\n' + linha;
+                } else {
+                    contexto.ultimoItem.descricao += ' ' + linha;
+                }
             } else if (contexto.articulacao.length > 0 && contexto.articulacao[contexto.articulacao.length - 1] instanceof Divisao) {
                 contexto.articulacao[contexto.articulacao.length - 1].descricao += '\n' + linha;
             } else if (contexto.textoAnterior.length === 0) {
@@ -137,6 +135,55 @@ function removerEntidadeHtml(html: string) {
             return span.textContent!;
         }
     });
+}
+
+/**
+ * Escapa as aspas, substituindo-as por \0, que funciona como
+ * placeholder das aspsas. Ao final de cada parser de dispositivo,
+ * o \0 é substituído pelas aspas armazenadas no contexto do parser.
+ * 
+ * @param texto Texto a ser escapado.
+ * @param contexto Contexto do parser.
+ */
+function escaparAspas(texto: string, contexto: Contexto): string {
+    const regexpAspas = /[“”"]/g;
+    let m, resultado = '', ultimo = 0;
+    let abertura: number, nAberturas = 0;
+
+    while (m = regexpAspas.exec(texto)) {
+        switch (m[0]) {
+            case '“':
+                if (nAberturas++ === 0) {
+                    abertura = m.index;
+                }
+                continue;
+
+            case '”':
+                if (nAberturas-- > 1) {
+                    continue;
+                }
+                break;
+
+            case '"':
+                if (nAberturas === 0) {
+                    nAberturas++;
+                    abertura = m.index;
+                    continue;
+                } else if (nAberturas-- > 1) {
+                    continue;
+                }
+                break;
+        }
+
+        resultado += texto.substr(ultimo, abertura! - ultimo) + '\0';
+        ultimo = m.index + 1;
+
+        contexto.aspas.push(texto.substr(abertura!, m.index));
+    }
+
+    resultado += texto.substr(ultimo);
+
+    return resultado;
 }
 
 export default interpretarArticulacao;
