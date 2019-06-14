@@ -18,7 +18,7 @@ import ParserLinha from "./ParserLinha";
 import Contexto from "./Contexto";
 import Dispositivo from "../../dispositivos/Dispositivo";
 import Inciso from "../../dispositivos/Inciso";
-import { transformarNumeroRomanoEmArabico } from "../../util/transformarNumeros";
+import { interpretarNumeroRomano } from "../../util/transformarNumeros";
 import Artigo from "../../dispositivos/Artigo";
 import Paragrafo from "../../dispositivos/Paragrafo";
 import Alinea from "../../dispositivos/Alinea";
@@ -36,7 +36,7 @@ export default class ParserInciso extends ParserLinha {
             const ultimoInciso = contexto.getUltimoItemTipo(Inciso);
 
             if (!ultimoInciso || (contexto.ultimoItem.numero && numero.charCodeAt(0) === contexto.ultimoItem.numero.charCodeAt(0) + 1
-                && transformarNumeroRomanoEmArabico(ultimoInciso.numero!) !== transformarNumeroRomanoEmArabico(numero) + 1)) {
+                && interpretarNumeroRomano(ultimoInciso.numero!) !== interpretarNumeroRomano(numero) + 1)) {
                 // Trata-se da sequência da alínea!
                 return null;
             }

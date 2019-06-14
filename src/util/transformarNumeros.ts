@@ -34,7 +34,12 @@ export function transformarNumeroRomano(numero: number) {
     return new Array(+digitos.join("") + 1).join("M") + resultado;
 }
 
-export function transformarNumeroRomanoEmArabico(romano: string) {
+/**
+ * Interpreta o número romano, transformando-o em arábico.
+ * 
+ * @param romano Número romano.
+ */
+export function interpretarNumeroRomano(romano: string) {
     romano = romano.toUpperCase().replace(/ +/g, '');
     let soma = 0, i = 0;
     const mapa = { M: 1000, D: 500, C: 100, L: 50, X: 10, V: 5, I: 1 };
