@@ -15,7 +15,7 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { TipoDispositivoOuAgrupador } from "./dispositivos/Dispositivo";
-import { transformarNumeroRomano, transformarLetra } from "./util/transformarNumeros";
+import { transformarNumeroRomano, transformarLetra, interpretarLetra } from "./util/transformarNumeros";
 import { QualquerDispositivo } from "./dispositivos/tipos";
 
 export type OpcoesValidacao = {
@@ -113,7 +113,10 @@ function verificarNumeracao(dispositivo: QualquerDispositivo, anterior: Qualquer
             (!mEmendaAnterior[2] && mEmenda[2].toUpperCase() === 'A' ||
                 !!mEmendaAnterior[2] && mEmenda[2].charCodeAt(0) === mEmendaAnterior[2].charCodeAt(0) + 1);
     } else {
-        sequenciaNumericaValida = dispositivo.numero === formatar(contador, formatacao);
+        sequenciaNumericaValida = dispositivo.numero === formatar(contador, formatacao) ||
+            !!anterior && !!anterior.numero && !!dispositivo.numero && (formatacao === FormatacaoNumerica.ALFABETO_MINUSCULO || formatacao === FormatacaoNumerica.ALFABETO_MAIUSCULO) &&
+            (interpretarLetra(dispositivo.numero) === interpretarLetra(anterior.numero) + 1 ||
+                interpretarLetra(dispositivo.numero, false) === interpretarLetra(anterior.numero, false) + 1);
     }
 
     return {

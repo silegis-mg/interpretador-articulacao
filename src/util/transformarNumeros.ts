@@ -15,11 +15,11 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- /**
- * Escreve o número em romano.
- * 
- * @param {Number} numero 
- */
+/**
+* Escreve o número em romano.
+* 
+* @param {Number} numero 
+*/
 export function transformarNumeroRomano(numero: number) {
     const digitos = String(numero).split(""),
         tabela = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
@@ -55,7 +55,7 @@ export function interpretarNumeroRomano(romano: string) {
         }
         return soma;
     }
-    
+
     return NaN;
 };
 
@@ -70,4 +70,26 @@ export function transformarLetra(numero: number, maiuscula: boolean = false) {
     }
 
     return String.fromCharCode((maiuscula ? 64 : 96) + numero);
+}
+
+/**
+ * Interpreta a letra.
+ * 
+ * @param letra Letra a ser interpretada.
+ * @param alfabetoCompleto Por padrão, assume o alfabeto completo. Entretanto,
+ * é possível interpretar desconsiderando as letras "k", "w" e "y" na numeração
+ * sequencial.
+ */
+export function interpretarLetra(letra: string, alfabetoCompleto: boolean = true) {
+    const codigo = letra.toLowerCase().charCodeAt(0);
+
+    if (alfabetoCompleto || codigo <= 107 /* k */) {
+        return codigo - 96;
+    } else if (codigo <= 119 /* w */) {
+        return codigo - 97;
+    } else if (codigo <= 121 /* y */) {
+        return codigo - 98;
+    } else {
+        return codigo - 99;
+    }
 }

@@ -16,7 +16,7 @@
  */
 import { validarArticulacao, Validacao } from "../src/validadorArticulacao";
 import Artigo from "../src/dispositivos/Artigo";
-import { Paragrafo } from "../src";
+import { Paragrafo, Alinea } from "../src";
 
 describe('Validação', () => {
     it('Deve considerar válida uma articulação perfeita.', () => {
@@ -26,7 +26,7 @@ describe('Validação', () => {
             new Artigo('3', 'Terceiro.'),
         ];
         const invalidos = validarArticulacao(articulacao);
-        
+
         expect(invalidos).toEqual([]);
     });
 
@@ -37,19 +37,36 @@ describe('Validação', () => {
             new Artigo('4', 'Terceiro.'),
         ];
         const invalidos = validarArticulacao(articulacao);
-        
+
         expect(invalidos).toEqual([
             new Validacao(articulacao[2], true, false, true)
         ]);
     });
 
-    it('Deve suportar parágrafo único', () => {
+    it('Deve suportar parágrafo único.', () => {
         const artigo = new Artigo('1', 'Primeiro.');
         const paragrafo = new Paragrafo('Parágrafo único', 'Teste do parágrafo único.');
-        
+
         artigo.adicionar(paragrafo);
-        
+
         const invalidos = validarArticulacao([artigo]);
         expect(invalidos).toEqual([]);
-    })
+    });
+
+    it('Deve aceitar ausência de alíneas k, w e y.', () => {
+        const alineas = [];
+        const ultimo = 'z'.charCodeAt(0);
+        const k = 'k'.charCodeAt(0);
+        const w = 'w'.charCodeAt(0);
+        const y = 'y'.charCodeAt(0);
+
+        for (let i = 'a'.charCodeAt(0); i <= ultimo; i++) {
+            if (i !== k && i !== w && i !== y) {
+                alineas.push(new Alinea(String.fromCharCode(i), 'teste;'));
+            }
+        }
+
+        const invalidos = validarArticulacao(alineas);
+        expect(invalidos).toEqual([]);
+    });
 })
