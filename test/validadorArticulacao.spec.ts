@@ -14,9 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { validarArticulacao, Validacao } from "./validadorArticulacao";
-import Artigo from "./dispositivos/Artigo";
-import { Paragrafo } from ".";
+import { validarArticulacao, Validacao } from "../src/validadorArticulacao";
+import Artigo from "../src/dispositivos/Artigo";
+import { Paragrafo } from "../src";
 
 describe('Validação', () => {
     it('Deve considerar válida uma articulação perfeita.', () => {
