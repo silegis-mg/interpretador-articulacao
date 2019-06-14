@@ -116,7 +116,7 @@ function interpretarArticulacao(texto: string, formatoOrigem: FormatoOrigem = Fo
             return parseTexto(
                 removerEntidadeHtml(
                     html.innerHTML
-                        .replace(/\n/g, ' ')                            // Transforma quebra de linhas em espaços
+                        .replace(/[\n\t\r ]+/g, ' ')                    // Transforma quebra de linhas e tabulações em espaços
                         .replace(/<(head|script|strike)(?:\s.*?)?>.*?<\/\1>|<!--.*?-->/gi, '')
                         .replace(/<P(?:\s+.*?)?>(.+?)<\/P>/gi, '$1\n')  // Transforma parágrafos
                         .replace(/<br(?:\s.*?)\/?>/ig, '\n')            // Transforma <br> em quebras de linha
