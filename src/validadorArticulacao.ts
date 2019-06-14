@@ -15,8 +15,9 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { TipoDispositivoOuAgrupador } from "./dispositivos/Dispositivo";
-import { transformarNumeroRomano, transformarLetra, interpretarLetra } from "./util/transformarNumeros";
+import { transformarNumeroRomano, transformarLetra, interpretarLetra, interpretarNumeroRomano } from "./util/transformarNumeros";
 import { QualquerDispositivo } from "./dispositivos/tipos";
+import { Artigo } from ".";
 
 export type OpcoesValidacao = {
     formatacaoEsperada?: Formatacao
@@ -31,26 +32,14 @@ export class Validacao {
 }
 
 export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: OpcoesValidacao = {}): Validacao[] {
-    let contadorArtigos = 0;
-    const ultimos: { [tipo in TipoDispositivoOuAgrupador]?: QualquerDispositivo } = {}
+    let ultimoArtigo: Artigo;
 
     function _validarArticulacao(dispositivos: QualquerDispositivo[]) {
-        const contadores: {
-            [tipo in TipoDispositivoOuAgrupador]: number
-        } = {
-            preambulo: 0,
-            titulo: 0,
-            capitulo: 0,
-            subcapitulo: 0,
-            secao: 0,
-            subsecao: 0,
-            get artigo() { return contadorArtigos },
-            set artigo(valor) { contadorArtigos = valor; },
-            inciso: 0,
-            alinea: 0,
-            item: 0,
-            paragrafo: 0
+        const ultimos: { [tipo in TipoDispositivoOuAgrupador]?: QualquerDispositivo } = {
+            get artigo() { return ultimoArtigo; },
+            set artigo(artigo) { ultimoArtigo = artigo }
         };
+
 
         if (!opcoes.formatacaoEsperada) {
             opcoes.formatacaoEsperada = {};
@@ -65,11 +54,7 @@ export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: 
 
             const tipo = dispositivo.tipo;
             const formatacao = inferirFormatacao(dispositivo.numero);
-            const validacaoSequencia = verificarNumeracao(dispositivo, ultimos[tipo], ++contadores[tipo], formatacao);
-
-            if (validacaoSequencia.emendado) {
-                contadores[tipo]--;
-            }
+            let validacaoSequencia = verificarNumeracao(dispositivo, ultimos[tipo], formatacao);
 
             ultimos[tipo] = dispositivo;
 
@@ -101,9 +86,8 @@ export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: 
 }
 
 
-function verificarNumeracao(dispositivo: QualquerDispositivo, anterior: QualquerDispositivo | undefined, contador: number, formatacao: FormatacaoNumerica) {
+function verificarNumeracao(dispositivo: QualquerDispositivo, anterior: QualquerDispositivo | undefined, formatacao: FormatacaoNumerica) {
     const mEmenda = /^(.+?)-([a-z])$/i.exec(dispositivo.numero || '');
-
     let sequenciaNumericaValida: boolean;
 
     if (mEmenda) {
@@ -113,9 +97,11 @@ function verificarNumeracao(dispositivo: QualquerDispositivo, anterior: Qualquer
             (!mEmendaAnterior[2] && mEmenda[2].toUpperCase() === 'A' ||
                 !!mEmendaAnterior[2] && mEmenda[2].charCodeAt(0) === mEmendaAnterior[2].charCodeAt(0) + 1);
     } else {
-        sequenciaNumericaValida = dispositivo.numero === formatar(contador, formatacao) ||
+        const proximoNumero = anterior ? interpretarNumero(anterior.numero, formatacao) + 1 : 1;
+    
+        sequenciaNumericaValida = dispositivo.numero === formatar(proximoNumero, formatacao) ||
             !!anterior && !!anterior.numero && !!dispositivo.numero && (formatacao === FormatacaoNumerica.ALFABETO_MINUSCULO || formatacao === FormatacaoNumerica.ALFABETO_MAIUSCULO) &&
-            (interpretarLetra(dispositivo.numero) === interpretarLetra(anterior.numero) + 1 ||
+            (interpretarLetra(dispositivo.numero) !== interpretarLetra(anterior.numero) + 1 &&
                 interpretarLetra(dispositivo.numero, false) === interpretarLetra(anterior.numero, false) + 1);
     }
 
@@ -180,6 +166,35 @@ function formatar(numero: number | null, formatacao: FormatacaoNumerica): string
 
         case FormatacaoNumerica.PARAGRAFO_UNICO:
             return 'Parágrafo único';
+
+        default:
+            throw new Error('Formatação desconhecida: ' + formatacao);
+    }
+}
+
+function interpretarNumero(numero: string | null, formatacao: FormatacaoNumerica): number {
+    if (numero === null) {
+        return 0;
+    }
+
+    [numero] = numero.split('-', 1)
+
+    switch (formatacao) {
+        case FormatacaoNumerica.NENHUMA:
+            return 0;
+
+        case FormatacaoNumerica.ARABICO:
+            return parseInt(numero);
+
+        case FormatacaoNumerica.PARAGRAFO_UNICO:
+            return 1;
+
+        case FormatacaoNumerica.ALFABETO_MAIUSCULO:
+        case FormatacaoNumerica.ALFABETO_MINUSCULO:
+            return interpretarLetra(numero);
+
+        case FormatacaoNumerica.ROMANO:
+            return interpretarNumeroRomano(numero);
 
         default:
             throw new Error('Formatação desconhecida: ' + formatacao);

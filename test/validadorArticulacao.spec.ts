@@ -43,6 +43,21 @@ describe('Validação', () => {
         ]);
     });
 
+    it('Deve invalidar apenas o artigo duplicado.', () => {
+        const articulacao = [
+            new Artigo('1', 'Primeiro.'),
+            new Artigo('2', 'Segundo.'),
+            new Artigo('2', 'Duplicado.'),
+            new Artigo('3', 'Terceiro.'),
+            new Artigo('4', 'Quarto.'),
+        ];
+        const invalidos = validarArticulacao(articulacao);
+
+        expect(invalidos).toEqual([
+            new Validacao(articulacao[2], true, false, true)
+        ]);
+    });
+
     it('Deve suportar parágrafo único.', () => {
         const artigo = new Artigo('1', 'Primeiro.');
         const paragrafo = new Paragrafo('Parágrafo único', 'Teste do parágrafo único.');
