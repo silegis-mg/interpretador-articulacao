@@ -111,9 +111,18 @@ function interpretarArticulacao(texto: string, formatoOrigem: FormatoOrigem = Fo
             return parseTexto(texto);
 
         case 'html':
-            let div = document.createElement('div');
-            div.innerHTML = texto;
-            return parseTexto(removerEntidadeHtml(div.innerHTML.replace(/<P(?:\s+.*?)?>(.+?)<\/P>/gi, '$1\n').replace(/<.+?>/g, '').trim()));
+            const html = document.createElement('html');
+            html.innerHTML = texto;
+            return parseTexto(
+                removerEntidadeHtml(
+                    html.innerHTML
+                        .replace(/\n/g, ' ')                            // Transforma quebra de linhas em espaços
+                        .replace(/<(head|script|strike)(?:\s.*?)?>.*?<\/\1>|<!--.*?-->/gi, '')
+                        .replace(/<P(?:\s+.*?)?>(.+?)<\/P>/gi, '$1\n')  // Transforma parágrafos
+                        .replace(/<br(?:\s.*?)\/?>/ig, '\n')            // Transforma <br> em quebras de linha
+                        .replace(/<.+?>/g, '').trim()                   // Remove todas as tags.
+                )
+            );
 
         default:
             throw 'Formato não suportado.';
