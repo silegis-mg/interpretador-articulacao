@@ -178,7 +178,7 @@ function escaparAspas(texto: string, contexto: Contexto): string {
         resultado += texto.substr(ultimo, abertura! - ultimo) + '\0';
         ultimo = m.index + 1;
 
-        contexto.aspas.push(texto.substr(abertura!, m.index));
+        contexto.aspas.push(texto.substr(abertura!, m.index - abertura! + 1));
     }
 
     resultado += texto.substr(ultimo);
