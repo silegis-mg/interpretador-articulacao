@@ -30,7 +30,7 @@ export class Validacao {
     }
 }
 
-export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: OpcoesValidacao = {}) {
+export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: OpcoesValidacao = {}): Validacao[] {
     let contadorArtigos = 0;
     const ultimos: { [tipo in TipoDispositivoOuAgrupador]?: QualquerDispositivo } = {}
 
@@ -44,20 +44,20 @@ export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: 
             subcapitulo: 0,
             secao: 0,
             subsecao: 0,
-            get artigo() { return  contadorArtigos },
+            get artigo() { return contadorArtigos },
             set artigo(valor) { contadorArtigos = valor; },
             inciso: 0,
             alinea: 0,
             item: 0,
             paragrafo: 0
         };
-    
+
         if (!opcoes.formatacaoEsperada) {
             opcoes.formatacaoEsperada = {};
         }
-    
+
         const dispositivosInvalidos: Validacao[] = [];
-    
+
         dispositivos.forEach(dispositivo => {
             if (!dispositivo) {
                 return new Validacao(dispositivo, false, false, false);
@@ -70,30 +70,30 @@ export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: 
             if (validacaoSequencia.emendado) {
                 contadores[tipo]--;
             }
-    
+
             ultimos[tipo] = dispositivo;
-    
+
             const subvalidacao = _validarArticulacao(dispositivo.subitens);
-    
+
             const validacao = new Validacao(
                 dispositivo,
                 !opcoes.formatacaoEsperada![tipo] || opcoes.formatacaoEsperada![tipo] == formatacao || formatacao === FormatacaoNumerica.PARAGRAFO_UNICO,
                 validacaoSequencia.sequenciaNumericaValida,
                 subvalidacao.length === 0
             );
-    
+
             // Parágrafo único não é considerado como formatação esperada
             if (formatacao !== FormatacaoNumerica.PARAGRAFO_UNICO) {
                 opcoes.formatacaoEsperada![tipo] = formatacao;
             }
-    
+
             dispositivosInvalidos.push(...subvalidacao);
-    
+
             if (!validacao.valido) {
-                 dispositivosInvalidos.push(validacao);
+                dispositivosInvalidos.push(validacao);
             }
         });
-    
+
         return dispositivosInvalidos;
     }
 
