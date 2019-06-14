@@ -16,7 +16,7 @@
  */
 
 import Dispositivo, { TipoDispositivo } from './Dispositivo';
-import { transformarQuebrasDeLinhaEmP } from '../util';
+import { transformarQuebrasDeLinhaEmP } from '../util/htmlUtil';
 import Inciso from './Inciso';
 import Paragrafo from './Paragrafo';
 
