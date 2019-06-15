@@ -3,3 +3,5 @@
 /src
 .travis.yml
 /jest.config.js
+/tslint.json
+/tsconfig.json

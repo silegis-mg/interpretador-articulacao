@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -14,13 +14,13 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import ParserLinha from "./ParserLinha";
-import Contexto from "./Contexto";
-import Dispositivo from "../../dispositivos/Dispositivo";
-import Alinea from "../../dispositivos/Alinea";
-import Inciso from "../../dispositivos/Inciso";
-import Artigo from "../../dispositivos/Artigo";
-import Paragrafo from "../../dispositivos/Paragrafo";
+import Alinea from '../../dispositivos/Alinea';
+import Artigo from '../../dispositivos/Artigo';
+import Dispositivo from '../../dispositivos/Dispositivo';
+import Inciso from '../../dispositivos/Inciso';
+import Paragrafo from '../../dispositivos/Paragrafo';
+import Contexto from './Contexto';
+import ParserLinha from './ParserLinha';
 
 export default class ParserAlinea extends ParserLinha {
     constructor() {
@@ -28,8 +28,8 @@ export default class ParserAlinea extends ParserLinha {
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
-        var item = new Alinea(m[1], m[2]);
-        var container = contexto.getUltimoItemTipo(Inciso);
+        const item = new Alinea(m[1], m[2]);
+        let container = contexto.getUltimoItemTipo(Inciso);
 
         if (!container) {
             let artigo = contexto.getUltimoItemTipo([Artigo, Paragrafo]);

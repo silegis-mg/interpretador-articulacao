@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -14,15 +14,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { TipoDispositivoOuAgrupador } from "../src/dispositivos/Dispositivo";
-import { QualquerDispositivo } from "../src/dispositivos/tipos";
-import { ArticulacaoInterpretada } from "../src/interpretador/ArticulacaoInterpretada";
+import { TipoDispositivoOuAgrupador } from '../src/dispositivos/Dispositivo';
+import { QualquerDispositivo } from '../src/dispositivos/tipos';
+import { IArticulacaoInterpretada } from '../src/interpretador/ArticulacaoInterpretada';
 
 export function tornarPlano(dispositivos: QualquerDispositivo[]): QualquerDispositivo[] {
     return dispositivos.reduce((plano, dispositivo) => plano.concat(tornarPlano(dispositivo.subitens)), dispositivos);
 }
 
-export function contarDispositivos(interpretacao: ArticulacaoInterpretada, tipo: TipoDispositivoOuAgrupador) {
+export function contarDispositivos(interpretacao: IArticulacaoInterpretada, tipo: TipoDispositivoOuAgrupador) {
     const dispositivos = tornarPlano(interpretacao.articulacao);
-    return dispositivos.filter(d => d.tipo === tipo).length;
+    return dispositivos.filter((d) => d.tipo === tipo).length;
 }

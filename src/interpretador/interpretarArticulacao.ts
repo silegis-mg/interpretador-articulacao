@@ -1,5 +1,5 @@
 /* Copyright 2017 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -15,31 +15,31 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Divisao } from '../dispositivos/agrupadores';
-import { ArticulacaoInterpretada } from './ArticulacaoInterpretada';
+import { IArticulacaoInterpretada } from './ArticulacaoInterpretada';
 import Contexto from './parsers/Contexto';
-import ParserLinha from './parsers/ParserLinha';
-import ParserParentesis from './parsers/ParserParentesis';
-import ParserContinuacaoDivisao from './parsers/ParserContinuacaoDivisao';
-import ParserParagrafo from './parsers/ParserParagrafo';
-import ParserArtigo from './parsers/ParserArtigo';
-import ParserInciso from './parsers/ParserInciso';
 import ParserAlinea from './parsers/ParserAlinea';
-import ParserItem from './parsers/ParserItem';
-import ParserPreambulo from './parsers/ParserPreambulo';
-import ParserTitulo from './parsers/ParserTitulo';
+import ParserArtigo from './parsers/ParserArtigo';
 import ParserCapitulo from './parsers/ParserCapitulo';
+import ParserContinuacaoDivisao from './parsers/ParserContinuacaoDivisao';
+import ParserInciso from './parsers/ParserInciso';
+import ParserItem from './parsers/ParserItem';
+import ParserLinha from './parsers/ParserLinha';
+import ParserParagrafo from './parsers/ParserParagrafo';
+import ParserParentesis from './parsers/ParserParentesis';
+import ParserPreambulo from './parsers/ParserPreambulo';
 import ParserSecao from './parsers/ParserSecao';
 import ParserSubsecao from './parsers/ParserSubsecao';
+import ParserTitulo from './parsers/ParserTitulo';
 
 /**
  * Interpreta conteúdo de articulação.
- * 
+ *
  * @param {String} textoOriginal Texto a ser interpretado.
- * @returns {ArticulacaoInterpretada} Resultado da interpretação.
+ * @returns {IArticulacaoInterpretada} Resultado da interpretação.
  */
-function interpretarArticulacao(textoOriginal: string): ArticulacaoInterpretada {
-    var contexto = new Contexto();
-    var regexpLinhas: ParserLinha[] = [
+function interpretarArticulacao(textoOriginal: string): IArticulacaoInterpretada {
+    const contexto = new Contexto();
+    const regexpLinhas: ParserLinha[] = [
         new ParserParentesis(),
         new ParserContinuacaoDivisao(),
         new ParserArtigo(),
@@ -58,10 +58,10 @@ function interpretarArticulacao(textoOriginal: string): ArticulacaoInterpretada 
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar
      * que o conteúdo seja também interpretado.
      */
-    var texto = escaparAspas(textoOriginal, contexto).replace(/\s*\n+\s*/g, '\n');
+    const texto = escaparAspas(textoOriginal, contexto).replace(/\s*\n+\s*/g, '\n');
 
-    texto.split('\n').forEach(function (linha) {
-        if (!regexpLinhas.find(regexp => regexp.processar(contexto, linha))) {
+    texto.split('\n').forEach((linha) => {
+        if (!regexpLinhas.find((regexp) => regexp.processar(contexto, linha))) {
             linha = linha.replace(/\0/g, () => contexto.aspas.shift()!);
 
             if (contexto.ultimoItem) {
@@ -70,7 +70,9 @@ function interpretarArticulacao(textoOriginal: string): ArticulacaoInterpretada 
                 } else {
                     contexto.ultimoItem.descricao += ' ' + linha;
                 }
-            } else if (contexto.articulacao.length > 0 && contexto.articulacao[contexto.articulacao.length - 1] instanceof Divisao) {
+            } else if (contexto.articulacao.length > 0
+                && contexto.articulacao[contexto.articulacao.length - 1] instanceof Divisao) {
+
                 contexto.articulacao[contexto.articulacao.length - 1].descricao += '\n' + linha;
             } else if (contexto.textoAnterior.length === 0) {
                 contexto.textoAnterior = linha;
@@ -90,16 +92,18 @@ function interpretarArticulacao(textoOriginal: string): ArticulacaoInterpretada 
  * Escapa as aspas, substituindo-as por \0, que funciona como
  * placeholder das aspsas. Ao final de cada parser de dispositivo,
  * o \0 é substituído pelas aspas armazenadas no contexto do parser.
- * 
+ *
  * @param texto Texto a ser escapado.
  * @param contexto Contexto do parser.
  */
 function escaparAspas(texto: string, contexto: Contexto): string {
     const regexpAspas = /[“”"]/g;
-    let m, resultado = '', ultimo = 0;
-    let abertura: number, nAberturas = 0;
+    let resultado = '';
+    let ultimo = 0;
+    let abertura: number;
+    let nAberturas = 0;
 
-    while (m = regexpAspas.exec(texto)) {
+    for (let m = regexpAspas.exec(texto); m; m = regexpAspas.exec(texto)) {
         switch (m[0]) {
             case '“':
                 if (nAberturas++ === 0) {

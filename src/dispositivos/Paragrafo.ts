@@ -1,5 +1,5 @@
 /* Copyright 2017 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -27,7 +27,7 @@ export default class Paragrafo extends Dispositivo<Inciso> {
 
     adicionar(inciso: Inciso) {
         if (!(inciso instanceof Inciso)) {
-            throw 'Tipo não suportado.';
+            throw new Error('Tipo não suportado.');
         }
 
         Object.defineProperty(inciso, '$parent', { value: this });

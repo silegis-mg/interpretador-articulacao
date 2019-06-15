@@ -6,5 +6,5 @@ install:
   - npm ci
 
 script:
-  - npm run-script jshint
+  - npm run tslint
   - npm test

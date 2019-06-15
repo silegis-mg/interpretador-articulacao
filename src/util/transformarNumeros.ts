@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -16,32 +16,33 @@
  */
 
 /**
-* Escreve o número em romano.
-* 
-* @param {Number} numero 
-*/
+ * Escreve o número em romano.
+ *
+ * @param {Number} numero
+ */
 export function transformarNumeroRomano(numero: number) {
-    const digitos = String(numero).split(""),
-        tabela = ["", "C", "CC", "CCC", "CD", "D", "DC", "DCC", "DCCC", "CM",
-            "", "X", "XX", "XXX", "XL", "L", "LX", "LXX", "LXXX", "XC",
-            "", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"];
-    let resultado = "",
-        i = 3;
+    const digitos = String(numero).split('');
+    const tabela = ['', 'C', 'CC', 'CCC', 'CD', 'D', 'DC', 'DCC', 'DCCC', 'CM',
+        '', 'X', 'XX', 'XXX', 'XL', 'L', 'LX', 'LXX', 'LXXX', 'XC',
+        '', 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX'];
+    let resultado = '';
+    let i = 3;
 
     while (i--) {
-        resultado = (tabela[+digitos.pop()! + (i * 10)] || "") + resultado;
+        resultado = (tabela[+digitos.pop()! + (i * 10)] || '') + resultado;
     }
-    return new Array(+digitos.join("") + 1).join("M") + resultado;
+    return new Array(+digitos.join('') + 1).join('M') + resultado;
 }
 
 /**
  * Interpreta o número romano, transformando-o em arábico.
- * 
+ *
  * @param romano Número romano.
  */
 export function interpretarNumeroRomano(romano: string) {
     romano = romano.toUpperCase().replace(/ +/g, '');
-    let soma = 0, i = 0;
+    let soma = 0;
+    let i = 0;
     const mapa = { M: 1000, D: 500, C: 100, L: 50, X: 10, V: 5, I: 1 };
 
     if (/^[MDCLXVI]+$/.test(romano)) {
@@ -57,16 +58,16 @@ export function interpretarNumeroRomano(romano: string) {
     }
 
     return NaN;
-};
+}
 
 /**
  * Escreve o número em letra.
- * 
- * @param {Number} numero 
+ *
+ * @param {Number} numero
  */
 export function transformarLetra(numero: number, maiuscula: boolean = false) {
     if (numero < 1) {
-        throw "Número deve ser positivo.";
+        throw new Error('Número deve ser positivo.');
     }
 
     return String.fromCharCode((maiuscula ? 64 : 96) + numero);
@@ -74,7 +75,7 @@ export function transformarLetra(numero: number, maiuscula: boolean = false) {
 
 /**
  * Interpreta a letra.
- * 
+ *
  * @param letra Letra a ser interpretada.
  * @param alfabetoCompleto Por padrão, assume o alfabeto completo. Entretanto,
  * é possível interpretar desconsiderando as letras "k", "w" e "y" na numeração

@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -14,11 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import ParserLinha from "./ParserLinha";
-import Contexto from "./Contexto";
-import Dispositivo from "../../dispositivos/Dispositivo";
-import Paragrafo from "../../dispositivos/Paragrafo";
-import Artigo from "../../dispositivos/Artigo";
+import Artigo from '../../dispositivos/Artigo';
+import Dispositivo from '../../dispositivos/Dispositivo';
+import Paragrafo from '../../dispositivos/Paragrafo';
+import Contexto from './Contexto';
+import ParserLinha from './ParserLinha';
 
 export default class ParserParagrafo extends ParserLinha {
     constructor() {
@@ -26,8 +26,8 @@ export default class ParserParagrafo extends ParserLinha {
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
-        var item = new Paragrafo(m[1] || 'Parágrafo único', m[2]);
-        var container = contexto.getUltimoItemTipo(Artigo);
+        const item = new Paragrafo(m[1] || 'Parágrafo único', m[2]);
+        let container = contexto.getUltimoItemTipo(Artigo);
 
         if (!container) {
             container = new Artigo('', contexto.textoAnterior);

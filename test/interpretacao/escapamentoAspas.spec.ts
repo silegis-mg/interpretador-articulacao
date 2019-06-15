@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -16,7 +16,7 @@
  */
 import * as parser from '../../src/index';
 
-describe('Escapamento de aspas', function() {
+describe('Escapamento de aspas', () => {
     it('Deve suportar dispositivos revogados', () => {
         const texto = `Art. 139 – (Revogado pelo art. 111 da Resolução da ALMG nº 5.511, de 1º/12/2015.)
 Dispositivo revogado:
@@ -41,14 +41,16 @@ Parágrafo único – Considerar-se-á voto vencido o parecer rejeitado.”`
     });
 
     it('Deve suportar várias aspas.', () => {
-        const texto = 'Art. 1º - Este é um "teste.\nArt 2º - Este é outro teste." para ver o "escapamento\nArt. 2º - em funcionamento.".';
+        const texto = 'Art. 1º - Este é um "teste.\nArt 2º - Este é outro teste."'
+            + ' para ver o "escapamento\nArt. 2º - em funcionamento.".';
         const objeto = parser.interpretarArticulacao(texto);
 
         expect(objeto).toEqual({
             textoAnterior: '',
             articulacao: [
-                new parser.Artigo('1', 'Este é um "teste.\nArt 2º - Este é outro teste." para ver o "escapamento\nArt. 2º - em funcionamento.".')
+                new parser.Artigo('1', 'Este é um "teste.\nArt 2º - Este é outro teste."' +
+                    ' para ver o "escapamento\nArt. 2º - em funcionamento.".')
             ]
-        })
+        });
     });
 });

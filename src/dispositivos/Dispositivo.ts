@@ -34,19 +34,24 @@ export enum TipoAgrupador {
 export type TipoDispositivoOuAgrupador = TipoDispositivo | TipoAgrupador;
 
 export default abstract class Dispositivo<TiposDerivaveis extends Dispositivo<any>> {
-    constructor(public readonly tipo: TipoDispositivoOuAgrupador, public numero: string | null, public descricao: string, private derivacoes?: string[]) {
-    }
-
-    public $parent? : Dispositivo<any>;
 
     public get subitens(): Dispositivo<TiposDerivaveis>[] {
-        return this.derivacoes ? this.derivacoes.reduce((prev, item) => item in this ? prev.concat((this as any)[item]) : prev, []) : [];
+        return this.derivacoes
+            ? this.derivacoes.reduce(
+                (prev, item) => item in this ? prev.concat((this as any)[item]) : prev, [])
+            : [];
+    }
+
+    public $parent?: Dispositivo<any>;
+
+    constructor(public readonly tipo: TipoDispositivoOuAgrupador,
+                public numero: string | null, public descricao: string, private derivacoes?: string[]) {
     }
 
     /**
      * Adiciona um dispositivo a este.
-     * 
-     * @param {TiposDerivaveis} dispositivo 
+     *
+     * @param {TiposDerivaveis} dispositivo
      */
     adicionar(dispositivo: TiposDerivaveis): void {
         const tipo = dispositivo.tipo;

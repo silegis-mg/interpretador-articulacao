@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -15,11 +15,11 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { readFileSync } from 'fs';
+import { Titulo } from '../../../src/dispositivos/agrupadores';
+import { TipoDispositivo } from '../../../src/dispositivos/Dispositivo';
 import interpretarArticulacao from '../../../src/interpretador/interpretarArticulacao';
 import { validarArticulacao } from '../../../src/validadorArticulacao';
 import { contarDispositivos } from '../../testUtil';
-import { TipoDispositivo } from '../../../src/dispositivos/Dispositivo';
-import { Titulo } from '../../../src/dispositivos/agrupadores';
 
 describe('Regimento Interno da ALMG', () => {
     const constituicao = readFileSync('test/interpretacao/regimentoInternoALMG/regimento-almg.txt').toString();
@@ -42,7 +42,8 @@ describe('Regimento Interno da ALMG', () => {
     });
 
     it('Deve possuir 332 artigos', () => {
-        expect(contarDispositivos(interpretacao, TipoDispositivo.ARTIGO)).toBe(319 + 9 /* emendas -A */ + 3 /* -B */ + 1 /* -C */);
+        const contagem = contarDispositivos(interpretacao, TipoDispositivo.ARTIGO);
+        expect(contagem).toBe(319 + 9 /* emendas -A */ + 3 /* -B */ + 1 /* -C */);
     });
 
     it('O último artigo deve possuir o número 319', () => {

@@ -45,7 +45,7 @@ O resultado é um objeto contendo a seguinte interface:
 /**
  * Resultado da interpretação de articulação.
  */
-interface ArticulacaoInterpretada {
+interface IArticulacaoInterpretada {
     /**
      * Texto que antecede primeiro dispositivo interpretado.
      * Se a interpretação compreendeu todo o texto,

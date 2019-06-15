@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -15,12 +15,12 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import { QualquerDispositivo } from "../dispositivos/tipos";
+import { QualquerDispositivo } from '../dispositivos/tipos';
 
 /**
  * Resultado da interpretação de articulação.
  */
-export interface ArticulacaoInterpretada {
+export interface IArticulacaoInterpretada {
     /**
      * Texto que antecede primeiro dispositivo interpretado.
      * Se a interpretação compreendeu todo o texto,

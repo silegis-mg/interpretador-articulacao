@@ -1,5 +1,5 @@
 /* Copyright 2017 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Dispositivo from './Dispositivo';
 import Artigo from './Artigo';
+import Dispositivo from './Dispositivo';
 import { TipoAgrupador } from './Dispositivo';
 
 export abstract class Divisao<T extends Dispositivo<any>> extends Dispositivo<T> {
@@ -25,6 +25,7 @@ export abstract class Divisao<T extends Dispositivo<any>> extends Dispositivo<T>
     }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class Preambulo extends Divisao<Titulo | Artigo> {
     public titulos: Titulo[] = [];
     public artigos: Artigo[] = [];
@@ -34,6 +35,7 @@ export class Preambulo extends Divisao<Titulo | Artigo> {
     }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class Titulo extends Divisao<Capitulo | Artigo> {
     public capitulos: Capitulo[] = [];
     public artigos: Artigo[] = [];
@@ -43,6 +45,7 @@ export class Titulo extends Divisao<Capitulo | Artigo> {
     }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class Capitulo extends Divisao<Secao | Artigo> {
     public secoes: Secao[] = [];
     public artigos: Artigo[] = [];
@@ -64,6 +67,7 @@ export class Capitulo extends Divisao<Secao | Artigo> {
     }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class Secao extends Divisao<Subsecao | Artigo> {
     public subsecoes: Subsecao[] = [];
     public artigos: Artigo[] = [];
@@ -85,6 +89,7 @@ export class Secao extends Divisao<Subsecao | Artigo> {
     }
 }
 
+// tslint:disable-next-line: max-classes-per-file
 export class Subsecao extends Divisao<Artigo> {
     public artigos: Artigo[] = [];
 

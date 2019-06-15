@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Dispositivo from "../../dispositivos/Dispositivo";
+import Dispositivo from '../../dispositivos/Dispositivo';
 
 export default class Contexto {
     public ultimoItem: Dispositivo<any> | null = null;
@@ -23,8 +23,7 @@ export default class Contexto {
     public aspas: string[] = [];
 
     getUltimoItemTipo(tipo: any): Dispositivo<any> | null {
-        var item = this.ultimoItem;
-
+        let item = this.ultimoItem;
 
         if (item === null) {
             return null;
@@ -36,7 +35,7 @@ export default class Contexto {
             }
         } else if (tipo instanceof Array) {
             do {
-                var j;
+                let j;
 
                 for (j = 0; j < tipo.length; j++) {
                     if (item instanceof tipo[j]) {
@@ -47,7 +46,7 @@ export default class Contexto {
                 item = (item as Dispositivo<any>).$parent as Dispositivo<any>;
             } while (item);
         } else {
-            throw 'Argumento inválido';
+            throw new Error('Argumento inválido');
         }
 
         return item;
@@ -62,6 +61,6 @@ export default class Contexto {
             this.articulacao.push(dispositivo);
         }
 
-        this.ultimoItem = dispositivo;        
+        this.ultimoItem = dispositivo;
     }
 }

@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import ParserLinha from "./ParserLinha";
-import Contexto from "./Contexto";
-import Dispositivo from "../../dispositivos/Dispositivo";
-import Inciso from "../../dispositivos/Inciso";
-import { interpretarNumeroRomano } from "../../util/transformarNumeros";
-import Artigo from "../../dispositivos/Artigo";
-import Paragrafo from "../../dispositivos/Paragrafo";
-import Alinea from "../../dispositivos/Alinea";
+import Alinea from '../../dispositivos/Alinea';
+import Artigo from '../../dispositivos/Artigo';
+import Dispositivo from '../../dispositivos/Dispositivo';
+import Inciso from '../../dispositivos/Inciso';
+import Paragrafo from '../../dispositivos/Paragrafo';
+import { interpretarNumeroRomano } from '../../util/transformarNumeros';
+import Contexto from './Contexto';
+import ParserLinha from './ParserLinha';
 
 export default class ParserInciso extends ParserLinha {
     constructor() {
@@ -35,7 +35,8 @@ export default class ParserInciso extends ParserLinha {
             // Pode ser que, na verdade, trata-se de uma alínea sendo confundida com um inciso.
             const ultimoInciso = contexto.getUltimoItemTipo(Inciso);
 
-            if (!ultimoInciso || (contexto.ultimoItem.numero && numero.charCodeAt(0) === contexto.ultimoItem.numero.charCodeAt(0) + 1
+            if (!ultimoInciso
+                || (contexto.ultimoItem.numero && numero.charCodeAt(0) === contexto.ultimoItem.numero.charCodeAt(0) + 1
                 && interpretarNumeroRomano(ultimoInciso.numero!) !== interpretarNumeroRomano(numero) + 1)) {
                 // Trata-se da sequência da alínea!
                 return null;
@@ -48,7 +49,7 @@ export default class ParserInciso extends ParserLinha {
         }
 
         const item = new Inciso(m[1], m[2]);
-        var container = contexto.getUltimoItemTipo([Artigo, Paragrafo]);
+        let container = contexto.getUltimoItemTipo([Artigo, Paragrafo]);
 
         if (!container) {
             container = new Artigo('', contexto.textoAnterior);

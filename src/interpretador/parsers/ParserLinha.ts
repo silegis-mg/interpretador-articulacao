@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Contexto from "./Contexto";
-import Dispositivo from "../../dispositivos/Dispositivo";
+import Dispositivo from '../../dispositivos/Dispositivo';
+import Contexto from './Contexto';
 
 export default abstract class ParserLinha {
     private readonly requisitos: Function[];
@@ -24,7 +24,7 @@ export default abstract class ParserLinha {
         this.requisitos = requisitos;
     }
 
-    public processar(contexto: Contexto, linha: string) : boolean {
+    public processar(contexto: Contexto, linha: string): boolean {
         if (this.atendeRequisitos(contexto)) {
             const m = this.regexp.exec(linha);
 
@@ -41,9 +41,9 @@ export default abstract class ParserLinha {
 
         return false;
     }
-    protected abstract onMatch(contexto: Contexto, m: RegExpExecArray) : Dispositivo<any> | null;
+    protected abstract onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null;
 
     protected atendeRequisitos(contexto: Contexto): boolean {
-        return this.requisitos.length == 0 || !!this.requisitos.find(r => contexto.ultimoItem instanceof r);
+        return this.requisitos.length === 0 || !!this.requisitos.find((r) => contexto.ultimoItem instanceof r);
     }
 }

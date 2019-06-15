@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -14,16 +14,16 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { validarArticulacao, Validacao } from "../src/validadorArticulacao";
-import Artigo from "../src/dispositivos/Artigo";
-import { Paragrafo, Alinea } from "../src";
+import { Alinea, Paragrafo } from '../src';
+import Artigo from '../src/dispositivos/Artigo';
+import { Validacao, validarArticulacao } from '../src/validadorArticulacao';
 
 describe('Validação', () => {
     it('Deve considerar válida uma articulação perfeita.', () => {
         const articulacao = [
             new Artigo('1', 'Primeiro.'),
             new Artigo('2', 'Segundo.'),
-            new Artigo('3', 'Terceiro.'),
+            new Artigo('3', 'Terceiro.')
         ];
         const invalidos = validarArticulacao(articulacao);
 
@@ -34,7 +34,7 @@ describe('Validação', () => {
         const articulacao = [
             new Artigo('1', 'Primeiro.'),
             new Artigo('2', 'Segundo.'),
-            new Artigo('4', 'Terceiro.'),
+            new Artigo('4', 'Terceiro.')
         ];
         const invalidos = validarArticulacao(articulacao);
 
@@ -49,7 +49,7 @@ describe('Validação', () => {
             new Artigo('2', 'Segundo.'),
             new Artigo('2', 'Duplicado.'),
             new Artigo('3', 'Terceiro.'),
-            new Artigo('4', 'Quarto.'),
+            new Artigo('4', 'Quarto.')
         ];
         const invalidos = validarArticulacao(articulacao);
 
@@ -84,4 +84,4 @@ describe('Validação', () => {
         const invalidos = validarArticulacao(alineas);
         expect(invalidos).toEqual([]);
     });
-})
+});

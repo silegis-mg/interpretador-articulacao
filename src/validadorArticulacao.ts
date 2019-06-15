@@ -1,5 +1,5 @@
 /* Copyright 2019 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -14,32 +14,39 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { TipoDispositivoOuAgrupador } from "./dispositivos/Dispositivo";
-import { transformarNumeroRomano, transformarLetra, interpretarLetra, interpretarNumeroRomano } from "./util/transformarNumeros";
-import { QualquerDispositivo } from "./dispositivos/tipos";
-import { Artigo } from ".";
+import { Artigo } from '.';
+import { TipoDispositivoOuAgrupador } from './dispositivos/Dispositivo';
+import { QualquerDispositivo } from './dispositivos/tipos';
+import {
+    interpretarLetra, interpretarNumeroRomano,
+    transformarLetra, transformarNumeroRomano
+} from './util/transformarNumeros';
 
-export type OpcoesValidacao = {
-    formatacaoEsperada?: Formatacao
+export interface IOpcoesValidacao {
+    formatacaoEsperada?: Formatacao;
 }
 
 export class Validacao {
-    constructor(public readonly dispositivo: QualquerDispositivo, public readonly formatacaoNumerica: boolean, public readonly sequenciaNumerica: boolean, public readonly derivacoesValidas: boolean) { }
+    constructor(public readonly dispositivo: QualquerDispositivo,
+                public readonly formatacaoNumerica: boolean,
+                public readonly sequenciaNumerica: boolean,
+                public readonly derivacoesValidas: boolean) {
+    }
 
     get valido() {
         return this.formatacaoNumerica && this.sequenciaNumerica && this.derivacoesValidas;
     }
 }
 
-export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: OpcoesValidacao = {}): Validacao[] {
+export function validarArticulacao(dispositivosOriginais: QualquerDispositivo[],
+                                   opcoes: IOpcoesValidacao = {}): Validacao[] {
     let ultimoArtigo: Artigo;
 
     function _validarArticulacao(dispositivos: QualquerDispositivo[]) {
         const ultimos: { [tipo in TipoDispositivoOuAgrupador]?: QualquerDispositivo } = {
             get artigo() { return ultimoArtigo; },
-            set artigo(artigo) { ultimoArtigo = artigo }
+            set artigo(artigo) { ultimoArtigo = artigo; }
         };
-
 
         if (!opcoes.formatacaoEsperada) {
             opcoes.formatacaoEsperada = {};
@@ -47,22 +54,25 @@ export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: 
 
         const dispositivosInvalidos: Validacao[] = [];
 
-        dispositivos.forEach(dispositivo => {
+        dispositivos.forEach((dispositivo) => {
             if (!dispositivo) {
                 return new Validacao(dispositivo, false, false, false);
             }
 
             const tipo = dispositivo.tipo;
             const formatacao = inferirFormatacao(dispositivo.numero);
-            let validacaoSequencia = verificarNumeracao(dispositivo, ultimos[tipo], formatacao);
+            const validacaoSequencia = verificarNumeracao(dispositivo, ultimos[tipo], formatacao);
 
             ultimos[tipo] = dispositivo;
 
             const subvalidacao = _validarArticulacao(dispositivo.subitens);
+            const validacaoFormatacaoNumerica = !opcoes.formatacaoEsperada![tipo]
+                || opcoes.formatacaoEsperada![tipo] === formatacao
+                || formatacao === FormatacaoNumerica.PARAGRAFO_UNICO;
 
             const validacao = new Validacao(
                 dispositivo,
-                !opcoes.formatacaoEsperada![tipo] || opcoes.formatacaoEsperada![tipo] == formatacao || formatacao === FormatacaoNumerica.PARAGRAFO_UNICO,
+                validacaoFormatacaoNumerica,
                 validacaoSequencia.sequenciaNumericaValida,
                 subvalidacao.length === 0
             );
@@ -82,11 +92,12 @@ export function validarArticulacao(dispositivos: QualquerDispositivo[], opcoes: 
         return dispositivosInvalidos;
     }
 
-    return _validarArticulacao(dispositivos);
+    return _validarArticulacao(dispositivosOriginais);
 }
 
-
-function verificarNumeracao(dispositivo: QualquerDispositivo, anterior: QualquerDispositivo | undefined, formatacao: FormatacaoNumerica) {
+function verificarNumeracao(dispositivo: QualquerDispositivo,
+                            anterior: QualquerDispositivo | undefined,
+                            formatacao: FormatacaoNumerica) {
     const mEmenda = /^(.+?)-([a-z])$/i.exec(dispositivo.numero || '');
     let sequenciaNumericaValida: boolean;
 
@@ -98,11 +109,16 @@ function verificarNumeracao(dispositivo: QualquerDispositivo, anterior: Qualquer
                 !!mEmendaAnterior[2] && mEmenda[2].charCodeAt(0) === mEmendaAnterior[2].charCodeAt(0) + 1);
     } else {
         const proximoNumero = anterior ? interpretarNumero(anterior.numero, formatacao) + 1 : 1;
-    
+
         sequenciaNumericaValida = dispositivo.numero === formatar(proximoNumero, formatacao) ||
-            !!anterior && !!anterior.numero && !!dispositivo.numero && (formatacao === FormatacaoNumerica.ALFABETO_MINUSCULO || formatacao === FormatacaoNumerica.ALFABETO_MAIUSCULO) &&
-            (interpretarLetra(dispositivo.numero) !== interpretarLetra(anterior.numero) + 1 &&
-                interpretarLetra(dispositivo.numero, false) === interpretarLetra(anterior.numero, false) + 1);
+            !!anterior && !!anterior.numero && !!dispositivo.numero &&
+            (
+                formatacao === FormatacaoNumerica.ALFABETO_MINUSCULO ||
+                formatacao === FormatacaoNumerica.ALFABETO_MAIUSCULO
+            ) && (
+                interpretarLetra(dispositivo.numero) !== interpretarLetra(anterior.numero) + 1 &&
+                interpretarLetra(dispositivo.numero, false) === interpretarLetra(anterior.numero, false) + 1
+            );
     }
 
     return {
@@ -177,7 +193,7 @@ function interpretarNumero(numero: string | null, formatacao: FormatacaoNumerica
         return 0;
     }
 
-    [numero] = numero.split('-', 1)
+    [numero] = numero.split('-', 1);
 
     switch (formatacao) {
         case FormatacaoNumerica.NENHUMA:

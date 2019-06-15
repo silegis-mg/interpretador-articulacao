@@ -1,5 +1,5 @@
 /* Copyright 2017 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -15,8 +15,8 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import Dispositivo, { TipoDispositivo } from './Dispositivo';
 import Alinea from './Alinea';
+import Dispositivo, { TipoDispositivo } from './Dispositivo';
 
 export default class Inciso extends Dispositivo<Alinea> {
     public alineas: Alinea[] = [];
@@ -27,7 +27,7 @@ export default class Inciso extends Dispositivo<Alinea> {
 
     adicionar(alinea: Alinea) {
         if (!(alinea instanceof Alinea)) {
-            throw 'Tipo não suportado.';
+            throw new Error('Tipo não suportado.');
         }
 
         Object.defineProperty(alinea, '$parent', { value: this });
