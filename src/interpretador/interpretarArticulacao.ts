@@ -14,7 +14,6 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-
 import { Divisao } from '../dispositivos/agrupadores';
 import { ArticulacaoInterpretada } from './ArticulacaoInterpretada';
 import Contexto from './parsers/Contexto';
@@ -32,23 +31,13 @@ import ParserCapitulo from './parsers/ParserCapitulo';
 import ParserSecao from './parsers/ParserSecao';
 import ParserSubsecao from './parsers/ParserSubsecao';
 
-export enum FormatoDestino {
-    OBJETO = 'objeto',
-    LEXML = 'lexml',
-    LEXML_STRING = 'lexml-string'
-}
-
-export enum FormatoOrigem {
-    TEXTO = 'texto',
-    HTML = 'html'
-}
-
 /**
  * Interpreta conteúdo de articulação.
  * 
- * @param {String} textoOriginal Texto a ser interpretado
+ * @param {String} textoOriginal Texto a ser interpretado.
+ * @returns {ArticulacaoInterpretada} Resultado da interpretação.
  */
-function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
+function interpretarArticulacao(textoOriginal: string): ArticulacaoInterpretada {
     var contexto = new Contexto();
     var regexpLinhas: ParserLinha[] = [
         new ParserParentesis(),
@@ -95,55 +84,6 @@ function parseTexto(textoOriginal: string): ArticulacaoInterpretada {
         textoAnterior: contexto.textoAnterior,
         articulacao: contexto.articulacao
     };
-}
-
-/**
- * Interpreta conteúdo de articulação.
- * 
- * @param {String} texto Texto a ser interpretado
- * @param {String} formatoDestino Formato a ser retornado: 'objeto', 'lexml' (padrão) ou "lexmlString".
- * @param {String} formatoOrigem Formatao a ser processado: 'texto' (padrão), 'html'.
- * @returns {Object|DocumentFragment}
- */
-function interpretarArticulacao(texto: string, formatoOrigem: FormatoOrigem = FormatoOrigem.TEXTO): ArticulacaoInterpretada {
-    switch ((formatoOrigem || 'texto').toLowerCase()) {
-        case 'texto':
-            return parseTexto(texto);
-
-        case 'html':
-            const html = document.createElement('html');
-            html.innerHTML = texto;
-            return parseTexto(
-                removerEntidadeHtml(
-                    html.innerHTML
-                        .replace(/[\n\t\r ]+/g, ' ')                    // Transforma quebra de linhas e tabulações em espaços
-                        .replace(/<(head|script|strike)(?:\s.*?)?>.*?<\/\1>|<!--.*?-->/gi, '')
-                        .replace(/<P(?:\s+.*?)?>(.+?)<\/P>/gi, '$1\n')  // Transforma parágrafos
-                        .replace(/<br(?:\s.*?)\/?>/ig, '\n')            // Transforma <br> em quebras de linha
-                        .replace(/<.+?>/g, '').trim()                   // Remove todas as tags.
-                )
-            );
-
-        default:
-            throw 'Formato não suportado.';
-    }
-}
-
-function removerEntidadeHtml(html: string) {
-    const safeXmlEntities = ["&lt;", "&gt;", "&quot;", "&amp;", "&apos;"];
-
-    return html.replace(/&.+?;/g, (entidade: string) => {
-        if (safeXmlEntities.indexOf(entidade) >= 0) {
-            return entidade;
-        } else {
-            /* A entidade não é uma das predefinidas no xml e é suportada só no HTML. Por exemplo: &nbsp; ou &copy;.
-             * Nesse caso, converte para texto e no replace abaixo substitui pela notação unicode.
-             */
-            const span = document.createElement('span');
-            span.innerHTML = entidade;
-            return span.textContent!;
-        }
-    });
 }
 
 /**

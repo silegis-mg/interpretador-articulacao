@@ -21,7 +21,6 @@ import Alinea from './dispositivos/Alinea';
 import Item from './dispositivos/Item';
 import { Preambulo, Titulo, Capitulo, Secao, Subsecao } from './dispositivos/agrupadores';
 import interpretarArticulacao from './interpretador/interpretarArticulacao';
-import { FormatoOrigem } from './interpretador/interpretarArticulacao';
 import { validarArticulacao } from './validadorArticulacao';
 
-export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao, FormatoOrigem, validarArticulacao };
+export { Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo, Capitulo, Secao, Subsecao, interpretarArticulacao, validarArticulacao };

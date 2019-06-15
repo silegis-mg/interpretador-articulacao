@@ -16,7 +16,6 @@
  */
 
 import * as parser from '../../src/index';
-import { FormatoOrigem } from '../../src/interpretador/interpretarArticulacao';
 
 describe('Parser de articulação', function () {
     function novo(tipo: any, obj: any): any {
@@ -394,22 +393,6 @@ describe('Parser de articulação', function () {
         });
     });
 
-    it('Deve escapar entidades html', function () {
-        var texto = '<P>Art. 1&#176; &#8211; Fica declarado de utilidade p&#250;blica o treste &#160;asdf asd f &#160; &#160;asd, com sede no Munic&#237;pio de Abadia dos Dourados.</P><P>Art. 2&#176; &#8211; Esta lei entra em vigor na data de sua publica&#231;&#227;o.</P>';
-        var objeto = parser.interpretarArticulacao(texto, FormatoOrigem.HTML);
-
-        expect(objeto).toEqual({
-            textoAnterior: '',
-            articulacao: novo(parser.Artigo, [{
-                numero: '1',
-                descricao: 'Fica declarado de utilidade pública o treste  asdf asd f    asd, com sede no Município de Abadia dos Dourados.'
-            }, {
-                numero: '2',
-                descricao: 'Esta lei entra em vigor na data de sua publicação.'
-            }])
-        });
-    });
-
     it('Deve entender artigos emendados', function () {
         var texto = 'Art. 111-A. O Tribunal Superior do Trabalho compor-se-á de vinte e sete Ministros, escolhidos dentre brasileiros com mais de trinta e cinco anos e menos de sessenta e cinco anos, de notável saber jurídico e reputação ilibada, nomeados pelo Presidente da República após aprovação pela maioria absoluta do Senado Federal, sendo:  (Redação dada pela Emenda Constitucional nº 92, de 2016)' +
             '\nI um quinto dentre advogados com mais de dez anos de efetiva atividade profissional e membros do Ministério Público do Trabalho com mais de dez anos de efetivo exercício, observado o disposto no art. 94;  (Incluído pela Emenda Constitucional nº 45, de 2004)';
@@ -431,12 +414,12 @@ describe('Parser de articulação', function () {
     });
 
     it('Deve suportar preâmbulo', function () {
-        var html = '<p align="CENTER"><strong><font face="Arial" color="#800000" size="2">PREÂMBULO</font></strong></p>' +
-            '<p align="JUSTIFY" style="text-align: justify"><small><font face="Arial" color="#000000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font></small><font face="Arial" size="2">Nós, representantes do povo brasileiro, reunidos em Assembléia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias, promulgamos, sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL.</font></p>' +
-            '<p align="center" style="margin-top: 0; margin-bottom: 0"><font face="Arial" size="2"><a name="tituloi"></a><span style="text-transform: uppercase"><b>TÍTULO I</b></span></font></p>' +
-            '<p align="center" style="margin-top: 0; margin-bottom: 0"><font face="Arial" size="2"><span style="text-transform: uppercase"><b>Dos Princípios Fundamentais </b></span> </font></p>' +
-            '<div id="art"><p><a name="art1"></a><a name="1"></a>Art. 1º A República Federativa do Brasil, formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos:</p></div>';
-        var objeto = parser.interpretarArticulacao(html, FormatoOrigem.HTML);
+        var html = 'PREÂMBULO\n' +
+            'Nós, representantes do povo brasileiro, reunidos em Assembléia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias, promulgamos, sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL.\n\n' +
+            'TÍTULO I\n' +
+            'Dos Princípios Fundamentais\n' +
+            'Art. 1º A República Federativa do Brasil, formada pela união indissolúvel dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos:';
+        var objeto = parser.interpretarArticulacao(html);
 
         const preAmbulo = new parser.Preambulo('Nós, representantes do povo brasileiro, reunidos em Assembléia Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias, promulgamos, sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL.');
         const titulo = new parser.Titulo('I', 'Dos Princípios Fundamentais');

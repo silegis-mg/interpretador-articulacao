@@ -16,7 +16,6 @@
  */
 
 import Dispositivo, { TipoDispositivo } from './Dispositivo';
-import { transformarQuebrasDeLinhaEmP } from '../util/htmlUtil';
 import Inciso from './Inciso';
 import Paragrafo from './Paragrafo';
 
@@ -36,13 +35,7 @@ export default class Artigo extends Dispositivo<Inciso | Paragrafo> {
         } else if (incisoOuParagrafo instanceof Paragrafo) {
             this.paragrafos.push(incisoOuParagrafo);
         } else {
-            throw 'Tipo não suportado.';
+            throw new Error('Tipo não suportado.');
         }
     }
-
-    transformarConteudoEmFragmento() {
-        return transformarQuebrasDeLinhaEmP(this.descricao);
-    }
-
 }
-

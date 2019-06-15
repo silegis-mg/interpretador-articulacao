@@ -6,7 +6,7 @@ O interpretador de Articulação é uma biblioteca de parser de texto articulado
 ambas elaboradas pela Assembleia Legislativa de Minas Gerais, como parte do Sistema de Informação Legislativa de
 Minas Gerais (Silegis-MG).
 
-Ele permite a interpretação de texto articulado (texto puro ou HTML), transformando em um objeto estruturado
+Ele permite a interpretação de texto articulado (texto puro), transformando em um objeto estruturado
 contendo dispositivos, tais como artigos, parágrafos, incisos, alíneas e itens, bem como as divisões em preâmbulo,
 títulos, capítulos, seções e subseções. O resultado da interpretação é uma árvore de objetos estruturado, contendo
 a articulação completa.
@@ -26,19 +26,18 @@ Para interpretar um texto puro, transformando em um objeto estruturado, utilize 
 ```javascript
 // nodejs
 const interpretador = require('silegismg-interpretador-articulacao');
-const formatoOrigem = 'html';
 
-let resultado = interpretador.interpretarArticulacao(texto, formatoOrigem);
+let resultado = interpretador.interpretarArticulacao(texto);
 ```
 
 ```typescript
 // typescript
-import { interpretarArticulacao, FormatoOrigem } from 'silegismg-interpretador-articulacao';
+import { interpretarArticulacao } from 'silegismg-interpretador-articulacao';
 
-let resultado = interpretarArticulacao(texto, FormatoOrigem.HTML);
+let resultado = interpretarArticulacao(texto);
 ```
 
-onde ``texto`` é uma `string` e ``formatoOrigem`` é "texto" (padrão) ou "html".
+onde ``texto`` é uma `string`.
 
 O resultado é um objeto contendo a seguinte interface:
 

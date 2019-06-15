@@ -10,7 +10,6 @@
   },
   "keywords": [
     "silegismg",
-    "lexml",
     "articulacao",
     "parser",
     "interpretador",
@@ -19,7 +18,8 @@
     "camara",
     "senado",
     "legislativa",
-    "legislativo"
+    "legislativo",
+    "legimática"
   ],
   "author": "Assembleia Legislativa de Minas Gerais (ALMG)",
   "license": "LGPL-3.0",

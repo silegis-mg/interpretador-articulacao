@@ -1,5 +1,5 @@
 /* Copyright 2017 Assembleia Legislativa de Minas Gerais
- * 
+ *
  * This file is part of Interpretador-Articulacao.
  *
  * Interpretador-Articulacao is free software: you can redistribute it and/or modify
@@ -58,19 +58,5 @@ export default abstract class Dispositivo<TiposDerivaveis extends Dispositivo<an
 
         (this as any)[atributo].push(dispositivo);
         Object.defineProperty(dispositivo, '$parent', { value: this });
-    }
-
-    /**
-     * Transforma o conteúdo na descrição em fragmento do DOM.
-     */
-    transformarConteudoEmFragmento(): DocumentFragment {
-        var fragmento = document.createDocumentFragment();
-
-        let p = document.createElement('p');
-        p.textContent = this.descricao.replace(/\n+/g, ' '); // Transforma quebras de linha em espaços
-
-        fragmento.appendChild(p);
-        
-        return fragmento;
     }
 }
