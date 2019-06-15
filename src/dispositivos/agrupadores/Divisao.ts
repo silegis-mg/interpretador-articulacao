@@ -14,16 +14,11 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Capitulo from './agrupadores/Capitulo';
-import Preambulo from './agrupadores/Preambulo';
-import Secao from './agrupadores/Secao';
-import Subsecao from './agrupadores/Subsecao';
-import Titulo from './agrupadores/Titulo';
-import Alinea from './Alinea';
-import Artigo from './Artigo';
-import Inciso from './Inciso';
-import Item from './Item';
-import Paragrafo from './Paragrafo';
+import Dispositivo from '../Dispositivo';
+import { TipoAgrupador } from '../Dispositivo';
 
-export type QualquerDispositivo = Artigo | Paragrafo | Inciso | Alinea | Item
-    | Preambulo | Titulo | Capitulo | Secao | Subsecao;
+export default abstract class Divisao<T extends Dispositivo<any>> extends Dispositivo<T> {
+    constructor(tipo: TipoAgrupador, numero: string | null, descricao: string, derivacoes?: string[]) {
+        super(tipo, numero, descricao, derivacoes);
+    }
+}

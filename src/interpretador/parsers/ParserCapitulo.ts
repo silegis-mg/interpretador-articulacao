@@ -14,7 +14,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Capitulo, Preambulo, Titulo } from '../../dispositivos/agrupadores';
+import Capitulo from '../../dispositivos/agrupadores/Capitulo';
+import Preambulo from '../../dispositivos/agrupadores/Preambulo';
+import Titulo from '../../dispositivos/agrupadores/Titulo';
 import Dispositivo from '../../dispositivos/Dispositivo';
 import Contexto from './Contexto';
 import ParserLinha from './ParserLinha';
