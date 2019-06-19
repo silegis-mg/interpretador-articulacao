@@ -5,3 +5,5 @@
 /jest.config.js
 /tslint.json
 /tsconfig.json
+/test
+/dist/test
