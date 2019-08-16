@@ -94,3 +94,89 @@ export function interpretarLetra(letra: string, alfabetoCompleto: boolean = true
         return codigo - 99;
     }
 }
+
+export enum FormatacaoNumerica {
+    NENHUMA, ARABICO, ROMANO, ALFABETO_MINUSCULO, ALFABETO_MAIUSCULO, PARAGRAFO_UNICO
+}
+
+export function inferirFormatacao(numero: string | null): FormatacaoNumerica {
+    if (!numero) {
+        return FormatacaoNumerica.NENHUMA;
+    }
+
+    if (/^\d/.test(numero)) {
+        return FormatacaoNumerica.ARABICO;
+    }
+
+    if (numero.localeCompare('Parágrafo único', 'pt-BR', { sensitivity: 'base' }) === 0) {
+        return FormatacaoNumerica.PARAGRAFO_UNICO;
+    }
+
+    if (/^[a-z]/.test(numero)) {
+        return FormatacaoNumerica.ALFABETO_MINUSCULO;
+    }
+
+    if (/^[IVXLCDM]+(?:-[A-Za-z])?$/.test(numero)) {
+        return FormatacaoNumerica.ROMANO;
+    }
+
+    if (/^[A-Z]/.test(numero)) {
+        return FormatacaoNumerica.ALFABETO_MAIUSCULO;
+    }
+
+    throw new Error(`Não foi possível identificar a formatação numérica para ${numero}.`);
+}
+
+export function interpretarNumero(numero: string | null, formatacao?: FormatacaoNumerica): number {
+    if (numero === null) {
+        return 0;
+    }
+
+    [numero] = numero.split('-', 1);
+
+    switch (formatacao || inferirFormatacao(numero)) {
+        case FormatacaoNumerica.NENHUMA:
+            return 0;
+
+        case FormatacaoNumerica.ARABICO:
+            return parseInt(numero);
+
+        case FormatacaoNumerica.PARAGRAFO_UNICO:
+            return 1;
+
+        case FormatacaoNumerica.ALFABETO_MAIUSCULO:
+        case FormatacaoNumerica.ALFABETO_MINUSCULO:
+            return interpretarLetra(numero);
+
+        case FormatacaoNumerica.ROMANO:
+            return interpretarNumeroRomano(numero);
+
+        default:
+            throw new Error('Formatação desconhecida: ' + formatacao);
+    }
+}
+
+export function formatar(numero: number | null, formatacao: FormatacaoNumerica): string | null {
+    switch (formatacao) {
+        case FormatacaoNumerica.NENHUMA:
+            return null;
+
+        case FormatacaoNumerica.ARABICO:
+            return numero!.toString();
+
+        case FormatacaoNumerica.ROMANO:
+            return transformarNumeroRomano(numero!);
+
+        case FormatacaoNumerica.ALFABETO_MINUSCULO:
+            return transformarLetra(numero!, false);
+
+        case FormatacaoNumerica.ALFABETO_MAIUSCULO:
+            return transformarLetra(numero!, true);
+
+        case FormatacaoNumerica.PARAGRAFO_UNICO:
+            return 'Parágrafo único';
+
+        default:
+            throw new Error('Formatação desconhecida: ' + formatacao);
+    }
+}

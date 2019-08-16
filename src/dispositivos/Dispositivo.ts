@@ -26,7 +26,6 @@ export enum TipoAgrupador {
     PREAMBULO = 'preambulo',
     TITULO = 'titulo',
     CAPITULO = 'capitulo',
-    SUBCAPITULO = 'subcapitulo',
     SECAO = 'secao',
     SUBSECAO = 'subsecao'
 }

@@ -17,13 +17,16 @@
 import { Capitulo, Preambulo, Secao, Subsecao, Titulo } from './dispositivos/agrupadores';
 import Alinea from './dispositivos/Alinea';
 import Artigo from './dispositivos/Artigo';
+import Dispositivo, { TipoDispositivoOuAgrupador } from './dispositivos/Dispositivo';
 import Inciso from './dispositivos/Inciso';
 import Item from './dispositivos/Item';
 import Paragrafo from './dispositivos/Paragrafo';
 import interpretarArticulacao from './interpretador/interpretarArticulacao';
+import { interpretarNumero } from './util/transformarNumeros';
 import { validarArticulacao } from './validadorArticulacao';
 
 export {
     Artigo, Paragrafo, Inciso, Alinea, Item, Preambulo, Titulo,
-    Capitulo, Secao, Subsecao, interpretarArticulacao, validarArticulacao
+    Capitulo, Secao, Subsecao, interpretarArticulacao, validarArticulacao,
+    interpretarNumero, Dispositivo, TipoDispositivoOuAgrupador
 };
