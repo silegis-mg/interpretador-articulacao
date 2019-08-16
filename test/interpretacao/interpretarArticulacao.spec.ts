@@ -447,24 +447,22 @@ describe('Parser de articulação', () => {
             'do Distrito Federal, constitui-se em Estado Democrático de Direito e tem como fundamentos:';
         const objeto = parser.interpretarArticulacao(texto);
 
-        const preAmbulo = new parser.Preambulo('Nós, representantes do povo brasileiro, reunidos em Assembléia ' +
-            'Nacional Constituinte para instituir um Estado Democrático, destinado a assegurar o exercício dos ' +
-            'direitos sociais e individuais, a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade ' +
-            'e a justiça como valores supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na ' +
-            'harmonia social e comprometida, na ordem interna e internacional, com a solução pacífica das ' +
-            'controvérsias, promulgamos, sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA ' +
-            'FEDERATIVA DO BRASIL.');
         const titulo = new parser.Titulo('I', 'Dos Princípios Fundamentais');
         const artigo = new parser.Artigo('1', 'A República Federativa do Brasil, formada pela união indissolúvel ' +
             'dos Estados e Municípios e do Distrito Federal, constitui-se em Estado Democrático de Direito e ' +
             'tem como fundamentos:');
 
-        preAmbulo.adicionar(titulo);
         titulo.adicionar(artigo);
 
         expect(objeto).toEqual({
-            textoAnterior: '',
-            articulacao: [preAmbulo]
+            textoAnterior: 'PREÂMBULO\n' +
+            'Nós, representantes do povo brasileiro, reunidos em Assembléia Nacional Constituinte para ' +
+            'instituir um Estado Democrático, destinado a assegurar o exercício dos direitos sociais e individuais, ' +
+            'a liberdade, a segurança, o bem-estar, o desenvolvimento, a igualdade e a justiça como valores ' +
+            'supremos de uma sociedade fraterna, pluralista e sem preconceitos, fundada na harmonia social e ' +
+            'comprometida, na ordem interna e internacional, com a solução pacífica das controvérsias, promulgamos, ' +
+            'sob a proteção de Deus, a seguinte CONSTITUIÇÃO DA REPÚBLICA FEDERATIVA DO BRASIL.',
+            articulacao: [titulo]
         });
     });
 

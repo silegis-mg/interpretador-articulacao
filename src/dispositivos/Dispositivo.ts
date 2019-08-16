@@ -23,7 +23,6 @@ export enum TipoDispositivo {
 }
 
 export enum TipoAgrupador {
-    PREAMBULO = 'preambulo',
     TITULO = 'titulo',
     CAPITULO = 'capitulo',
     SECAO = 'secao',

@@ -26,10 +26,13 @@ import ParserItem from './parsers/ParserItem';
 import ParserLinha from './parsers/ParserLinha';
 import ParserParagrafo from './parsers/ParserParagrafo';
 import ParserParentesis from './parsers/ParserParentesis';
-import ParserPreambulo from './parsers/ParserPreambulo';
 import ParserSecao from './parsers/ParserSecao';
 import ParserSubsecao from './parsers/ParserSubsecao';
 import ParserTitulo from './parsers/ParserTitulo';
+
+interface IOpcoesInterpretacao {
+    parsersExtras?: ParserLinha[];
+}
 
 /**
  * Interpreta conteúdo de articulação.
@@ -37,7 +40,8 @@ import ParserTitulo from './parsers/ParserTitulo';
  * @param {String} textoOriginal Texto a ser interpretado.
  * @returns {IArticulacaoInterpretada} Resultado da interpretação.
  */
-function interpretarArticulacao(textoOriginal: string): IArticulacaoInterpretada {
+function interpretarArticulacao(textoOriginal: string,
+                                opcoes: IOpcoesInterpretacao = {}): IArticulacaoInterpretada {
     const contexto = new Contexto();
     const regexpLinhas: ParserLinha[] = [
         new ParserParentesis(),
@@ -47,12 +51,15 @@ function interpretarArticulacao(textoOriginal: string): IArticulacaoInterpretada
         new ParserInciso(),
         new ParserAlinea(),
         new ParserItem(),
-        new ParserPreambulo(),
         new ParserTitulo(),
         new ParserCapitulo(),
         new ParserSecao(),
         new ParserSubsecao()
     ];
+
+    if (opcoes.parsersExtras) {
+        regexpLinhas.push(...opcoes.parsersExtras);
+    }
 
     /* Para cada citação, isto é, texto entre aspas, substitui-se o seu conteúdo
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar

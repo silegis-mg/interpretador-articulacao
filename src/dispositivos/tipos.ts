@@ -15,7 +15,6 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Capitulo from './agrupadores/Capitulo';
-import Preambulo from './agrupadores/Preambulo';
 import Secao from './agrupadores/Secao';
 import Subsecao from './agrupadores/Subsecao';
 import Titulo from './agrupadores/Titulo';
@@ -26,4 +25,4 @@ import Item from './Item';
 import Paragrafo from './Paragrafo';
 
 export type QualquerDispositivo = Artigo | Paragrafo | Inciso | Alinea | Item
-    | Preambulo | Titulo | Capitulo | Secao | Subsecao;
+    | Titulo | Capitulo | Secao | Subsecao;

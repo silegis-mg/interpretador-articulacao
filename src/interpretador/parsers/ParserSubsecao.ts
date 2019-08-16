@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Capitulo, Preambulo, Secao, Subsecao, Titulo } from '../../dispositivos/agrupadores';
+import { Capitulo, Secao, Subsecao, Titulo } from '../../dispositivos/agrupadores';
 import Dispositivo from '../../dispositivos/Dispositivo';
 import Contexto from './Contexto';
 import ParserLinha from './ParserLinha';
@@ -26,7 +26,7 @@ export default class ParserSubsecao extends ParserLinha {
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
         const item = new Subsecao(m[1], m[2] || '');
-        contexto.adicionar([Secao, Capitulo, Titulo, Preambulo], item);
+        contexto.adicionar([Secao, Capitulo, Titulo], item);
         return item;
     }
 }

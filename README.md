@@ -62,7 +62,7 @@ interface IArticulacaoInterpretada {
     articulacao: QualquerDispositivo[];
 }
 
-type QualquerDispositivo = Artigo | Paragrafo | Inciso | Alinea | Item | Preambulo | Titulo | Capitulo | Secao | Subsecao
+type QualquerDispositivo = Artigo | Paragrafo | Inciso | Alinea | Item | Titulo | Capitulo | Secao | Subsecao
 
 abstract class Dispositivo {
     public tipo: string;
@@ -91,7 +91,6 @@ abstract class Divisao extends Dispositivo {
     subitens: Dispositivo
 }
 
-class Preambulo extends Divisao { }
 class Titulo extends Divisao { }
 class Capitulo extends Divisao { }
 class Secao extends Divisao { }

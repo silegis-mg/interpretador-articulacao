@@ -15,7 +15,6 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Capitulo from '../../dispositivos/agrupadores/Capitulo';
-import Preambulo from '../../dispositivos/agrupadores/Preambulo';
 import Secao from '../../dispositivos/agrupadores/Secao';
 import Subsecao from '../../dispositivos/agrupadores/Subsecao';
 import Titulo from '../../dispositivos/agrupadores/Titulo';
@@ -25,7 +24,7 @@ import ParserLinha from './ParserLinha';
 
 export default class ParserContinuacaoDivisao extends ParserLinha {
     constructor() {
-        super(/^\s*(.*)?\s*$/, Preambulo, Titulo, Capitulo, Secao, Subsecao);
+        super(/^\s*(.*)?\s*$/, Titulo, Capitulo, Secao, Subsecao);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {

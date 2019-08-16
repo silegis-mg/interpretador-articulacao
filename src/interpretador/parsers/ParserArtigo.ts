@@ -15,7 +15,6 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import Capitulo from '../../dispositivos/agrupadores/Capitulo';
-import Preambulo from '../../dispositivos/agrupadores/Preambulo';
 import Secao from '../../dispositivos/agrupadores/Secao';
 import Subsecao from '../../dispositivos/agrupadores/Subsecao';
 import Titulo from '../../dispositivos/agrupadores/Titulo';
@@ -31,7 +30,7 @@ export default class ParserArtigo extends ParserLinha {
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
         const item = new Artigo(m[1], m[2]);
-        contexto.adicionar([Preambulo, Titulo, Capitulo, Secao, Subsecao], item);
+        contexto.adicionar([Titulo, Capitulo, Secao, Subsecao], item);
         return item;
     }
 }

@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Preambulo, Titulo } from '../../dispositivos/agrupadores';
+import { Titulo } from '../../dispositivos/agrupadores';
 import Dispositivo from '../../dispositivos/Dispositivo';
 import Contexto from './Contexto';
 import ParserLinha from './ParserLinha';
@@ -26,7 +26,7 @@ export default class ParserTitulo extends ParserLinha {
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
         const item = new Titulo(m[1], m[2] || '');
-        contexto.adicionar([Preambulo], item);
+        contexto.adicionar([], item);
         return item;
     }
 }

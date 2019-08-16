@@ -46,7 +46,7 @@ export default class Contexto {
                 item = (item as Dispositivo<any>).$parent as Dispositivo<any>;
             } while (item);
         } else {
-            throw new Error('Argumento inválido');
+            throw new Error('Argumento inválido: ' + tipo);
         }
 
         return item;
