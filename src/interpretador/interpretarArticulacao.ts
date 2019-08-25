@@ -67,12 +67,7 @@ function interpretarArticulacao(textoOriginal: string,
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar
      * que o conteúdo seja também interpretado.
      */
-    const texto = [new EscapeSimboloEscape(), new EscapeAspas(), ...(opcoes.escapesExtras || [])]
-        .reduce((prev, cur) => cur.escapar(prev, (trecho) => {
-            contexto.escape.push(trecho);
-            return EscapeInterpretacao.ESCAPE;
-        }), textoOriginal)
-        .replace(/\s*\n+\s*/g, '\n');
+    const texto = escapar(textoOriginal, contexto, opcoes.escapesExtras || []);
 
     texto.split('\n').forEach((linha) => {
         let escapou = false;
@@ -113,11 +108,11 @@ function interpretarArticulacao(textoOriginal: string,
 
                 // Desfaz os escapes.
                 item.descricao = linha.substr(idxDescricao).replace(
-                    EscapeInterpretacao.ESCAPES_REGEXP, () => contexto.escape.shift()!);
+                    EscapeInterpretacao.ESCAPES_REGEXP, () => contexto.escape.shift()!.trecho);
             }
         } else {
             if (escapou) {
-                linha = linha.replace(EscapeInterpretacao.ESCAPES_REGEXP, () => contexto.escape.shift()!);
+                linha = linha.replace(EscapeInterpretacao.ESCAPES_REGEXP, () => contexto.escape.shift()!.trecho);
             }
 
             if (contexto.ultimoItem) {
@@ -145,6 +140,33 @@ function interpretarArticulacao(textoOriginal: string,
         textoAnterior: contexto.textoAnterior,
         articulacao: contexto.articulacao
     };
+}
+
+function escapar(textoOriginal: string, contexto: Contexto, escapesExtras: EscapeInterpretacao[]) {
+    const escapes = [new EscapeSimboloEscape(), new EscapeAspas(), ...escapesExtras];
+
+    const textoEscapado = escapes.reduce((prev, cur) => {
+            const escapesAnteriores = [...contexto.escape];
+
+            return cur.escapar(prev, (trecho: string, idx: number) => {
+                for (let i = 0; i < escapesAnteriores.length && escapesAnteriores[i].idx <= idx; i++) {
+                    idx += escapesAnteriores[i].trecho.length - EscapeInterpretacao.ESCAPE.length;
+                }
+
+                trecho = trecho.replace(EscapeInterpretacao.ESCAPES_REGEXP, (escape, idxARestaurar) => {
+                    const aRemover = contexto.escape.findIndex((item) => item.idx === idxARestaurar + idx);
+                    const [escapeAnterior] = contexto.escape.splice(aRemover, 1);
+                    return escapeAnterior.trecho;
+                });
+                contexto.escape.push({trecho, idx});
+                return EscapeInterpretacao.ESCAPE;
+            })
+        }, textoOriginal)
+        .replace(/\s*\n+\s*/g, '\n');
+
+    contexto.escape.sort((a, b) => a.idx - b.idx);
+
+    return textoEscapado;
 }
 
 export default interpretarArticulacao;

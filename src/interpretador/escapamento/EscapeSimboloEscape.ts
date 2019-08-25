@@ -24,7 +24,7 @@ export default class EscapeSimboloEscape extends EscapeInterpretacao {
         for (let idx = entrada.indexOf(EscapeInterpretacao.ESCAPE);
             idx !== -1;
             idx = entrada.indexOf(EscapeInterpretacao.ESCAPE, idx + 1)) {
-            aoEscapar(EscapeInterpretacao.ESCAPE);
+            aoEscapar(EscapeInterpretacao.ESCAPE, idx);
         }
 
         return entrada;

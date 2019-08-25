@@ -30,4 +30,34 @@ describe('Escapamento de tags', () => {
 
         expect(parser.validarArticulacao(objeto.articulacao, { escapes: [new parser.EscapeTags()] })).toEqual([]);
     });
+
+    it('Deve funcionar concomitantemente com a escapamento de aspas', () => {
+        const texto = `Art. 1 – Este é um "teste" de <i>Lorem ipsum.</i>
+Art. 2 - Este é <strong>mais um "teste"</strong>.`;
+        const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
+
+        expect(objeto).toEqual({
+            textoAnterior: '',
+            articulacao: [
+                new parser.Artigo('1', `Este é um "teste" de <i>Lorem ipsum.</i>`),
+                new parser.Artigo('2', `Este é <strong>mais um "teste"</strong>.`)
+            ]
+        });
+
+        expect(parser.validarArticulacao(objeto.articulacao, { escapes: [new parser.EscapeTags()] })).toEqual([]);
+    });
+
+    it('Deve suportar tag com aspas em atributos', () => {
+        const texto = `Art. 1 – Este é um "teste" de <i lang="latin">Lorem ipsum.</i>`;
+        const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
+
+        expect(objeto).toEqual({
+            textoAnterior: '',
+            articulacao: [
+                new parser.Artigo('1', `Este é um "teste" de <i lang="latin">Lorem ipsum.</i>`)
+            ]
+        });
+
+        expect(parser.validarArticulacao(objeto.articulacao, { escapes: [new parser.EscapeTags()] })).toEqual([]);
+    });
 });

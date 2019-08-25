@@ -34,4 +34,4 @@ export default abstract class EscapeInterpretacao {
     abstract escapar(entrada: string, substituir: SubstituirCallback): string;
 }
 
-export type SubstituirCallback = (trechoEscapado: string) => string;
+export type SubstituirCallback = (trechoEscapado: string, idx: number) => string;

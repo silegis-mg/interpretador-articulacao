@@ -42,7 +42,7 @@ export class EscapeAspas extends EscapeInterpretacao {
             }
 
             resultado += texto.substr(ultimo, abertura! - ultimo) +
-                substituir(texto.substr(abertura!, m.index - abertura! + 1));
+                substituir(texto.substr(abertura!, m.index - abertura! + 1), abertura!);
             ultimo = m.index + 1;
         }
 
