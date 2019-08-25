@@ -52,9 +52,8 @@ export default class ParserInciso extends ParserLinha {
         let container = contexto.getUltimoItemTipo([Artigo, Paragrafo]);
 
         if (!container) {
-            container = new Artigo('', contexto.textoAnterior);
+            container = new Artigo('', '');
             contexto.articulacao.push(container);
-            contexto.textoAnterior = '';
         }
 
         container.adicionar(item);

@@ -24,7 +24,7 @@ import ParserLinha from './ParserLinha';
 
 export default class ParserAlinea extends ParserLinha {
     constructor() {
-        super(/^\s*([a-z](?:-[a-z])?)\s*[-–).]\s*(.*)/i);
+        super(/^\s*([a-z](?:-[a-z])?)\s*[-–).]\s*(.+)/i);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
@@ -39,9 +39,8 @@ export default class ParserAlinea extends ParserLinha {
                 contexto.articulacao.push(artigo);
             }
 
-            container = new Inciso('', contexto.textoAnterior);
+            container = new Inciso('', '');
             artigo.adicionar(container);
-            contexto.textoAnterior = '';
         }
 
         container.adicionar(item);
