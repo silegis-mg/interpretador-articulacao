@@ -14,24 +14,24 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Dispositivo from '../../dispositivos/Dispositivo';
-import Contexto from './Contexto';
-import ParserLinha from './ParserLinha';
 
-export default class ParserParentesis extends ParserLinha {
-    constructor() {
-        super(/^\(.+\)$/);
-    }
+export default abstract class EscapeInterpretacao {
+    /**
+     * Valor a ser colocado no trecho escapado.
+     */
+    static readonly ESCAPE = '\0';
 
-    onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
-        if (contexto.ultimoItem) {
-            if (!contexto.ultimoItem.descricao) {
-                contexto.ultimoItem.descricao = m[0];
-            } else {
-                contexto.ultimoItem.descricao += '\n' + m[0];
-            }
-        }
+    /**
+     * Expressão regular para encontrar todos os escapes.
+     */
+    static readonly ESCAPES_REGEXP = /\0/g;
 
-        return contexto.ultimoItem;
-    }
+    /**
+     * Função de escape, que, a partir da entrada e do contexto,
+     * processa a entrada, realizando os devidos escapes, retornando
+     * o texto a ser considerado.
+     */
+    abstract escapar(entrada: string, substituir: SubstituirCallback): string;
 }
+
+export type SubstituirCallback = (trechoEscapado: string) => string;

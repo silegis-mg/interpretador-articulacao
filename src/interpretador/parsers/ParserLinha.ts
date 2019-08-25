@@ -32,7 +32,6 @@ export default abstract class ParserLinha {
                 const resultado = this.onMatch(contexto, m);
 
                 if (resultado) {
-                    resultado.descricao = resultado.descricao.replace(/\0/g, () => contexto.aspas.shift()!);
                     contexto.ultimoItem = resultado;
                     return true;
                 }
@@ -41,6 +40,7 @@ export default abstract class ParserLinha {
 
         return false;
     }
+
     protected abstract onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null;
 
     protected atendeRequisitos(contexto: Contexto): boolean {

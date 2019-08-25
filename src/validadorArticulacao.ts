@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Artigo } from '.';
+import { Artigo, EscapeInterpretacao } from '.';
 import { Divisao } from './dispositivos/agrupadores';
 import { TipoDispositivo, TipoDispositivoOuAgrupador } from './dispositivos/Dispositivo';
 import { QualquerDispositivo } from './dispositivos/tipos';
@@ -25,6 +25,7 @@ import {
 
 export interface IOpcoesValidacao {
     formatacaoEsperada?: Formatacao;
+    escapes?: EscapeInterpretacao[];
 }
 
 export class Validacao {
@@ -58,10 +59,6 @@ export function validarArticulacao(dispositivosOriginais: QualquerDispositivo[],
         const dispositivosInvalidos: Validacao[] = [];
 
         dispositivos.forEach((dispositivo, idx) => {
-            if (!dispositivo) {
-                return new Validacao(dispositivo, false, false, false, false);
-            }
-
             const tipo = dispositivo.tipo;
             const formatacao = inferirFormatacao(dispositivo.numero);
             const validacaoSequencia = verificarNumeracao(dispositivo, ultimos[tipo], formatacao);
@@ -78,7 +75,9 @@ export function validarArticulacao(dispositivosOriginais: QualquerDispositivo[],
                 validacaoFormatacaoNumerica,
                 validacaoSequencia.sequenciaNumericaValida,
                 subvalidacao.length === 0,
-                validarConteudo(dispositivo, dispositivos[idx + 1] || obterProximoDispositivo(dispositivo))
+                validarConteudo(dispositivo,
+                    dispositivos[idx + 1] || obterProximoDispositivo(dispositivo),
+                    opcoes.escapes || [])
             );
 
             // Parágrafo único não é considerado como formatação esperada
@@ -131,8 +130,12 @@ function verificarNumeracao(dispositivo: QualquerDispositivo,
     };
 }
 
-function validarConteudo(dispositivo: QualquerDispositivo, proximo: QualquerDispositivo | undefined): boolean {
-    const conteudoParaValidacao = dispositivo.descricao.replace(/\(.+?\)|\n+|\r+/g, '').trim();
+function validarConteudo(dispositivo: QualquerDispositivo,
+                         proximo: QualquerDispositivo | undefined,
+                         escapes: EscapeInterpretacao[]): boolean {
+    const conteudoParaValidacao =
+        escapes.reduce((prev, cur) => cur.escapar(prev, () => ''), dispositivo.descricao)
+        .replace(/\(.+?\)|\n+|\r+/g, '').trim();
 
     if (dispositivo instanceof Divisao) {
         return /^[^.:!?]+$/.test(conteudoParaValidacao);
@@ -161,6 +164,6 @@ function obterProximoDispositivo(dispositivo: QualquerDispositivo) {
     return null;
 }
 
-    export type Formatacao = {
+export type Formatacao = {
     [key in TipoDispositivoOuAgrupador]?: FormatacaoNumerica
 };

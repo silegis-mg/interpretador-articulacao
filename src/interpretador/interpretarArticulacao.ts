@@ -16,6 +16,9 @@
  */
 import { Divisao } from '../dispositivos/agrupadores';
 import { IArticulacaoInterpretada } from './ArticulacaoInterpretada';
+import { EscapeAspas } from './escapamento/EscapeAspas';
+import EscapeInterpretacao from './escapamento/EscapeInterpretacao';
+import EscapeSimboloEscape from './escapamento/EscapeSimboloEscape';
 import Contexto from './parsers/Contexto';
 import ParserAlinea from './parsers/ParserAlinea';
 import ParserArtigo from './parsers/ParserArtigo';
@@ -25,13 +28,13 @@ import ParserInciso from './parsers/ParserInciso';
 import ParserItem from './parsers/ParserItem';
 import ParserLinha from './parsers/ParserLinha';
 import ParserParagrafo from './parsers/ParserParagrafo';
-import ParserParentesis from './parsers/ParserParentesis';
 import ParserSecao from './parsers/ParserSecao';
 import ParserSubsecao from './parsers/ParserSubsecao';
 import ParserTitulo from './parsers/ParserTitulo';
 
-interface IOpcoesInterpretacao {
+export interface IOpcoesInterpretacao {
     parsersExtras?: ParserLinha[];
+    escapesExtras?: EscapeInterpretacao[];
 }
 
 /**
@@ -44,7 +47,6 @@ function interpretarArticulacao(textoOriginal: string,
                                 opcoes: IOpcoesInterpretacao = {}): IArticulacaoInterpretada {
     const contexto = new Contexto();
     const regexpLinhas: ParserLinha[] = [
-        new ParserParentesis(),
         new ParserContinuacaoDivisao(),
         new ParserArtigo(),
         new ParserParagrafo(),
@@ -65,25 +67,75 @@ function interpretarArticulacao(textoOriginal: string,
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar
      * que o conteúdo seja também interpretado.
      */
-    const texto = escaparAspas(textoOriginal, contexto).replace(/\s*\n+\s*/g, '\n');
+    const texto = [new EscapeSimboloEscape(), new EscapeAspas(), ...(opcoes.escapesExtras || [])]
+        .reduce((prev, cur) => cur.escapar(prev, (trecho) => {
+            contexto.escape.push(trecho);
+            return EscapeInterpretacao.ESCAPE;
+        }), textoOriginal)
+        .replace(/\s*\n+\s*/g, '\n');
 
     texto.split('\n').forEach((linha) => {
-        if (!regexpLinhas.find((regexp) => regexp.processar(contexto, linha))) {
-            linha = linha.replace(/\0/g, () => contexto.aspas.shift()!);
+        let escapou = false;
+        const linhaSemEscapes = contexto.escape.length > 0
+                              ? linha.replace(EscapeInterpretacao.ESCAPES_REGEXP, () => {
+                                  escapou = true;
+                                  return '';
+                              })
+                              : linha;
+
+        if (regexpLinhas.find((regexp) => regexp.processar(contexto, linhaSemEscapes))) {
+            if (escapou) {
+                const item = contexto.ultimoItem!;
+                let idxDescricao = linhaSemEscapes.indexOf(item.descricao);
+                let idxEscape;
+                let nEscapesAnteriores = 0;
+
+                // Ajusta o índice da descrição, para torná-la relativa à linha com escapes.
+                for (idxEscape = linha.indexOf(EscapeInterpretacao.ESCAPE);
+                     idxEscape !== -1 && idxEscape <= idxDescricao;
+                     idxEscape = linha.indexOf(EscapeInterpretacao.ESCAPE,
+                                               idxEscape + EscapeInterpretacao.ESCAPE.length)) {
+                    idxDescricao += EscapeInterpretacao.ESCAPE.length;
+                    nEscapesAnteriores++;
+                }
+
+                // Ajusta o índice da descrição para escapes imediatamente anterior a ela.
+                while (linha.lastIndexOf(EscapeInterpretacao.ESCAPE, idxDescricao - 1)
+                       + EscapeInterpretacao.ESCAPE.length === idxDescricao) {
+                    idxDescricao -= EscapeInterpretacao.ESCAPE.length;
+                    nEscapesAnteriores--;
+                }
+
+                // Remove os escapes do rótulo.
+                while (nEscapesAnteriores-- > 0) {
+                    contexto.escape.shift();
+                }
+
+                // Desfaz os escapes.
+                item.descricao = linha.substr(idxDescricao).replace(
+                    EscapeInterpretacao.ESCAPES_REGEXP, () => contexto.escape.shift()!);
+            }
+        } else {
+            if (escapou) {
+                linha = linha.replace(EscapeInterpretacao.ESCAPES_REGEXP, () => contexto.escape.shift()!);
+            }
 
             if (contexto.ultimoItem) {
-                if (/[.:;!?$][)\0]?$/.test(contexto.ultimoItem.descricao)) {
+                // Como não foi possível processar, inclui a linha inteira no dispositivo atual.
+                if (/[.:;!?$][)]?$/.test(contexto.ultimoItem.descricao) || linha.startsWith('(')) {
                     contexto.ultimoItem.descricao += '\n' + linha;
                 } else {
                     contexto.ultimoItem.descricao += ' ' + linha;
                 }
             } else if (contexto.articulacao.length > 0
                 && contexto.articulacao[contexto.articulacao.length - 1] instanceof Divisao) {
-
+                // TODO: Rever! Isto aqui ainda é alcansável? Se for, explicar!
                 contexto.articulacao[contexto.articulacao.length - 1].descricao += '\n' + linha;
             } else if (contexto.textoAnterior.length === 0) {
+                // Como não foi possível processar, registramos como texto anterior à articulação.
                 contexto.textoAnterior = linha;
             } else {
+                // Como não foi possível processar, acrescentamos no texto anterior à articulação.
                 contexto.textoAnterior += '\n' + linha;
             }
         }
@@ -93,57 +145,6 @@ function interpretarArticulacao(textoOriginal: string,
         textoAnterior: contexto.textoAnterior,
         articulacao: contexto.articulacao
     };
-}
-
-/**
- * Escapa as aspas, substituindo-as por \0, que funciona como
- * placeholder das aspsas. Ao final de cada parser de dispositivo,
- * o \0 é substituído pelas aspas armazenadas no contexto do parser.
- *
- * @param texto Texto a ser escapado.
- * @param contexto Contexto do parser.
- */
-function escaparAspas(texto: string, contexto: Contexto): string {
-    const regexpAspas = /[“”"]/g;
-    let resultado = '';
-    let ultimo = 0;
-    let abertura: number;
-    let nAberturas = 0;
-
-    for (let m = regexpAspas.exec(texto); m; m = regexpAspas.exec(texto)) {
-        switch (m[0]) {
-            case '“':
-                if (nAberturas++ === 0) {
-                    abertura = m.index;
-                }
-                continue;
-
-            case '”':
-                if (nAberturas-- > 1) {
-                    continue;
-                }
-                break;
-
-            case '"':
-                if (nAberturas === 0) {
-                    nAberturas++;
-                    abertura = m.index;
-                    continue;
-                } else if (nAberturas-- > 1) {
-                    continue;
-                }
-                break;
-        }
-
-        resultado += texto.substr(ultimo, abertura! - ultimo) + '\0';
-        ultimo = m.index + 1;
-
-        contexto.aspas.push(texto.substr(abertura!, m.index - abertura! + 1));
-    }
-
-    resultado += texto.substr(ultimo);
-
-    return resultado;
 }
 
 export default interpretarArticulacao;

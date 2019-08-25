@@ -96,3 +96,19 @@ class Capitulo extends Divisao { }
 class Secao extends Divisao { }
 class Subsecao extends Divisao { }
 ```
+
+### Opções de interpretação
+
+O método `interpretarArticulacao(texto: string, opcoes: IOpcoesInterpretacao)` permite estender
+a capacidade do parser, seja por meio da introdução de parsers extras de linha ou de escapes
+extra de texto.
+
+```typescript
+interface IOpcoesInterpretacao {
+    parsersExtras?: ParserLinha[];
+    escapesExtras?: EscapeInterpretacao[];
+}
+```
+
+Nesta biblioteca existe apenas a implementação do escape de tags de HTML, por meio da classe
+`EscapeTags`.

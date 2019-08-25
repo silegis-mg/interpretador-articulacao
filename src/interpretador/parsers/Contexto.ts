@@ -20,7 +20,7 @@ export default class Contexto {
     public ultimoItem: Dispositivo<any> | null = null;
     public textoAnterior: string = '';
     public articulacao: Dispositivo<any>[] = [];
-    public aspas: string[] = [];
+    public escape: string[] = [];
 
     getUltimoItemTipo(tipo: any): Dispositivo<any> | null {
         let item = this.ultimoItem;

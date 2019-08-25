@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import * as parser from '../../src/index';
+import * as parser from '../../../src/index';
 
 describe('Escapamento de aspas', () => {
     it('Deve suportar dispositivos revogados', () => {
