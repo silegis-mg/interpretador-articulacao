@@ -112,3 +112,24 @@ interface IOpcoesInterpretacao {
 
 Nesta biblioteca existe apenas a implementação do escape de tags de HTML, por meio da classe
 `EscapeTags`.
+
+## API do validador
+
+Após a interpretação, é possível validar o conteúdo estruturado por meio do método `validarArticulacao`.
+
+```typescript
+import { interpretarArticulacao } from 'silegismg-interpretador-articulacao';
+
+const resultado = interpretarArticulacao(texto);
+const validacao = validarArticulacao(resultado.articulacao);
+
+if (validacao.length > 0) {
+    throw new Error('Há erros do conteúdo interpretado.');
+}
+```
+
+Os seguintes critérios são avaliados durante a validação:
+
+- formatação do dispositivo, verificando se o padrão adequado é adotado naquele dispositivo;
+- sequência numérica;
+- conteúdo e pontuação.
