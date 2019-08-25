@@ -15,7 +15,8 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { Artigo } from '.';
-import { TipoDispositivoOuAgrupador } from './dispositivos/Dispositivo';
+import { Divisao } from './dispositivos/agrupadores';
+import { TipoDispositivo, TipoDispositivoOuAgrupador } from './dispositivos/Dispositivo';
 import { QualquerDispositivo } from './dispositivos/tipos';
 import {
     FormatacaoNumerica, formatar,
@@ -30,11 +31,13 @@ export class Validacao {
     constructor(public readonly dispositivo: QualquerDispositivo,
                 public readonly formatacaoNumerica: boolean,
                 public readonly sequenciaNumerica: boolean,
-                public readonly derivacoesValidas: boolean) {
+                public readonly derivacoesValidas: boolean,
+                public readonly conteudo: boolean) {
     }
 
     get valido() {
-        return this.formatacaoNumerica && this.sequenciaNumerica && this.derivacoesValidas;
+        return this.formatacaoNumerica && this.sequenciaNumerica && this.derivacoesValidas
+            && this.conteudo;
     }
 }
 
@@ -54,9 +57,9 @@ export function validarArticulacao(dispositivosOriginais: QualquerDispositivo[],
 
         const dispositivosInvalidos: Validacao[] = [];
 
-        dispositivos.forEach((dispositivo) => {
+        dispositivos.forEach((dispositivo, idx) => {
             if (!dispositivo) {
-                return new Validacao(dispositivo, false, false, false);
+                return new Validacao(dispositivo, false, false, false, false);
             }
 
             const tipo = dispositivo.tipo;
@@ -74,7 +77,8 @@ export function validarArticulacao(dispositivosOriginais: QualquerDispositivo[],
                 dispositivo,
                 validacaoFormatacaoNumerica,
                 validacaoSequencia.sequenciaNumericaValida,
-                subvalidacao.length === 0
+                subvalidacao.length === 0,
+                validarConteudo(dispositivo, dispositivos[idx + 1] || obterProximoDispositivo(dispositivo))
             );
 
             // Parágrafo único não é considerado como formatação esperada
@@ -127,6 +131,36 @@ function verificarNumeracao(dispositivo: QualquerDispositivo,
     };
 }
 
-export type Formatacao = {
+function validarConteudo(dispositivo: QualquerDispositivo, proximo: QualquerDispositivo | undefined): boolean {
+    const conteudoParaValidacao = dispositivo.descricao.replace(/\(.+?\)|\n+|\r+/g, '').trim();
+
+    if (dispositivo instanceof Divisao) {
+        return /^[^.:!?]+$/.test(conteudoParaValidacao);
+    }
+
+    if (dispositivo.subitens.length > 0 && (dispositivo.tipo !== TipoDispositivo.ARTIGO ||
+        dispositivo.subitens[0].tipo === TipoDispositivo.INCISO)) {
+        return conteudoParaValidacao.length > 1 && conteudoParaValidacao.endsWith(':');
+    }
+
+    return conteudoParaValidacao.length > 1 && (conteudoParaValidacao.endsWith('.') ||
+        (!!proximo && conteudoParaValidacao.endsWith(';')
+        && proximo.tipo !== TipoDispositivo.ARTIGO) ||
+        /".+"$|“.+”$/.test(conteudoParaValidacao));
+}
+
+function obterProximoDispositivo(dispositivo: QualquerDispositivo) {
+    for (let pai = dispositivo.$parent; pai; dispositivo = pai, pai = pai.$parent) {
+        const idx = pai.subitens.findIndex((item) => item === dispositivo) + 1;
+
+        if (pai.subitens.length > idx) {
+            return pai.subitens[idx];
+        }
+    }
+
+    return null;
+}
+
+    export type Formatacao = {
     [key in TipoDispositivoOuAgrupador]?: FormatacaoNumerica
 };

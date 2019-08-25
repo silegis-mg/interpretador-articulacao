@@ -39,7 +39,7 @@ describe('Validação', () => {
         const invalidos = validarArticulacao(articulacao);
 
         expect(invalidos).toEqual([
-            new Validacao(articulacao[2], true, false, true)
+            new Validacao(articulacao[2], true, false, true, true)
         ]);
     });
 
@@ -54,7 +54,7 @@ describe('Validação', () => {
         const invalidos = validarArticulacao(articulacao);
 
         expect(invalidos).toEqual([
-            new Validacao(articulacao[2], true, false, true)
+            new Validacao(articulacao[2], true, false, true, true)
         ]);
     });
 
@@ -69,7 +69,7 @@ describe('Validação', () => {
     });
 
     it('Deve aceitar ausência de alíneas k, w e y.', () => {
-        const alineas = [];
+        const alineas: Alinea[] = [];
         const ultimo = 'z'.charCodeAt(0);
         const k = 'k'.charCodeAt(0);
         const w = 'w'.charCodeAt(0);
@@ -80,6 +80,8 @@ describe('Validação', () => {
                 alineas.push(new Alinea(String.fromCharCode(i), 'teste;'));
             }
         }
+
+        alineas[alineas.length - 1].descricao = alineas[alineas.length - 1].descricao.replace(/;$/, '.');
 
         const invalidos = validarArticulacao(alineas);
         expect(invalidos).toEqual([]);
