@@ -160,7 +160,7 @@ function escapar(textoOriginal: string, contexto: Contexto, escapesExtras: Escap
                 });
                 contexto.escape.push({trecho, idx});
                 return EscapeInterpretacao.ESCAPE;
-            })
+            });
         }, textoOriginal)
         .replace(/\s*\n+\s*/g, '\n');
 
