@@ -25,7 +25,7 @@ import ParserLinha from './ParserLinha';
 
 export default class ParserInciso extends ParserLinha {
     constructor() {
-        super(/^\s*([IXVDLM]+(?:-[a-z])?)\s*[-–). ]\s*(.+)/i);
+        super(/^\s*([IXVDLM]+(?:-[a-z])?)\s*[-–). ]\s*(.*)/i);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
