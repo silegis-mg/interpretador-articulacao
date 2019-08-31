@@ -1,6 +1,6 @@
 {
   "name": "silegismg-interpretador-articulacao",
-  "version": "2.1.2",
+  "version": "2.2.0",
   "description": "Interpretador de Articulação",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
