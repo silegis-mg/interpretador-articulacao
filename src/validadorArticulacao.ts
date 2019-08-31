@@ -149,7 +149,8 @@ function validarConteudo(dispositivo: QualquerDispositivo,
     return conteudoParaValidacao.length > 1 && (conteudoParaValidacao.endsWith('.') ||
         (!!proximo && conteudoParaValidacao.endsWith(';')
         && proximo.tipo !== TipoDispositivo.ARTIGO) ||
-        /".+"$|“.+”$/.test(conteudoParaValidacao));
+        /".+"$|“.+”$/.test(conteudoParaValidacao)) ||
+        /^\(?VETADO\)?\.?$/.test(conteudoParaValidacao);
 }
 
 function obterProximoDispositivo(dispositivo: QualquerDispositivo) {
