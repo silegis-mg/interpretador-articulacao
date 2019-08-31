@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Alinea, Paragrafo } from '../src';
+import { Alinea, Paragrafo, Inciso } from '../src';
 import Artigo from '../src/dispositivos/Artigo';
 import { Validacao, validarArticulacao } from '../src/validadorArticulacao';
 
@@ -84,6 +84,28 @@ describe('Validação', () => {
         alineas[alineas.length - 1].descricao = alineas[alineas.length - 1].descricao.replace(/;$/, '.');
 
         const invalidos = validarArticulacao(alineas);
+        expect(invalidos).toEqual([]);
+    });
+
+    it('Deve aceitar dispositivo vetado.', () => {
+        const artigo = new Artigo('1', 'Primeiro.');
+        const paragrafo = new Paragrafo('Parágrafo único', 'VETADO');
+
+        artigo.adicionar(paragrafo);
+
+        const invalidos = validarArticulacao([artigo]);
+        expect(invalidos).toEqual([]);
+    });
+
+    it('Deve aceitar alínea vetada.', () => {
+        const artigo = new Artigo('1', 'Primeiro:');
+        const inciso = new Inciso('I', 'teste:');
+        const alinea = new Alinea('a', 'VETADA');
+
+        artigo.adicionar(inciso);
+        inciso.adicionar(alinea);
+
+        const invalidos = validarArticulacao([artigo]);
         expect(invalidos).toEqual([]);
     });
 });

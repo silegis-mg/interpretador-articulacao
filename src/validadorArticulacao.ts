@@ -150,7 +150,7 @@ function validarConteudo(dispositivo: QualquerDispositivo,
         (!!proximo && conteudoParaValidacao.endsWith(';')
         && proximo.tipo !== TipoDispositivo.ARTIGO) ||
         /".+"$|“.+”$/.test(conteudoParaValidacao)) ||
-        /^\(?VETADO\)?\.?$/.test(conteudoParaValidacao);
+        /^\(?(?:VETAD[OA]|REVOGAD[OA])\)?\.?/i.test(conteudoParaValidacao);
 }
 
 function obterProximoDispositivo(dispositivo: QualquerDispositivo) {
