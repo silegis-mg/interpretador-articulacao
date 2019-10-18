@@ -6,7 +6,8 @@
   "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
-    "tslint": "tslint --project ."
+    "tslint": "tslint --project .",
+    "build": "tsc"
   },
   "keywords": [
     "silegismg",
