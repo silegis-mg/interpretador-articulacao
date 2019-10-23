@@ -10,7 +10,7 @@ export class EscapeAspas extends EscapeInterpretacao {
      * @param contexto Contexto do parser.
      */
     escapar(texto: string, substituir: SubstituirCallback): string {
-        const regexpAspas = /[“”"]/g;
+        const regexpAspas = /[“”‘’"]/g;
         let resultado = '';
         let ultimo = 0;
         let abertura: number;
@@ -19,12 +19,14 @@ export class EscapeAspas extends EscapeInterpretacao {
         for (let m = regexpAspas.exec(texto); m; m = regexpAspas.exec(texto)) {
             switch (m[0]) {
                 case '“':
+                case '‘':
                     if (nAberturas++ === 0) {
                         abertura = m.index;
                     }
                     continue;
 
                 case '”':
+                case '’':
                     if (nAberturas-- > 1) {
                         continue;
                     }
