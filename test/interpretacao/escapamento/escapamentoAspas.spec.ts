@@ -15,6 +15,7 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import * as parser from '../../../src/index';
+import { EscapeAspas } from '../../../src/interpretador/escapamento/EscapeAspas';
 
 describe('Escapamento de aspas', () => {
     it('Deve suportar dispositivos revogados', () => {
@@ -52,5 +53,12 @@ Parágrafo único – Considerar-se-á voto vencido o parecer rejeitado.”`
                     ' para ver o "escapamento\nArt. 2º - em funcionamento.".')
             ]
         });
+    });
+
+    it('Não deve confundir apóstrofo', () => {
+        const texto = 'Art 1º - Marca d’água.';
+        const escape = new EscapeAspas();
+
+        escape.escapar(texto, () => fail('Não deveria escapar.'));
     });
 });

@@ -25,8 +25,14 @@ export class EscapeAspas extends EscapeInterpretacao {
                     }
                     continue;
 
-                case '”':
                 case '’':
+                    if (m.index === 0 ||
+                        /\S/.test(texto.charAt(m.index - 1)) && !/\s|[.:?!)\]}]/.test(texto.charAt(m.index + 1))) {
+                        continue;
+                    }
+                    // continua no próximo case.
+
+                case '”':
                     if (nAberturas-- > 1) {
                         continue;
                     }
@@ -41,11 +47,18 @@ export class EscapeAspas extends EscapeInterpretacao {
                         continue;
                     }
                     break;
+
+                default:
+                    throw new Error('Resultado esperado de casamento de aspas: ' + m[0]);
             }
 
-            resultado += texto.substr(ultimo, abertura! - ultimo) +
-                substituir(texto.substr(abertura!, m.index - abertura! + 1), abertura!);
-            ultimo = m.index + 1;
+            if (nAberturas < 0) {
+                nAberturas = 0;
+            } else {
+                resultado += texto.substr(ultimo, abertura! - ultimo) +
+                    substituir(texto.substr(abertura!, m.index - abertura! + 1), abertura!);
+                ultimo = m.index + 1;
+            }
         }
 
         resultado += texto.substr(ultimo);
