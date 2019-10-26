@@ -149,16 +149,27 @@ function escapar(textoOriginal: string, contexto: Contexto, escapesExtras: Escap
             const escapesAnteriores = [...contexto.escape];
 
             return cur.escapar(prev, (trecho: string, idx: number) => {
+                // Ajusta o índice à posição no texto original considerando os escapamentos anteriores.
                 for (let i = 0; i < escapesAnteriores.length && escapesAnteriores[i].idx <= idx; i++) {
                     idx += escapesAnteriores[i].trecho.length - EscapeInterpretacao.ESCAPE.length;
                 }
 
+                // Substitui todos os escapes contidos dentro deste novo escape pelo texto original.
                 trecho = trecho.replace(EscapeInterpretacao.ESCAPES_REGEXP, (escape, idxARestaurar) => {
                     const aRemover = contexto.escape.findIndex((item) => item.idx === idxARestaurar + idx);
+
+                    if (aRemover === -1) {
+                        throw new Error(`Falha durante escapamento de ${trecho}.`);
+                    }
+
                     const [escapeAnterior] = contexto.escape.splice(aRemover, 1);
+                    idx += escapeAnterior.trecho.length - EscapeInterpretacao.ESCAPE.length;
+
                     return escapeAnterior.trecho;
                 });
+
                 contexto.escape.push({trecho, idx});
+
                 return EscapeInterpretacao.ESCAPE;
             });
         }, textoOriginal)

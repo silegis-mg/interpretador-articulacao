@@ -18,13 +18,13 @@ import * as parser from '../../../src/index';
 
 describe('Escapamento de tags', () => {
     it('Deve suportar tags de HTML', () => {
-        const texto = `<label>Art. 1 –</label> <i>Lorem ipsum.</i>`;
+        const texto = '<label>Art. 1 –</label> <i>Lorem ipsum.</i>';
         const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
 
         expect(objeto).toEqual({
             textoAnterior: '',
             articulacao: [
-                new parser.Artigo('1', `<i>Lorem ipsum.</i>`)
+                new parser.Artigo('1', '<i>Lorem ipsum.</i>')
             ]
         });
 
@@ -39,8 +39,8 @@ Art. 2 - Este é <strong>mais um "teste"</strong>.`;
         expect(objeto).toEqual({
             textoAnterior: '',
             articulacao: [
-                new parser.Artigo('1', `Este é um "teste" de <i>Lorem ipsum.</i>`),
-                new parser.Artigo('2', `Este é <strong>mais um "teste"</strong>.`)
+                new parser.Artigo('1', 'Este é um "teste" de <i>Lorem ipsum.</i>'),
+                new parser.Artigo('2', 'Este é <strong>mais um "teste"</strong>.')
             ]
         });
 
@@ -48,13 +48,27 @@ Art. 2 - Este é <strong>mais um "teste"</strong>.`;
     });
 
     it('Deve suportar tag com aspas em atributos', () => {
-        const texto = `Art. 1 – Este é um "teste" de <i lang="latin">Lorem ipsum.</i>`;
+        const texto = 'Art. 1 – Este é um "teste" de <i lang="latin">Lorem ipsum.</i>';
         const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
 
         expect(objeto).toEqual({
             textoAnterior: '',
             articulacao: [
-                new parser.Artigo('1', `Este é um "teste" de <i lang="latin">Lorem ipsum.</i>`)
+                new parser.Artigo('1', 'Este é um "teste" de <i lang="latin">Lorem ipsum.</i>')
+            ]
+        });
+
+        expect(parser.validarArticulacao(objeto.articulacao, { escapes: [new parser.EscapeTags()] })).toEqual([]);
+    });
+
+    it('Deve suportar escapamento aninhado', () => {
+        const texto = 'Art. 1 - Este <i lang="latim" style="font-weight: bolder">lorem ipsum</i> é "interessante".';
+        const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
+
+        expect(objeto).toEqual({
+            textoAnterior: '',
+            articulacao: [
+                new parser.Artigo('1', texto.substr(9))
             ]
         });
 
