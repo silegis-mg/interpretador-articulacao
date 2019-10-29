@@ -74,4 +74,33 @@ Art. 2 - Este é <strong>mais um "teste"</strong>.`;
 
         expect(parser.validarArticulacao(objeto.articulacao, { escapes: [new parser.EscapeTags()] })).toEqual([]);
     });
+
+    it('Deve controlar ordenação de escapamento', () => {
+        const texto = 'Art. 1 - "0"<i>1</i>"2"<b>3</b>"4"';
+        const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
+
+        expect(objeto).toEqual({
+            textoAnterior: '',
+            articulacao: [
+                new parser.Artigo('1', texto.substr(9))
+            ]
+        });
+
+        expect(parser.validarArticulacao(objeto.articulacao, { escapes: [new parser.EscapeTags()] })).toEqual([]);
+    });
+
+    it('Deve lidar com tags anteriores à articulação.', () => {
+        const texto = '<center>Lei 1/2019</center><p style="margin-left: 70%">\n' +
+            'Dispõe sobre o escapamento.\nArt 1º - "Teste".';
+        const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
+
+        expect(objeto).toEqual({
+            textoAnterior: '<center>Lei 1/2019</center><p style="margin-left: 70%">\nDispõe sobre o escapamento.',
+            articulacao: [
+                new parser.Artigo('1', '"Teste".')
+            ]
+        });
+
+        expect(parser.validarArticulacao(objeto.articulacao, { escapes: [new parser.EscapeTags()] })).toEqual([]);
+    });
 });

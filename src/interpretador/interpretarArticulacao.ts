@@ -67,7 +67,7 @@ function interpretarArticulacao(textoOriginal: string,
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar
      * que o conteúdo seja também interpretado.
      */
-    const texto = escapar(textoOriginal, contexto, opcoes.escapesExtras || []);
+    const texto = escapar(textoOriginal.replace(/\s*\n+\s*/g, '\n'), contexto, opcoes.escapesExtras || []);
 
     texto.split('\n').forEach((linha) => {
         let escapou = false;
@@ -95,7 +95,7 @@ function interpretarArticulacao(textoOriginal: string,
                 }
 
                 // Ajusta o índice da descrição para escapes imediatamente anterior a ela.
-                while (linha.lastIndexOf(EscapeInterpretacao.ESCAPE, idxDescricao - 1)
+                while (nEscapesAnteriores > 0 && linha.lastIndexOf(EscapeInterpretacao.ESCAPE, idxDescricao - 1)
                        + EscapeInterpretacao.ESCAPE.length === idxDescricao) {
                     idxDescricao -= EscapeInterpretacao.ESCAPE.length;
                     nEscapesAnteriores--;
@@ -148,6 +148,12 @@ function escapar(textoOriginal: string, contexto: Contexto, escapesExtras: Escap
     const textoEscapado = escapes.reduce((prev, cur) => {
             const escapesAnteriores = [...contexto.escape];
 
+            /**
+             * Determina o índice em que deve inserir o escape de forma ordenada
+             * no contexto.
+             */
+            let idxAdicaoVetorEscape = 0;
+
             return cur.escapar(prev, (trecho: string, idx: number) => {
                 // Ajusta o índice à posição no texto original considerando os escapamentos anteriores.
                 for (let i = 0; i < escapesAnteriores.length && escapesAnteriores[i].idx <= idx; i++) {
@@ -155,27 +161,37 @@ function escapar(textoOriginal: string, contexto: Contexto, escapesExtras: Escap
                 }
 
                 // Substitui todos os escapes contidos dentro deste novo escape pelo texto original.
+                let idxBaseRestauracao = idx;
+
                 trecho = trecho.replace(EscapeInterpretacao.ESCAPES_REGEXP, (escape, idxARestaurar) => {
-                    const aRemover = contexto.escape.findIndex((item) => item.idx === idxARestaurar + idx);
+                    const idxCorrigido = idxARestaurar + idxBaseRestauracao;
+                    const aRemover = contexto.escape.findIndex((item) => item.idx === idxCorrigido);
 
                     if (aRemover === -1) {
-                        throw new Error(`Falha durante escapamento de ${trecho}.`);
+                        throw new Error('Falha durante escapamento.');
                     }
 
                     const [escapeAnterior] = contexto.escape.splice(aRemover, 1);
-                    idx += escapeAnterior.trecho.length - EscapeInterpretacao.ESCAPE.length;
+                    idxBaseRestauracao += escapeAnterior.trecho.length - EscapeInterpretacao.ESCAPE.length;
 
                     return escapeAnterior.trecho;
                 });
 
-                contexto.escape.push({trecho, idx});
+                while (idxAdicaoVetorEscape > 0 && contexto.escape[idxAdicaoVetorEscape].idx > idx) {
+                    idxAdicaoVetorEscape++;
+                }
+
+                while (contexto.escape.length > idxAdicaoVetorEscape
+                    && contexto.escape[idxAdicaoVetorEscape].idx < idx) {
+
+                    idxAdicaoVetorEscape++;
+                }
+
+                contexto.escape.splice(idxAdicaoVetorEscape, 0, {trecho, idx});
 
                 return EscapeInterpretacao.ESCAPE;
             });
-        }, textoOriginal)
-        .replace(/\s*\n+\s*/g, '\n');
-
-    contexto.escape.sort((a, b) => a.idx - b.idx);
+        }, textoOriginal);
 
     return textoEscapado;
 }
