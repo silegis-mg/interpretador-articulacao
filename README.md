@@ -1,5 +1,5 @@
 [![npm version](https://badge.fury.io/js/silegismg-interpretador-articulacao.svg)](https://badge.fury.io/js/silegismg-interpretador-articulacao)
-[![Build Status](https://travis-ci.org/silegis-mg/interpretador-articulacao.svg?branch=master)](https://travis-ci.org/silegis-mg/interpretador-articulacao)
+![Build Status](https://github.com/silegis-mg/interpretador-articulacao/actions/workflows/node.js.yml/badge.svg)
 [![Maintainability](https://api.codeclimate.com/v1/badges/57b06a9447c32924de3f/maintainability)](https://codeclimate.com/github/silegis-mg/interpretador-articulacao/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/57b06a9447c32924de3f/test_coverage)](https://codeclimate.com/github/silegis-mg/interpretador-articulacao/test_coverage)
 
