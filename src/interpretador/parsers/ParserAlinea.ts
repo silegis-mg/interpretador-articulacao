@@ -16,19 +16,27 @@
  */
 import Alinea from '../../dispositivos/Alinea';
 import Artigo from '../../dispositivos/Artigo';
-import Dispositivo from '../../dispositivos/Dispositivo';
+import Dispositivo, { TipoDispositivo } from '../../dispositivos/Dispositivo';
 import Inciso from '../../dispositivos/Inciso';
 import Paragrafo from '../../dispositivos/Paragrafo';
+import { interpretarLetra, interpretarNumero } from '../../util/transformarNumeros';
 import Contexto from './Contexto';
 import ParserLinha from './ParserLinha';
 
 export default class ParserAlinea extends ParserLinha {
     constructor() {
-        super(/^\s*([a-z](?:-[a-z])?)\s*[-–).]\s*(.*)/i);
+        super(/^\s*([a-z]+(?:-[a-z]+)?)\s*([).])\s*(.*)/i);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
-        const item = new Alinea(m[1], m[2]);
+        if (m[2] === '.' && m[1].length > 1 &&
+            (contexto.ultimoItem?.tipo !== TipoDispositivo.ALINEA ||
+                !contexto.ultimoItem.numero ||
+                interpretarLetra(contexto.ultimoItem.numero) !== interpretarLetra(m[1]) - 1)) {
+            return null;
+        }
+
+        const item = new Alinea(m[1], m[3]);
         let container = contexto.getUltimoItemTipo(Inciso);
 
         if (!container) {

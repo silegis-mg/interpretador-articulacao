@@ -1,0 +1,280 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Parser de articulação Deve interpretar todas as alíneas de a) a ab) 1`] = `
+[
+  Artigo {
+    "derivacoes": [
+      "incisos",
+      "paragrafos",
+    ],
+    "descricao": "Este é um teste:",
+    "incisos": [
+      Inciso {
+        "alineas": [
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "este é um teste;",
+            "itens": [],
+            "numero": "a",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "este é outro teste;",
+            "itens": [],
+            "numero": "b",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "este é mais um teste;",
+            "itens": [],
+            "numero": "c",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "letra d;",
+            "itens": [],
+            "numero": "d",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "letra e;",
+            "itens": [],
+            "numero": "e",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea f;",
+            "itens": [],
+            "numero": "f",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea g;",
+            "itens": [],
+            "numero": "g",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea h;",
+            "itens": [],
+            "numero": "h",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea i;",
+            "itens": [],
+            "numero": "i",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea j;",
+            "itens": [],
+            "numero": "j",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea k;",
+            "itens": [],
+            "numero": "k",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea l;",
+            "itens": [],
+            "numero": "l",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea m;",
+            "itens": [],
+            "numero": "m",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea n;",
+            "itens": [],
+            "numero": "n",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea o;",
+            "itens": [],
+            "numero": "o",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea p;",
+            "itens": [],
+            "numero": "p",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea q;",
+            "itens": [],
+            "numero": "q",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea r;",
+            "itens": [],
+            "numero": "r",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea s;",
+            "itens": [],
+            "numero": "s",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea t;",
+            "itens": [],
+            "numero": "t",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea u;",
+            "itens": [],
+            "numero": "u",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea v;",
+            "itens": [],
+            "numero": "v",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea w;",
+            "itens": [],
+            "numero": "w",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea x;",
+            "itens": [],
+            "numero": "x",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea y;",
+            "itens": [],
+            "numero": "y",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea z;",
+            "itens": [],
+            "numero": "z",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea aa;",
+            "itens": [],
+            "numero": "aa",
+            "tipo": "alinea",
+          },
+          Alinea {
+            "derivacoes": [
+              "itens",
+            ],
+            "descricao": "alínea ab.",
+            "itens": [],
+            "numero": "ab",
+            "tipo": "alinea",
+          },
+        ],
+        "derivacoes": [
+          "alineas",
+        ],
+        "descricao": "inciso primeiro:",
+        "numero": "i",
+        "tipo": "inciso",
+      },
+    ],
+    "numero": "1",
+    "paragrafos": [],
+    "tipo": "artigo",
+  },
+]
+`;

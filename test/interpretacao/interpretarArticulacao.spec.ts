@@ -15,6 +15,7 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import { TipoDispositivo } from '../../src/dispositivos/Dispositivo';
 import * as parser from '../../src/index';
 
 describe('Parser de articulação', () => {
@@ -511,5 +512,47 @@ eleição e à posse dos membros da Mesa da Assembleia para o 1º biênio.
         expect(objeto.articulacao[0].descricao).toBe(`No início da legislatura, são realizadas, no Palácio da Inconfidência, a partir do dia 1º de fevereiro, reuniões preparatórias destinadas à posse dos Deputados diplomados, à instalação da legislatura e da 1ª sessão legislativa ordinária e à eleição e à posse dos membros da Mesa da Assembleia para o 1º biênio.
 (Artigo com redação dada pelo art. 1º da Resolução da ALMG nº 5.511, de 1º/12/2015.)
 (Vide Emenda à Constituição nº 74, de 11/5/2006.)`);
+    });
+
+    it('Deve interpretar todas as alíneas de a) a ab)', () => {
+        const texto = `Art. 1º - Este é um teste:
+            i - inciso primeiro:
+            a) este é um teste;
+            b) este é outro teste;
+            c) este é mais um teste;
+            d) letra d;
+            e) letra e;
+            f) alínea f;
+            g) alínea g;
+            h) alínea h;
+            i) alínea i;
+            j) alínea j;
+            k) alínea k;
+            l) alínea l;
+            m) alínea m;
+            n) alínea n;
+            o) alínea o;
+            p) alínea p;
+            q) alínea q;
+            r) alínea r;
+            s) alínea s;
+            t) alínea t;
+            u) alínea u;
+            v) alínea v;
+            w) alínea w;
+            x) alínea x;
+            y) alínea y;
+            z) alínea z;
+            aa) alínea aa;
+            ab) alínea ab.`
+        
+        const objeto = parser.interpretarArticulacao(texto);
+    
+        expect(objeto.articulacao[0].tipo).toBe(TipoDispositivo.ARTIGO);
+        expect(objeto.articulacao[0].subitens[0].tipo).toBe(TipoDispositivo.INCISO);
+        expect(objeto.articulacao[0].subitens[0].subitens[0].tipo).toBe(TipoDispositivo.ALINEA);
+        expect(objeto.articulacao[0].subitens[0].subitens.length).toBe(28);
+        expect(objeto.articulacao[0].subitens[0].subitens[27].numero).toBe('ab');
+        expect(objeto.articulacao).toMatchSnapshot();
     });
 });
