@@ -15,7 +15,7 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import * as parser from '../../../src/index';
-import { EscapeAspas } from '../../../src/interpretador/escapamento/EscapeAspas';
+import { EscapeAspas } from '../../../src/interpretador/escapamento/impl/EscapeAspas';
 
 describe('Escapamento de aspas', () => {
     it('Deve suportar dispositivos revogados', () => {

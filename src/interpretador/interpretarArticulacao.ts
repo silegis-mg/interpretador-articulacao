@@ -16,9 +16,9 @@
  */
 import { Divisao } from '../dispositivos/agrupadores';
 import { IArticulacaoInterpretada } from './ArticulacaoInterpretada';
-import { EscapeAspas } from './escapamento/EscapeAspas';
+import Escapamento from './escapamento/Escapamento';
 import EscapeInterpretacao from './escapamento/EscapeInterpretacao';
-import EscapeSimboloEscape from './escapamento/EscapeSimboloEscape';
+import { EscapeAspas } from './escapamento/impl/EscapeAspas';
 import Contexto from './parsers/Contexto';
 import ParserAlinea from './parsers/ParserAlinea';
 import ParserArtigo from './parsers/ParserArtigo';
@@ -67,53 +67,16 @@ function interpretarArticulacao(textoOriginal: string,
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar
      * que o conteúdo seja também interpretado.
      */
-    const texto = escapar(textoOriginal.replace(/\s*\n+\s*/g, '\n'), contexto, opcoes.escapesExtras || []);
+    const escapamento = new Escapamento(textoOriginal.replace(/\s*\n+\s*/g, '\n'), new EscapeAspas(), ...(opcoes.escapesExtras ?? []));
 
-    texto.split('\n').forEach((linha) => {
-        let escapou = false;
-        const linhaSemEscapes = contexto.escape.length > 0
-                              ? linha.replace(EscapeInterpretacao.ESCAPES_REGEXP, () => {
-                                  escapou = true;
-                                  return '';
-                              })
-                              : linha;
-
+    for (const linhaSemEscapes of escapamento.processar()) {
         if (regexpLinhas.find((regexp) => regexp.processar(contexto, linhaSemEscapes))) {
-            if (escapou) {
-                const item = contexto.ultimoItem!;
-                let idxDescricao = linhaSemEscapes.indexOf(item.descricao);
-                let idxEscape;
-                let nEscapesAnteriores = 0;
+            const item = contexto.ultimoItem!;
 
-                // Ajusta o índice da descrição, para torná-la relativa à linha com escapes.
-                for (idxEscape = linha.indexOf(EscapeInterpretacao.ESCAPE);
-                     idxEscape !== -1 && idxEscape <= idxDescricao;
-                     idxEscape = linha.indexOf(EscapeInterpretacao.ESCAPE,
-                                               idxEscape + EscapeInterpretacao.ESCAPE.length)) {
-                    idxDescricao += EscapeInterpretacao.ESCAPE.length;
-                    nEscapesAnteriores++;
-                }
-
-                // Ajusta o índice da descrição para escapes imediatamente anterior a ela.
-                while (nEscapesAnteriores > 0 && linha.lastIndexOf(EscapeInterpretacao.ESCAPE, idxDescricao - 1)
-                       + EscapeInterpretacao.ESCAPE.length === idxDescricao) {
-                    idxDescricao -= EscapeInterpretacao.ESCAPE.length;
-                    nEscapesAnteriores--;
-                }
-
-                // Remove os escapes do rótulo.
-                while (nEscapesAnteriores-- > 0) {
-                    contexto.escape.shift();
-                }
-
-                // Desfaz os escapes.
-                item.descricao = linha.substr(idxDescricao).replace(
-                    EscapeInterpretacao.ESCAPES_REGEXP, () => contexto.escape.shift()!.trecho);
-            }
+            // Desfaz os escapes.
+            item.descricao = escapamento.desfazerEscapes(item.descricao);
         } else {
-            if (escapou) {
-                linha = linha.replace(EscapeInterpretacao.ESCAPES_REGEXP, () => contexto.escape.shift()!.trecho);
-            }
+            const linha = escapamento.desfazerEscapes();
 
             if (contexto.ultimoItem) {
                 // Como não foi possível processar, inclui a linha inteira no dispositivo atual.
@@ -134,66 +97,12 @@ function interpretarArticulacao(textoOriginal: string,
                 contexto.textoAnterior += '\n' + linha;
             }
         }
-    });
+    }
 
     return {
         textoAnterior: contexto.textoAnterior,
         articulacao: contexto.articulacao
     };
-}
-
-function escapar(textoOriginal: string, contexto: Contexto, escapesExtras: EscapeInterpretacao[]) {
-    const escapes = [new EscapeSimboloEscape(), new EscapeAspas(), ...escapesExtras];
-
-    const textoEscapado = escapes.reduce((prev, cur) => {
-            const escapesAnteriores = [...contexto.escape];
-
-            /**
-             * Determina o índice em que deve inserir o escape de forma ordenada
-             * no contexto.
-             */
-            let idxAdicaoVetorEscape = 0;
-
-            return cur.escapar(prev, (trecho: string, idx: number) => {
-                // Ajusta o índice à posição no texto original considerando os escapamentos anteriores.
-                for (let i = 0; i < escapesAnteriores.length && escapesAnteriores[i].idx <= idx; i++) {
-                    idx += escapesAnteriores[i].trecho.length - EscapeInterpretacao.ESCAPE.length;
-                }
-
-                // Substitui todos os escapes contidos dentro deste novo escape pelo texto original.
-                let idxBaseRestauracao = idx;
-
-                trecho = trecho.replace(EscapeInterpretacao.ESCAPES_REGEXP, (escape, idxARestaurar) => {
-                    const idxCorrigido = idxARestaurar + idxBaseRestauracao;
-                    const aRemover = contexto.escape.findIndex((item) => item.idx === idxCorrigido);
-
-                    if (aRemover === -1) {
-                        throw new Error('Falha durante escapamento.');
-                    }
-
-                    const [escapeAnterior] = contexto.escape.splice(aRemover, 1);
-                    idxBaseRestauracao += escapeAnterior.trecho.length - EscapeInterpretacao.ESCAPE.length;
-
-                    return escapeAnterior.trecho;
-                });
-
-                while (idxAdicaoVetorEscape > 0 && contexto.escape[idxAdicaoVetorEscape].idx > idx) {
-                    idxAdicaoVetorEscape++;
-                }
-
-                while (contexto.escape.length > idxAdicaoVetorEscape
-                    && contexto.escape[idxAdicaoVetorEscape].idx < idx) {
-
-                    idxAdicaoVetorEscape++;
-                }
-
-                contexto.escape.splice(idxAdicaoVetorEscape, 0, {trecho, idx});
-
-                return EscapeInterpretacao.ESCAPE;
-            });
-        }, textoOriginal);
-
-    return textoEscapado;
 }
 
 export default interpretarArticulacao;

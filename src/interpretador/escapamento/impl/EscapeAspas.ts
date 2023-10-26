@@ -1,4 +1,4 @@
-import EscapeInterpretacao, { SubstituirCallback } from './EscapeInterpretacao';
+import EscapeInterpretacao, { SubstituirCallback } from '../EscapeInterpretacao';
 
 export class EscapeAspas extends EscapeInterpretacao {
     /**
