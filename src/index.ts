@@ -17,7 +17,8 @@
 import { Capitulo, Secao, Subsecao, Titulo } from './dispositivos/agrupadores';
 import Alinea from './dispositivos/Alinea';
 import Artigo from './dispositivos/Artigo';
-import Dispositivo, { TipoDispositivoOuAgrupador } from './dispositivos/Dispositivo';
+import Dispositivo, { TipoDispositivoOuAgrupador, TipoDispositivo, TipoAgrupador } from './dispositivos/Dispositivo';
+import { QualquerDispositivo } from './dispositivos/tipos';
 import Inciso from './dispositivos/Inciso';
 import Item from './dispositivos/Item';
 import Paragrafo from './dispositivos/Paragrafo';
@@ -25,11 +26,12 @@ import EscapeInterpretacao from './interpretador/escapamento/EscapeInterpretacao
 import EscapeTags from './interpretador/escapamento/impl/EscapeTags';
 import interpretarArticulacao from './interpretador/interpretarArticulacao';
 import { interpretarNumero } from './util/transformarNumeros';
-import { validarArticulacao } from './validadorArticulacao';
+import { validarArticulacao, Validacao, IOpcoesValidacao } from './interpretador/validadorArticulacao';
 
 export {
     Artigo, Paragrafo, Inciso, Alinea, Item, Titulo,
-    Capitulo, Secao, Subsecao, interpretarArticulacao, validarArticulacao,
-    interpretarNumero, Dispositivo, TipoDispositivoOuAgrupador,
-    EscapeInterpretacao, EscapeTags
+    Capitulo, Secao, Subsecao, interpretarArticulacao,
+    validarArticulacao, Validacao, IOpcoesValidacao,
+    interpretarNumero, Dispositivo, TipoDispositivoOuAgrupador, TipoDispositivo, TipoAgrupador,
+    EscapeInterpretacao, EscapeTags, QualquerDispositivo
 };

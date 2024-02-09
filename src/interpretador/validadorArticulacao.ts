@@ -14,14 +14,14 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Artigo, EscapeInterpretacao } from '.';
-import { Divisao } from './dispositivos/agrupadores';
-import { TipoDispositivo, TipoDispositivoOuAgrupador } from './dispositivos/Dispositivo';
-import { QualquerDispositivo } from './dispositivos/tipos';
+import { Artigo, EscapeInterpretacao } from '..';
+import { Divisao } from '../dispositivos/agrupadores';
+import { TipoDispositivo, TipoDispositivoOuAgrupador } from '../dispositivos/Dispositivo';
+import { QualquerDispositivo } from '../dispositivos/tipos';
 import {
     FormatacaoNumerica, formatar,
     inferirFormatacao, interpretarLetra, interpretarNumero
-} from './util/transformarNumeros';
+} from '../util/transformarNumeros';
 
 export interface IOpcoesValidacao {
     formatacaoEsperada?: Formatacao;
