@@ -15,15 +15,15 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 import { readFileSync } from 'fs';
-import { Titulo } from '../../../src/dispositivos/agrupadores';
-import { TipoDispositivo } from '../../../src/dispositivos/Dispositivo';
-import interpretarArticulacao from '../../../src/interpretador/interpretarArticulacao';
-import { validarArticulacao } from '../../../src/validadorArticulacao';
-import { contarDispositivos } from '../../testUtil';
+import { TipoDispositivo } from '../../../../src/dispositivos/Dispositivo';
+import { Titulo } from '../../../../src/dispositivos/agrupadores';
+import interpretarArticulacao from '../../../../src/interpretador/interpretarArticulacao';
+import { validarArticulacao } from '../../../../src/interpretador/validadorArticulacao';
+import { contarDispositivos } from '../../../testUtil';
 
 describe('Regimento Interno da ALMG', () => {
-    const constituicao = readFileSync('test/interpretacao/regimentoInternoALMG/regimento-almg.txt').toString();
-    const interpretacao = interpretarArticulacao(constituicao);
+    const regimento = readFileSync('test/interpretacao/legislacao-mineira/regimentoInternoALMG/regimento-almg.txt').toString();
+    const interpretacao = interpretarArticulacao(regimento);
 
     it('Deve estar válida a interpretação do regimento interno da ALMG', () => {
         const validacao = validarArticulacao(interpretacao.articulacao);

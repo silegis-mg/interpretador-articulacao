@@ -16,7 +16,7 @@
  */
 import { Alinea, Paragrafo, Inciso } from '../src';
 import Artigo from '../src/dispositivos/Artigo';
-import { Validacao, validarArticulacao } from '../src/validadorArticulacao';
+import { Validacao, validarArticulacao } from '../src/interpretador/validadorArticulacao';
 
 describe('Validação', () => {
     it('Deve considerar válida uma articulação perfeita.', () => {
