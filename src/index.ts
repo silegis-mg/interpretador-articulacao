@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Capitulo, Secao, Subsecao, Titulo } from './dispositivos/agrupadores';
+import { Capitulo, Divisao, Secao, Subsecao, Titulo } from './dispositivos/agrupadores';
 import Alinea from './dispositivos/Alinea';
 import Artigo from './dispositivos/Artigo';
 import Dispositivo, { TipoDispositivoOuAgrupador, TipoDispositivo, TipoAgrupador } from './dispositivos/Dispositivo';
@@ -33,5 +33,5 @@ export {
     Capitulo, Secao, Subsecao, interpretarArticulacao,
     validarArticulacao, Validacao, IOpcoesValidacao,
     interpretarNumero, Dispositivo, TipoDispositivoOuAgrupador, TipoDispositivo, TipoAgrupador,
-    EscapeInterpretacao, EscapeTags, QualquerDispositivo
+    EscapeInterpretacao, EscapeTags, QualquerDispositivo, Divisao
 };
