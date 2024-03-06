@@ -34,4 +34,18 @@ export default class Alinea extends Dispositivo<Item> {
 
         this.itens.push(item);
     }
+
+    remover(item: Item): void {
+        if (!(item instanceof Item)) {
+            throw new Error('Tipo não suportado.');
+        }
+
+        const idx =this.itens.indexOf(item);
+
+        if (idx === -1) {
+            throw new Error('Dispositivo não encontrado.');
+        }
+
+        this.itens.splice(idx, 1);
+    }
 }

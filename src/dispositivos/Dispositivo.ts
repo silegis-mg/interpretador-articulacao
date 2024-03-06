@@ -62,4 +62,21 @@ export default abstract class Dispositivo<TiposDerivaveis extends Dispositivo<an
         (this as any)[atributo].push(dispositivo);
         Object.defineProperty(dispositivo, '$parent', { value: this });
     }
+
+    remover(dispositivo: TiposDerivaveis): void {
+        const tipo = dispositivo.tipo;
+        const atributo = tipo + 's';
+
+        if (!(atributo in this)) {
+            throw new Error(`Derivação "${tipo}" não suportada em "${this.tipo}".`);
+        }
+
+        const idx = (this as any)[atributo].indexOf(dispositivo);
+
+        if (idx === -1) {
+            throw new Error('Dispositivo não encontrado.');
+        }
+
+        (this as any)[atributo].splice(idx, 1);
+    }
 }
