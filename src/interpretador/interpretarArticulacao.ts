@@ -26,14 +26,14 @@ import ParserCapitulo from './parsers/ParserCapitulo';
 import ParserContinuacaoDivisao from './parsers/ParserContinuacaoDivisao';
 import ParserInciso from './parsers/ParserInciso';
 import ParserItem from './parsers/ParserItem';
-import ParserLinha from './parsers/ParserLinha';
+import ParserLinha, { IParserLinha } from './parsers/ParserLinha';
 import ParserParagrafo from './parsers/ParserParagrafo';
 import ParserSecao from './parsers/ParserSecao';
 import ParserSubsecao from './parsers/ParserSubsecao';
 import ParserTitulo from './parsers/ParserTitulo';
 
 export interface IOpcoesInterpretacao {
-    parsersExtras?: ParserLinha[];
+    parsersExtras?: IParserLinha[];
     escapesExtras?: EscapeInterpretacao[];
 }
 
@@ -46,7 +46,8 @@ export interface IOpcoesInterpretacao {
 function interpretarArticulacao(textoOriginal: string,
                                 opcoes: IOpcoesInterpretacao = {}): IArticulacaoInterpretada {
     const contexto = new Contexto();
-    const regexpLinhas: ParserLinha[] = [
+    const regexpLinhas: IParserLinha[] = [
+        ...(opcoes.parsersExtras ?? []),
         new ParserContinuacaoDivisao(),
         new ParserArtigo(),
         new ParserParagrafo(),
@@ -58,10 +59,6 @@ function interpretarArticulacao(textoOriginal: string,
         new ParserSecao(),
         new ParserSubsecao()
     ];
-
-    if (opcoes.parsersExtras) {
-        regexpLinhas.push(...opcoes.parsersExtras);
-    }
 
     /* Para cada citação, isto é, texto entre aspas, substitui-se o seu conteúdo
      * por \0 e o conteúdo substituído é inserido na pilha de aspas, para evitar

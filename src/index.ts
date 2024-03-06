@@ -14,24 +14,26 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import { Capitulo, Divisao, Secao, Subsecao, Titulo } from './dispositivos/agrupadores';
 import Alinea from './dispositivos/Alinea';
 import Artigo from './dispositivos/Artigo';
-import Dispositivo, { TipoDispositivoOuAgrupador, TipoDispositivo, TipoAgrupador } from './dispositivos/Dispositivo';
-import { QualquerDispositivo } from './dispositivos/tipos';
+import Dispositivo, { TipoAgrupador, TipoDispositivo, TipoDispositivoOuAgrupador } from './dispositivos/Dispositivo';
 import Inciso from './dispositivos/Inciso';
 import Item from './dispositivos/Item';
 import Paragrafo from './dispositivos/Paragrafo';
+import { Capitulo, Divisao, Secao, Subsecao, Titulo } from './dispositivos/agrupadores';
+import { QualquerDispositivo } from './dispositivos/tipos';
 import EscapeInterpretacao from './interpretador/escapamento/EscapeInterpretacao';
 import EscapeTags from './interpretador/escapamento/impl/EscapeTags';
 import interpretarArticulacao from './interpretador/interpretarArticulacao';
+import Contexto from './interpretador/parsers/Contexto';
+import ParserLinha, { IParserLinha } from './interpretador/parsers/ParserLinha';
+import { IOpcoesValidacao, Validacao, validarArticulacao } from './interpretador/validadorArticulacao';
 import { interpretarNumero } from './util/transformarNumeros';
-import { validarArticulacao, Validacao, IOpcoesValidacao } from './interpretador/validadorArticulacao';
 
 export {
-    Artigo, Paragrafo, Inciso, Alinea, Item, Titulo,
-    Capitulo, Secao, Subsecao, interpretarArticulacao,
-    validarArticulacao, Validacao, IOpcoesValidacao,
-    interpretarNumero, Dispositivo, TipoDispositivoOuAgrupador, TipoDispositivo, TipoAgrupador,
-    EscapeInterpretacao, EscapeTags, QualquerDispositivo, Divisao
+    Alinea, Artigo, Capitulo, Contexto, Dispositivo, Divisao, EscapeInterpretacao, EscapeTags,
+    IOpcoesValidacao, Inciso, Item, Paragrafo, IParserLinha, ParserLinha, QualquerDispositivo, Secao,
+    Subsecao, TipoAgrupador, TipoDispositivo, TipoDispositivoOuAgrupador, Titulo, Validacao,
+    interpretarArticulacao, interpretarNumero, validarArticulacao
 };
+

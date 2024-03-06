@@ -17,7 +17,11 @@
 import Dispositivo from '../../dispositivos/Dispositivo';
 import Contexto from './Contexto';
 
-export default abstract class ParserLinha {
+export interface IParserLinha {
+    processar(contexto: Contexto, linha: string): boolean;
+}
+
+export default abstract class ParserLinha implements IParserLinha {
     private readonly requisitos: Function[];
 
     constructor(private readonly regexp: RegExp, ...requisitos: Function[]) {
