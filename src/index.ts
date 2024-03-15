@@ -22,6 +22,7 @@ import Item from './dispositivos/Item';
 import Paragrafo from './dispositivos/Paragrafo';
 import { Capitulo, Divisao, Secao, Subsecao, Titulo } from './dispositivos/agrupadores';
 import { QualquerDispositivo } from './dispositivos/tipos';
+import { IArticulacaoInterpretada } from './interpretador/ArticulacaoInterpretada';
 import EscapeInterpretacao from './interpretador/escapamento/EscapeInterpretacao';
 import EscapeTags from './interpretador/escapamento/impl/EscapeTags';
 import interpretarArticulacao from './interpretador/interpretarArticulacao';
@@ -34,6 +35,6 @@ export {
     Alinea, Artigo, Capitulo, Contexto, Dispositivo, Divisao, EscapeInterpretacao, EscapeTags,
     IOpcoesValidacao, Inciso, Item, Paragrafo, IParserLinha, ParserLinha, QualquerDispositivo, Secao,
     Subsecao, TipoAgrupador, TipoDispositivo, TipoDispositivoOuAgrupador, Titulo, Validacao,
-    interpretarArticulacao, interpretarNumero, validarArticulacao
+    interpretarArticulacao, interpretarNumero, validarArticulacao, IArticulacaoInterpretada
 };
 

@@ -26,7 +26,7 @@ import ParserCapitulo from './parsers/ParserCapitulo';
 import ParserContinuacaoDivisao from './parsers/ParserContinuacaoDivisao';
 import ParserInciso from './parsers/ParserInciso';
 import ParserItem from './parsers/ParserItem';
-import ParserLinha, { IParserLinha } from './parsers/ParserLinha';
+import { IParserLinha } from './parsers/ParserLinha';
 import ParserParagrafo from './parsers/ParserParagrafo';
 import ParserSecao from './parsers/ParserSecao';
 import ParserSubsecao from './parsers/ParserSubsecao';
