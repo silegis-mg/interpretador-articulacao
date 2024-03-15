@@ -21,7 +21,9 @@ export default class Contexto {
     public textoAnterior: string = '';
     public articulacao: Dispositivo<any>[] = [];
     
-    getUltimoItemTipo(tipo: any): Dispositivo<any> | null {
+    getUltimoItemTipo(tipo: typeof Dispositivo<any>): Dispositivo<any> | null;
+    getUltimoItemTipo(tipo: (typeof Dispositivo<any>)[]): Dispositivo<any> | null;
+    getUltimoItemTipo(tipo: typeof Dispositivo<any> | (typeof Dispositivo<any>)[]): Dispositivo<any> | null {
         let item = this.ultimoItem;
 
         if (item === null) {
