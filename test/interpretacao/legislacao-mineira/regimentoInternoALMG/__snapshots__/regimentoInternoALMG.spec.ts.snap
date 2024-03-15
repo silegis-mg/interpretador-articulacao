@@ -548,6 +548,7 @@ Dispositivo revogado:
     ],
     "descricao": "DISPOSIÇÕES PRELIMINARES",
     "numero": "I",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -2025,6 +2026,7 @@ Parágrafo único – Os Líderes inscritos terão preferência para fazer uso d
     ],
     "descricao": "DAS SESSÕES LEGISLATIVAS",
     "numero": "II",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -3588,6 +3590,7 @@ Dispositivo revogado:
     ],
     "descricao": "DOS DEPUTADOS",
     "numero": "III",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -4915,6 +4918,7 @@ IV – participar, na comissão especial e na Comissão de Constituição e Just
     ],
     "descricao": "DA MESA DA ASSEMBLEIA",
     "numero": "IV",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -9397,6 +9401,7 @@ Parágrafo único – Considerar-se-á voto vencido o parecer rejeitado.”",
     ],
     "descricao": "DAS COMISSÕES",
     "numero": "V",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -10137,6 +10142,7 @@ Parágrafo único – Considerar-se-á voto vencido o parecer rejeitado.”",
     ],
     "descricao": "DO DEBATE E DA QUESTÃO DE ORDEM",
     "numero": "VI",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -15143,6 +15149,7 @@ para Deputados que, relativamente à matéria, tenham posição idêntica à do 
     ],
     "descricao": "DO PROCESSO LEGISLATIVO",
     "numero": "VII",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -15653,6 +15660,7 @@ Dispositivo revogado:
     ],
     "descricao": "DA PARTICIPAÇÃO DA SOCIEDADE CIVIL",
     "numero": "VIII",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -15820,6 +15828,7 @@ Dispositivo revogado:
     ],
     "descricao": "REGRAS GERAIS DE PRAZO",
     "numero": "IX",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -15879,6 +15888,7 @@ Dispositivo revogado:
     ],
     "descricao": "DA POSSE DO GOVERNADOR E DO VICE-GOVERNADOR DO ESTADO",
     "numero": "X",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -16003,6 +16013,7 @@ Dispositivo revogado:
     ],
     "descricao": "DO COMPARECIMENTO DE AUTORIDADES",
     "numero": "XI",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -16038,6 +16049,7 @@ Dispositivo revogado:
     ],
     "descricao": "DO PROCESSO NOS CRIMES DE RESPONSABILIDADE DO GOVERNADOR, DO VICE-GOVERNADOR E DE SECRETÁRIO DE ESTADO",
     "numero": "XII",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -16073,6 +16085,7 @@ Dispositivo revogado:
     ],
     "descricao": "DO CREDENCIAMENTO DOS REPRESENTANTES DOS ÓRGÃOS DE COMUNICAÇÃO",
     "numero": "XIII",
+    "secoes": [],
     "tipo": "titulo",
   },
   Titulo {
@@ -16184,6 +16197,7 @@ Dispositivo revogado:
     ],
     "descricao": "DISPOSIÇÕES FINAIS E TRANSITÓRIAS",
     "numero": "XIV",
+    "secoes": [],
     "tipo": "titulo",
   },
 ]

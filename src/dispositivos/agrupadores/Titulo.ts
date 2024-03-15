@@ -18,9 +18,11 @@ import Artigo from '../Artigo';
 import { TipoAgrupador } from '../Dispositivo';
 import Capitulo from './Capitulo';
 import Divisao from './Divisao';
+import Secao from './Secao';
 
 export default class Titulo extends Divisao<Capitulo | Artigo> {
     public capitulos: Capitulo[] = [];
+    public secoes: Secao[] = [];
     public artigos: Artigo[] = [];
     constructor(numero: string, descricao: string) {
         super(TipoAgrupador.TITULO, numero, descricao, ['artigos', 'capitulos', 'secoes']);
