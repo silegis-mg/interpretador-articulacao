@@ -22,7 +22,7 @@ import ParserLinha from './ParserLinha';
 
 export default class ParserParagrafo extends ParserLinha {
     constructor() {
-        super(/^\s*(?:Parágrafo único|§\s*(\d+(?:-[a-z])?))\s*.?\s*[-–]?\s*(.*)/i);
+        super(/^\s*(?:Par[aá]grafo único|(?:§|Par[aá]grafo)\s*(\d+(?:-[a-z])?))\s*.?\s*[-–]?\s*(.*)/i);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {

@@ -129,6 +129,38 @@ describe('Parser de articulação', () => {
         });
     });
 
+    it('Interpretação de diferentes formas de parágrafo', () => {
+        const texto = 'Art. 1º - Teste 1.\n§ 1º - P1.\n§ 2º - P2.\nParágrafo 3º - P3.\nParagrafo 4ª - P4.\nArt. 2º - Outro artigo.';
+        
+        expect(parser.interpretarArticulacao(texto)).toEqual({
+            articulacao: novo(parser.Artigo, [
+                {
+                    numero: '1',
+                    descricao: 'Teste 1.',
+                    paragrafos: [
+                        {
+                            numero: '1',
+                            descricao: 'P1.'
+                        }, {
+                            numero: '2',
+                            descricao: 'P2.'
+                        }, {
+                            numero: '3',
+                            descricao: 'P3.'
+                        }, {
+                            numero: '4',
+                            descricao: 'P4.'
+                        }
+                    ]
+                }, {
+                    numero: '2',
+                    descricao: 'Outro artigo.'
+                }
+            ]),
+            textoAnterior: ''
+        });
+    });
+
     it('Deve suportar texto antes do artigo', () => {
         const texto = 'continuação do artigo.\n' +
             'Art. 2 - Final.';
