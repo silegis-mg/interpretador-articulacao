@@ -4,6 +4,10 @@
   "description": "Interpretador de Articulação",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ],
   "scripts": {
     "test": "jest",
     "eslint": "eslint",
