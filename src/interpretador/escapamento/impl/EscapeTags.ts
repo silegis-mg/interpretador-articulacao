@@ -21,6 +21,6 @@ import EscapeInterpretacao, { SubstituirCallback } from '../EscapeInterpretacao'
  */
 export default class EscapeTags extends EscapeInterpretacao {
     escapar(entrada: string, substituir: SubstituirCallback): string {
-        return entrada.replace(/<(?:.|[\n\r\u2028\u2029])+?>/g, (tag, idx) => substituir(tag, idx));
+        return entrada.replace(/<(?:[^>])+?>/g, (tag, idx) => substituir(tag, idx));
     }
 }
