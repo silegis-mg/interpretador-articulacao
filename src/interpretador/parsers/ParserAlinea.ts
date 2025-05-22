@@ -25,7 +25,7 @@ import ParserLinha from './ParserLinha';
 
 export default class ParserAlinea extends ParserLinha {
     constructor() {
-        super(/^\s*([a-z]+(?:-[a-z]+)?)\s*([).])\s*(.*)/i);
+        super(/^\s*([a-z]+(?:[-.][a-z\d]+)?)\s*([).])\s*(.*)/i);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
