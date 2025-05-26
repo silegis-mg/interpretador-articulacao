@@ -22,11 +22,15 @@ import ParserLinha from './ParserLinha';
 
 export default class ParserParagrafo extends ParserLinha {
     constructor() {
-        super(/^\s*(?:Par[aá]grafo único|(?:§|Par[aá]grafo)\s*(\d+(?:-[a-z])?))\s*.?\s*[-–]?\s*(.*)/i);
+        super(/^\s*(?:Par[aá]grafo único|(?:§|Par[aá]grafo)\s*(\d+º?(?:-[a-z])?))\s*.?\s*[-–]?\s*(.*)/i);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
-        const item = new Paragrafo(m[1] || 'Parágrafo único', m[2]);
+        let numero = 'Parágrafo único';
+        if(m[1]) {
+            numero = m[1].replace("º", "");
+        }
+        const item = new Paragrafo(numero, m[2]);
         let container = contexto.getUltimoItemTipo(Artigo);
 
         if (!container) {
