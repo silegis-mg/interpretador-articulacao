@@ -20,7 +20,7 @@ import Dispositivo, { TipoAgrupador, TipoDispositivo, TipoDispositivoOuAgrupador
 import Inciso from './dispositivos/Inciso';
 import Item from './dispositivos/Item';
 import Paragrafo from './dispositivos/Paragrafo';
-import { Capitulo, Divisao, Secao, Subsecao, Titulo } from './dispositivos/agrupadores';
+import { Capitulo, Divisao, Secao, Subsecao, Titulo, Livro } from './dispositivos/agrupadores';
 import { QualquerDispositivo } from './dispositivos/tipos';
 import { IArticulacaoInterpretada } from './interpretador/ArticulacaoInterpretada';
 import EscapeInterpretacao from './interpretador/escapamento/EscapeInterpretacao';
@@ -34,7 +34,7 @@ import { interpretarNumero } from './util/transformarNumeros';
 export {
     Alinea, Artigo, Capitulo, Contexto, Dispositivo, Divisao, EscapeInterpretacao, EscapeTags,
     IOpcoesValidacao, Inciso, Item, Paragrafo, IParserLinha, ParserLinha, QualquerDispositivo, Secao,
-    Subsecao, TipoAgrupador, TipoDispositivo, TipoDispositivoOuAgrupador, Titulo, Validacao,
+    Subsecao, TipoAgrupador, TipoDispositivo, TipoDispositivoOuAgrupador, Titulo, Livro, Validacao,
     interpretarArticulacao, interpretarNumero, validarArticulacao, IArticulacaoInterpretada
 };
 

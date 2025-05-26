@@ -31,6 +31,7 @@ import ParserParagrafo from './parsers/ParserParagrafo';
 import ParserSecao from './parsers/ParserSecao';
 import ParserSubsecao from './parsers/ParserSubsecao';
 import ParserTitulo from './parsers/ParserTitulo';
+import ParserLivro from "./parsers/ParserLivro";
 
 export interface IOpcoesInterpretacao {
     parsersExtras?: IParserLinha[];
@@ -54,6 +55,7 @@ function interpretarArticulacao(textoOriginal: string,
         new ParserInciso(),
         new ParserAlinea(),
         new ParserItem(),
+        new ParserLivro(),
         new ParserTitulo(),
         new ParserCapitulo(),
         new ParserSecao(),

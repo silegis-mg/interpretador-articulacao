@@ -14,16 +14,21 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
-import Capitulo from './agrupadores/Capitulo';
-import Secao from './agrupadores/Secao';
-import Subsecao from './agrupadores/Subsecao';
-import Titulo from './agrupadores/Titulo';
-import Alinea from './Alinea';
-import Artigo from './Artigo';
-import Inciso from './Inciso';
-import Item from './Item';
-import Paragrafo from './Paragrafo';
-import {Livro} from "./agrupadores";
+import { TipoAgrupador } from '../Dispositivo';
+import Divisao from './Divisao';
+import Titulo from "./Titulo";
 
-export type QualquerDispositivo = Artigo | Paragrafo | Inciso | Alinea | Item
-    | Livro | Titulo | Capitulo | Secao | Subsecao;
+export default class Livro extends Divisao<Titulo> {
+    public titulos: Titulo[] = [];
+    constructor(numero: string, descricao: string) {
+        super(TipoAgrupador.LIVRO, numero, descricao, ['titulos']);
+    }
+    adicionar(dispositivo: Titulo): void {
+        Object.defineProperty(dispositivo, '$parent', { value: this });
+        if (dispositivo instanceof Titulo) {
+            this.titulos.push(dispositivo);
+        } else {
+            throw new Error('Derivação não suportada.');
+        }
+    }
+}

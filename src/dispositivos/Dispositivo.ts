@@ -26,7 +26,8 @@ export enum TipoAgrupador {
     TITULO = 'titulo',
     CAPITULO = 'capitulo',
     SECAO = 'secao',
-    SUBSECAO = 'subsecao'
+    SUBSECAO = 'subsecao',
+    LIVRO = 'livro'
 }
 
 export type TipoDispositivoOuAgrupador = TipoDispositivo | TipoAgrupador;

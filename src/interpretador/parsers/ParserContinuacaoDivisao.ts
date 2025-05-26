@@ -21,10 +21,11 @@ import Titulo from '../../dispositivos/agrupadores/Titulo';
 import Dispositivo from '../../dispositivos/Dispositivo';
 import Contexto from './Contexto';
 import ParserLinha from './ParserLinha';
+import {Livro} from "../../dispositivos/agrupadores";
 
 export default class ParserContinuacaoDivisao extends ParserLinha {
     constructor() {
-        super(/^\s*(.*)?\s*$/, Titulo, Capitulo, Secao, Subsecao);
+        super(/^\s*(.*)?\s*$/, Livro, Titulo, Capitulo, Secao, Subsecao);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
