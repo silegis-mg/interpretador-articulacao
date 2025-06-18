@@ -17,11 +17,12 @@
 import { TipoAgrupador } from '../Dispositivo';
 import Divisao from './Divisao';
 import Titulo from "./Titulo";
+import Artigo from "../Artigo";
 
-export default class Livro extends Divisao<Titulo> {
+export default class Livro extends Divisao<Titulo | Artigo> {
     public titulos: Titulo[] = [];
     constructor(numero: string, descricao: string) {
-        super(TipoAgrupador.LIVRO, numero, descricao, ['titulos']);
+        super(TipoAgrupador.LIVRO, numero, descricao, ['titulos', 'artigos']);
     }
     adicionar(dispositivo: Titulo): void {
         Object.defineProperty(dispositivo, '$parent', { value: this });
