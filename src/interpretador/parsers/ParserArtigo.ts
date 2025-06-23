@@ -18,6 +18,7 @@ import Capitulo from '../../dispositivos/agrupadores/Capitulo';
 import Secao from '../../dispositivos/agrupadores/Secao';
 import Subsecao from '../../dispositivos/agrupadores/Subsecao';
 import Titulo from '../../dispositivos/agrupadores/Titulo';
+import Livro from '../../dispositivos/agrupadores/Livro';
 import Artigo from '../../dispositivos/Artigo';
 import Dispositivo from '../../dispositivos/Dispositivo';
 import Contexto from './Contexto';
@@ -30,7 +31,7 @@ export default class ParserArtigo extends ParserLinha {
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
         const item = new Artigo(m[1], m[2]);
-        contexto.adicionar([Titulo, Capitulo, Secao, Subsecao], item);
+        contexto.adicionar([Livro, Titulo, Capitulo, Secao, Subsecao], item);
         return item;
     }
 }

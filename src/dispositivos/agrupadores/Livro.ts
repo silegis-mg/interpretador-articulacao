@@ -18,16 +18,22 @@ import { TipoAgrupador } from '../Dispositivo';
 import Divisao from './Divisao';
 import Titulo from "./Titulo";
 import Artigo from "../Artigo";
+import Secao from "./Secao";
 
 export default class Livro extends Divisao<Titulo | Artigo> {
     public titulos: Titulo[] = [];
+    public artigos: Artigo[] = [];
+
     constructor(numero: string, descricao: string) {
         super(TipoAgrupador.LIVRO, numero, descricao, ['titulos', 'artigos']);
     }
-    adicionar(dispositivo: Titulo): void {
+
+    adicionar(dispositivo: Titulo | Artigo): void {
         Object.defineProperty(dispositivo, '$parent', { value: this });
         if (dispositivo instanceof Titulo) {
             this.titulos.push(dispositivo);
+        } else if (dispositivo instanceof Artigo) {
+            this.artigos.push(dispositivo);
         } else {
             throw new Error('Derivação não suportada.');
         }
