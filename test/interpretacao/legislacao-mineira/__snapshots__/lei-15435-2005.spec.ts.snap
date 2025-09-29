@@ -31,28 +31,6 @@ O GOVERNADOR DO ESTADO DE MINAS GERAIS,
 O Povo do Estado de Minas Gerais, por seus representantes, decretou, e eu, em seu nome, promulgo a seguinte lei:"
 `;
 
-exports[`Lei 15.435/2005 Deve estar válida a interpretação da Lei 15.435/2005 1`] = `
-[
-  Validacao {
-    "conteudo": false,
-    "derivacoesValidas": true,
-    "dispositivo": Artigo {
-      "derivacoes": [
-        "incisos",
-        "paragrafos",
-      ],
-      "descricao": "(Vetado).",
-      "incisos": [],
-      "numero": "9",
-      "paragrafos": [],
-      "tipo": "artigo",
-    },
-    "formatacaoNumerica": true,
-    "sequenciaNumerica": true,
-  },
-]
-`;
-
 exports[`Lei 15.435/2005 Deve interpretar todo  regimento interno 1`] = `
 [
   Artigo {
