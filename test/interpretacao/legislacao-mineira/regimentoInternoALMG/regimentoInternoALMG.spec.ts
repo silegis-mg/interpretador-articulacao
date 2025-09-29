@@ -14,6 +14,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
+import { describe, it, expect } from '@jest/globals';
 import { readFileSync } from 'fs';
 import { TipoDispositivo } from '../../../../src/dispositivos/Dispositivo';
 import { Titulo } from '../../../../src/dispositivos/agrupadores';
