@@ -17,21 +17,30 @@
 
 import Alinea from './Alinea';
 import Dispositivo, { TipoDispositivo } from './Dispositivo';
+import Item from './Item';
 
-export default class Inciso extends Dispositivo<Alinea> {
+export default class Inciso extends Dispositivo<Alinea | Item> {
     public alineas: Alinea[] = [];
+    public itens?: Item[];
 
     constructor(numero: string, descricao: string) {
         super(TipoDispositivo.INCISO, numero, descricao, ['alineas']);
     }
 
-    adicionar(alinea: Alinea) {
-        if (!(alinea instanceof Alinea)) {
+    adicionar(dispositivo: Alinea | Item) {
+        if (dispositivo instanceof Alinea) {
+            this.alineas.push(dispositivo);
+        } else if (dispositivo instanceof Item) {
+            if (!this.itens) {
+                this.itens = [dispositivo];
+                this.derivacoes!.push('itens');
+            } else {
+                this.itens.push(dispositivo);
+            }
+        } else {
             throw new Error('Tipo não suportado.');
         }
 
-        Object.defineProperty(alinea, '$parent', { value: this });
-
-        this.alineas.push(alinea);
+        Object.defineProperty(dispositivo, '$parent', { value: this });
     }
 }

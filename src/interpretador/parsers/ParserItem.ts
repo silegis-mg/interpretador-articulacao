@@ -24,13 +24,13 @@ import Contexto from './Contexto';
 import ParserLinha from './ParserLinha';
 
 export default class ParserItem extends ParserLinha {
-    constructor() {
+    constructor(private readonly hierarquiaRigida = false) {
         super(/^\s*(\d(?:-[a-z])?)\s*[-–).]\s*(.*)/);
     }
 
     onMatch(contexto: Contexto, m: RegExpExecArray): Dispositivo<any> | null {
         const item = new Item(m[1], m[2]);
-        let container = contexto.getUltimoItemTipo(Alinea);
+        let container = contexto.getUltimoItemTipo(this.hierarquiaRigida ? [Alinea] : [Alinea, Inciso, Paragrafo, Artigo]);
 
         if (!container) {
             container = new Alinea('', '');

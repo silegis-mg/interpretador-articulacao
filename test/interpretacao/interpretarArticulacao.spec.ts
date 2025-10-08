@@ -415,17 +415,9 @@ describe('Parser de articulação', () => {
                     paragrafos: [{
                         numero: 'Parágrafo único',
                         descricao: 'Os cidadãos:',
-                        incisos: [{
-                            numero: '',
-                            descricao: '',
-                            alineas: [{
-                                numero: '',
-                                descricao: '',
-                                itens: [{
-                                    numero: '1',
-                                    descricao: 'Devem ser legais.'
-                                }]
-                            }]
+                        itens: [{
+                            numero: '1',
+                            descricao: 'Devem ser legais.'
                         }]
                     }]
                 }

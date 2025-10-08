@@ -1,3 +1,5 @@
+import { QualquerDispositivo } from './tipos';
+
 /* Copyright 2017 Assembleia Legislativa de Minas Gerais
  *
  * This file is part of Interpretador-Articulacao.
@@ -36,7 +38,7 @@ export default abstract class Dispositivo<TiposDerivaveis extends Dispositivo<an
 
     public get subitens(): Dispositivo<TiposDerivaveis>[] {
         return this.derivacoes
-            ? this.derivacoes.reduce(
+            ? this.derivacoes.filter(d => d in this).reduce(
                 (prev, item) => item in this ? prev.concat((this as any)[item]) : prev, [])
             : [];
     }
@@ -44,7 +46,7 @@ export default abstract class Dispositivo<TiposDerivaveis extends Dispositivo<an
     public $parent?: Dispositivo<any>;
 
     constructor(public readonly tipo: TipoDispositivoOuAgrupador,
-                public numero: string | null, public descricao: string, private derivacoes?: string[]) {
+        public numero: string | null, public descricao: string, protected derivacoes?: string[]) {
     }
 
     /**

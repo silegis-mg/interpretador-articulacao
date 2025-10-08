@@ -15,27 +15,45 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import Alinea from './Alinea';
 import Dispositivo, { TipoDispositivo } from './Dispositivo';
 import Inciso from './Inciso';
+import Item from './Item';
 import Paragrafo from './Paragrafo';
 
-export default class Artigo extends Dispositivo<Inciso | Paragrafo> {
+export default class Artigo extends Dispositivo<Inciso | Alinea | Item | Paragrafo> {
     public incisos: Inciso[] = [];
+    public alineas?: Alinea[];
+    public itens?: Item[];
     public paragrafos: Paragrafo[] = [];
 
     constructor(numero: string, caput: string) {
         super(TipoDispositivo.ARTIGO, numero, caput, ['incisos', 'paragrafos']);
     }
 
-    adicionar(incisoOuParagrafo: Inciso | Paragrafo) {
-        Object.defineProperty(incisoOuParagrafo, '$parent', { value: this });
-
-        if (incisoOuParagrafo instanceof Inciso) {
-            this.incisos.push(incisoOuParagrafo);
-        } else if (incisoOuParagrafo instanceof Paragrafo) {
-            this.paragrafos.push(incisoOuParagrafo);
+    adicionar(dispositivo: Inciso | Paragrafo) {
+        if (dispositivo instanceof Inciso) {
+            this.incisos.push(dispositivo);
+        } else if (dispositivo instanceof Alinea) {
+            if (!this.alineas) {
+                this.alineas = [dispositivo];
+                this.derivacoes!.push('alineas');
+            } else {
+                this.alineas.push(dispositivo);
+            }
+        } else if (dispositivo instanceof Item) {
+            if (!this.itens) {
+                this.itens = [dispositivo];
+                this.derivacoes!.push('itens');
+            } else {
+                this.itens.push(dispositivo);
+            }
+        } else if (dispositivo instanceof Paragrafo) {
+            this.paragrafos.push(dispositivo);
         } else {
             throw new Error('Tipo não suportado.');
         }
+
+        Object.defineProperty(dispositivo, '$parent', { value: this });
     }
 }

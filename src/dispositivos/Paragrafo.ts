@@ -15,23 +15,41 @@
  * along with Interpretador-Articulacao.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import Alinea from './Alinea';
 import Dispositivo, { TipoDispositivo } from './Dispositivo';
 import Inciso from './Inciso';
+import Item from './Item';
 
-export default class Paragrafo extends Dispositivo<Inciso> {
+export default class Paragrafo extends Dispositivo<Inciso | Alinea | Item> {
     public incisos: Inciso[] = [];
+    public alineas?: Alinea[];
+    public itens?: Item[];
 
     constructor(numero: string, descricao: string) {
         super(TipoDispositivo.PARAGRAFO, numero, descricao, ['incisos']);
     }
 
-    adicionar(inciso: Inciso) {
-        if (!(inciso instanceof Inciso)) {
+    adicionar(dispositivo: Inciso | Alinea | Item) {
+        if (dispositivo instanceof Inciso) {
+            this.incisos.push(dispositivo);
+        } else if (dispositivo instanceof Alinea) {
+            if (!this.alineas) {
+                this.alineas = [dispositivo];
+                this.derivacoes!.push('alineas');
+            } else {
+                this.alineas.push(dispositivo);
+            }
+        } else if (dispositivo instanceof Item) {
+            if (!this.itens) {
+                this.itens = [dispositivo];
+                this.derivacoes!.push('itens');
+            } else {
+                this.itens.push(dispositivo);
+            }
+        } else {
             throw new Error('Tipo não suportado.');
         }
 
-        Object.defineProperty(inciso, '$parent', { value: this });
-
-        this.incisos.push(inciso);
+        Object.defineProperty(dispositivo, '$parent', { value: this });
     }
 }

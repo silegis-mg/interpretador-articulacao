@@ -24,7 +24,7 @@ import Contexto from './Contexto';
 import ParserLinha from './ParserLinha';
 
 export default class ParserAlinea extends ParserLinha {
-    constructor() {
+    constructor(private readonly hierarquiaRigida = false) {
         super(/^\s*([a-z]+(?:[-.][a-z\d]+)?)\s*([).])\s*(.*)/i);
     }
 
@@ -37,7 +37,7 @@ export default class ParserAlinea extends ParserLinha {
         }
 
         const item = new Alinea(m[1], m[3]);
-        let container = contexto.getUltimoItemTipo(Inciso);
+        let container = contexto.getUltimoItemTipo(this.hierarquiaRigida ? [Inciso] : [Inciso, Paragrafo, Artigo]);
 
         if (!container) {
             let artigo = contexto.getUltimoItemTipo([Artigo, Paragrafo]);

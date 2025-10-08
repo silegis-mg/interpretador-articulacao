@@ -38,7 +38,7 @@ describe('Lei 15.435/2005', () => {
         expect(contagem).toBe(11);
     });
 
-    it('Deve interpretar todo  regimento interno', () => {
+    it('Deve interpretar toda a lei', () => {
         expect(interpretacao.articulacao).toMatchSnapshot();
     });
 });

@@ -36,6 +36,12 @@ import ParserLivro from "./parsers/ParserLivro";
 export interface IOpcoesInterpretacao {
     parsersExtras?: IParserLinha[];
     escapesExtras?: EscapeInterpretacao[];
+
+    /**
+     * Determina que a hierarquia de dispositivos é rígida. Neste caso, alínea
+     * deve estar sempre dentro de algum inciso e item sempre dentro de alguma alínea.
+     */
+    hierarquiaRigida?: boolean;
 }
 
 /**
@@ -53,8 +59,8 @@ function interpretarArticulacao(textoOriginal: string,
         new ParserArtigo(),
         new ParserParagrafo(),
         new ParserInciso(),
-        new ParserAlinea(),
-        new ParserItem(),
+        new ParserAlinea(opcoes.hierarquiaRigida),
+        new ParserItem(opcoes.hierarquiaRigida),
         new ParserLivro(),
         new ParserTitulo(),
         new ParserCapitulo(),
