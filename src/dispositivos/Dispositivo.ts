@@ -56,7 +56,7 @@ export default abstract class Dispositivo<TiposDerivaveis extends Dispositivo<an
      */
     adicionar(dispositivo: TiposDerivaveis): void {
         const tipo = dispositivo.tipo;
-        const atributo = tipo + 's';
+        const atributo = tipo.endsWith("ao") ? tipo.replace("ao", "oes") : tipo + "s";
 
         if (!(atributo in this)) {
             throw new Error(`Derivação "${tipo}" não suportada em "${this.tipo}".`);
@@ -68,7 +68,7 @@ export default abstract class Dispositivo<TiposDerivaveis extends Dispositivo<an
 
     remover(dispositivo: TiposDerivaveis): void {
         const tipo = dispositivo.tipo;
-        const atributo = tipo + 's';
+        const atributo = tipo.endsWith("ao") ? tipo.replace("ao", "oes") : tipo + "s";
 
         if (!(atributo in this)) {
             throw new Error(`Derivação "${tipo}" não suportada em "${this.tipo}".`);
