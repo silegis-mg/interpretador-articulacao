@@ -45,7 +45,6 @@ export interface IOpcoesInterpretacao {
 
     /**
      * Identifica texto posterior à articulação, como o fecho, e o separa da descrição do último dispositivo interpretado.
-     * O grupo 1 será mantido no texto.
      */
     identificarTextoPosterior?: boolean | {
         regexp: RegExp;
