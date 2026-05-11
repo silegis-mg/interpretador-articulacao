@@ -45,7 +45,7 @@ describe('Parser de articulação', () => {
             'III - último inciso.\nParágrafo Único - Parágrafo:\nI - inciso do parágrafo.\nArt. 2º - Outro artigo.';
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '1',
@@ -106,7 +106,7 @@ describe('Parser de articulação', () => {
             'Parágrafo único – Teste.';
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '103',
@@ -157,7 +157,7 @@ describe('Parser de articulação', () => {
                     descricao: 'Outro artigo.'
                 }
             ]),
-            textoAnterior: ''
+            textoAnterior: null
         });
     });
 
@@ -217,7 +217,7 @@ describe('Parser de articulação', () => {
         o Legislativo, o Executivo e o Judiciário.`;
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: [
                 novo(parser.Titulo, {
                     numero: 'I',
@@ -268,7 +268,7 @@ describe('Parser de articulação', () => {
         const texto = 'Artigo 1º - Primeiro.\nArtigo 2º - Segundo.';
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '1',
@@ -285,7 +285,7 @@ describe('Parser de articulação', () => {
         const texto = 'Parágrafo único. Teste.';
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '',
@@ -306,7 +306,7 @@ describe('Parser de articulação', () => {
         const resultado = parser.interpretarArticulacao(texto);
 
         expect(resultado).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '1',
@@ -325,7 +325,7 @@ describe('Parser de articulação', () => {
         const resultado = parser.interpretarArticulacao(texto);
 
         expect(resultado).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [{
                 numero: '1',
                 descricao: 'Artigo 1.\nContinuação.',
@@ -341,7 +341,7 @@ describe('Parser de articulação', () => {
         const texto = 'I - Teste.';
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '',
@@ -359,7 +359,7 @@ describe('Parser de articulação', () => {
         const texto = 'a) Teste.';
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '',
@@ -381,7 +381,7 @@ describe('Parser de articulação', () => {
         const texto = '1. Item.';
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '',
@@ -406,7 +406,7 @@ describe('Parser de articulação', () => {
         const texto = 'Parágrafo único - Os cidadãos:\n1. Devem ser legais.';
 
         expect(parser.interpretarArticulacao(texto)).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '',
@@ -437,7 +437,7 @@ describe('Parser de articulação', () => {
         const objeto = parser.interpretarArticulacao(texto);
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '111-A',
@@ -497,7 +497,7 @@ describe('Parser de articulação', () => {
         const objeto = parser.interpretarArticulacao(texto);
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: novo(parser.Artigo, [
                 {
                     numero: '1',

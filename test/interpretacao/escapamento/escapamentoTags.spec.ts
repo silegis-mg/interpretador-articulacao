@@ -23,7 +23,7 @@ describe('Escapamento de tags', () => {
         const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: [
                 new parser.Artigo('1', '<i>Lorem ipsum.</i>')
             ]
@@ -38,7 +38,7 @@ Art. 2 - Este é <strong>mais um "teste"</strong>.`;
         const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: [
                 new parser.Artigo('1', 'Este é um "teste" de <i>Lorem ipsum.</i>'),
                 new parser.Artigo('2', 'Este é <strong>mais um "teste"</strong>.')
@@ -53,7 +53,7 @@ Art. 2 - Este é <strong>mais um "teste"</strong>.`;
         const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: [
                 new parser.Artigo('1', 'Este é um "teste" de <i lang="latin">Lorem ipsum.</i>')
             ]
@@ -67,7 +67,7 @@ Art. 2 - Este é <strong>mais um "teste"</strong>.`;
         const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: [
                 new parser.Artigo('1', texto.substr(9))
             ]
@@ -81,7 +81,7 @@ Art. 2 - Este é <strong>mais um "teste"</strong>.`;
         const objeto = parser.interpretarArticulacao(texto, { escapesExtras: [new parser.EscapeTags()] });
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: [
                 new parser.Artigo('1', texto.substr(9))
             ]

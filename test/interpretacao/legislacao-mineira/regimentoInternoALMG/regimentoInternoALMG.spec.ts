@@ -33,7 +33,7 @@ describe('Regimento Interno da ALMG', () => {
     });
 
     it('Não deve ficar nenhum texto de fora.',  () => {
-        expect(interpretacao.textoAnterior).toBe('');
+        expect(interpretacao.textoAnterior).toBe(null);
     });
 
     it('Deve possuir 14 títulos', () => {

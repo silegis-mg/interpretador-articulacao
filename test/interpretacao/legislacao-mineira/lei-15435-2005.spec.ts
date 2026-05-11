@@ -20,8 +20,13 @@ import { interpretarArticulacao, validarArticulacao, TipoDispositivo, Titulo } f
 import { contarDispositivos } from '../../testUtil';
 
 describe('Lei 15.435/2005', () => {
-    const regimento = readFileSync('test/interpretacao/legislacao-mineira/lei-15435-2005.txt').toString();
-    const interpretacao = interpretarArticulacao(regimento);
+    const lei = readFileSync('test/interpretacao/legislacao-mineira/lei-15435-2005.txt').toString();
+    const interpretacao = interpretarArticulacao(lei, {
+        identificarTextoPosterior: {
+            regexp: /^Palácio da Liberdade,/m,
+            offset: -1
+        }
+    });
 
     it('Deve alertar dispositivo vetado', () => {
         const validacao = validarArticulacao(interpretacao.articulacao);
@@ -40,5 +45,12 @@ describe('Lei 15.435/2005', () => {
 
     it('Deve interpretar toda a lei', () => {
         expect(interpretacao.articulacao).toMatchSnapshot();
+    });
+
+    it('Deve identificar o texto posterior ao último dispositivo', () => {
+        const ultimoArtigo = interpretacao.articulacao[interpretacao.articulacao.length - 1];
+        expect(ultimoArtigo.numero).toBe('11');
+        expect(ultimoArtigo.descricao).toBe('Esta lei entra em vigor na data de sua publicação.');
+        expect(interpretacao.textoPosterior?.startsWith('Palácio da Liberdade, em Belo Horizonte, aos 11 de janeiro de 2005; 217º da Inconfidência Mineira e 184º da Independência do Brasil')).toBeTruthy();
     });
 });

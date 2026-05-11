@@ -24,12 +24,21 @@ export interface IArticulacaoInterpretada {
     /**
      * Texto que antecede primeiro dispositivo interpretado.
      * Se a interpretação compreendeu todo o texto,
-     * este atributo deve vir vazio.
+     * este atributo deve vir nulo.
      */
-    textoAnterior: string;
+    textoAnterior: string | null;
 
     /**
      * Articulação interpretada.
      */
     articulacao: QualquerDispositivo[];
+
+    /**
+     * Texto que segue ao último dispositivo interpretado.
+     * Se a interpretação compreendeu todo o texto,
+     * este atributo deve vir nulo.
+     * 
+     * Se undefined, o interpretador não tentou separar o texto posterior.
+     */
+    textoPosterior?: string | null;
 }

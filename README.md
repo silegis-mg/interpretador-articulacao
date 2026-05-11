@@ -52,14 +52,23 @@ interface IArticulacaoInterpretada {
     /**
      * Texto que antecede primeiro dispositivo interpretado.
      * Se a interpretação compreendeu todo o texto,
-     * este atributo deve vir vazio.
+     * este atributo deve vir nulo.
      */
-    textoAnterior: string;
+    textoAnterior: string | null;
 
     /**
      * Articulação interpretada.
      */
     articulacao: QualquerDispositivo[];
+
+    /**
+     * Texto que segue ao último dispositivo interpretado.
+     * Se a interpretação compreendeu todo o texto,
+     * este atributo deve vir nulo.
+     * 
+     * Se undefined, o interpretador não tentou separar o texto posterior.
+     */
+    textoPosterior?: string | null;
 }
 
 type QualquerDispositivo = Artigo | Paragrafo | Inciso | Alinea | Item | Titulo | Capitulo | Secao | Subsecao
@@ -88,7 +97,7 @@ class Paragrafo extends Dispositivo {
 }
 
 abstract class Divisao extends Dispositivo {
-    subitens: Dispositivo
+    subitens: Dispositivo[]
 }
 
 class Titulo extends Divisao { }
@@ -107,11 +116,45 @@ extra de texto.
 interface IOpcoesInterpretacao {
     parsersExtras?: ParserLinha[];
     escapesExtras?: EscapeInterpretacao[];
+
+    /**
+     * Determina que a hierarquia de dispositivos é rígida. Neste caso, alínea
+     * deve estar sempre dentro de algum inciso e item sempre dentro de alguma alínea.
+     */
+    hierarquiaRigida?: boolean;
+
+    /**
+     * Identifica texto posterior à articulação, como o fecho, e o separa da descrição do último dispositivo interpretado.
+     */
+    identificarTextoPosterior?: boolean | {
+        regexp: RegExp;
+
+        /**
+         * Offset do índice da expressão regular a ser considerada.
+         */
+        offset: number | ((match: RegExpExecArray) => number);
+    }
 }
 ```
 
-Nesta biblioteca existe apenas a implementação do escape de tags de HTML, por meio da classe
-`EscapeTags`.
+Nesta biblioteca, existe apenas a implementação do escape de tags de HTML, por meio da classe
+`EscapeTags`. O desenvolvedor pode criar seus próprios escapes, implementando a interface
+`EscapeInterpretacao` e passando a instância do escape criado por meio da opção `escapesExtras`.
+
+É possível também definir a identificação de texto posterior à articulação, como o fecho, por meio da opção
+`identificarTextoPosterior`. Se esta opção for definida como `true`, o interpretador irá procurar por um
+ponto final (`.`) e separar o texto posterior a ele do último dispositivo interpretado. Sendo o local
+do fecho fixo, pode-se definir um padrão de expressão regular e um offset para a identificação do texto
+posterior, por meio de um objeto com as chaves `regexp` e `offset`. Exemplo:
+
+```typescript
+    const interpretacao = interpretarArticulacao(norma, {
+        identificarTextoPosterior: {
+            regexp: /^Palácio da Liberdade,/m,
+            offset: -1
+        }
+    });
+```
 
 ## API do validador
 

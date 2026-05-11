@@ -42,6 +42,19 @@ export interface IOpcoesInterpretacao {
      * deve estar sempre dentro de algum inciso e item sempre dentro de alguma alínea.
      */
     hierarquiaRigida?: boolean;
+
+    /**
+     * Identifica texto posterior à articulação, como o fecho, e o separa da descrição do último dispositivo interpretado.
+     * O grupo 1 será mantido no texto.
+     */
+    identificarTextoPosterior?: boolean | {
+        regexp: RegExp;
+
+        /**
+         * Offset do índice da expressão regular a ser considerada.
+         */
+        offset: number | ((match: RegExpExecArray) => number);
+    }
 }
 
 /**
@@ -104,10 +117,46 @@ function interpretarArticulacao(textoOriginal: string,
         }
     }
 
-    return {
-        textoAnterior: contexto.textoAnterior,
-        articulacao: contexto.articulacao
-    };
+    const identificarTextoPosterior = opcoes.identificarTextoPosterior;
+
+    if (identificarTextoPosterior && contexto.ultimoItem?.descricao) {
+        const regra: {
+            regexp: RegExp;
+            offset: (m: RegExpExecArray) => number;
+        } = identificarTextoPosterior === true
+            ? {
+                regexp: /\.$/m,
+                offset: () => 1
+            } : {
+                regexp: identificarTextoPosterior.regexp,
+                offset: typeof identificarTextoPosterior.offset === 'number'
+                    ? () => identificarTextoPosterior.offset as number
+                    : identificarTextoPosterior.offset as (m: RegExpExecArray) => number
+            }
+    
+        const m = regra.regexp.exec(contexto.ultimoItem.descricao);
+        
+        const ultimaPontuacao = m?.index;
+        const offset = m ? regra.offset(m) : 0;
+        const textoPosterior = ultimaPontuacao
+            ? contexto.ultimoItem!.descricao.substring(ultimaPontuacao + offset).trim()
+            : null;
+    
+        if (ultimaPontuacao !== undefined && ultimaPontuacao >= 0) {
+            contexto.ultimoItem!.descricao = contexto.ultimoItem!.descricao.substring(0, ultimaPontuacao + offset);
+        }
+
+        return {
+            textoAnterior: contexto.textoAnterior || null,
+            articulacao: contexto.articulacao,
+            textoPosterior: textoPosterior
+        };
+    } else {
+        return {
+            textoAnterior: contexto.textoAnterior || null,
+            articulacao: contexto.articulacao
+        };
+    }
 }
 
 export default interpretarArticulacao;

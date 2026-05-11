@@ -29,7 +29,7 @@ Parágrafo único – Considerar-se-á voto vencido o parecer rejeitado.”`;
         const objeto = parser.interpretarArticulacao(texto);
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: [
                 new parser.Artigo('139', `(Revogado pelo art. 111 da Resolução da ALMG nº 5.511, de 1º/12/2015.)
 Dispositivo revogado:
@@ -48,7 +48,7 @@ Parágrafo único – Considerar-se-á voto vencido o parecer rejeitado.”`
         const objeto = parser.interpretarArticulacao(texto);
 
         expect(objeto).toEqual({
-            textoAnterior: '',
+            textoAnterior: null,
             articulacao: [
                 new parser.Artigo('1', 'Este é um "teste.\nArt 2º - Este é outro teste."' +
                     ' para ver o "escapamento\nArt. 2º - em funcionamento.".')
